@@ -1,14 +1,30 @@
 {
   "name": "delete-disable-wp-comments",
   "version": "1.0.0",
-  "description": "WordPress plugin to manage comments with Cypress tests",
+  "description": "A WordPress plugin for efficient comment management",
+  "main": "index.js",
   "scripts": {
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "test": "cypress run"
+    "test": "cypress run",
+    "cypress": "cypress open",
+    "build": "zip -r wp-content/plugins/delete-disable-comments.zip wp-content/plugins/delete-disable-comments/"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ostheimer/delete-disable-wp-comments.git"
+  },
+  "keywords": [
+    "wordpress",
+    "plugin",
+    "comments",
+    "spam"
+  ],
+  "author": "Andreas Ostheimer",
+  "license": "GPL-2.0-or-later",
+  "bugs": {
+    "url": "https://github.com/ostheimer/delete-disable-wp-comments/issues"
+  },
+  "homepage": "https://github.com/ostheimer/delete-disable-wp-comments#readme",
   "devDependencies": {
-    "cypress": "^13.17.0",
-    "mysql2": "^3.14.0"
+    "cypress": "^13.17.0"
   }
 }
