@@ -1,0 +1,14 @@
+{
+  "name": "delete-disable-wp-comments",
+  "version": "1.0.0",
+  "description": "WordPress plugin to manage comments with Cypress tests",
+  "scripts": {
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "test": "cypress run"
+  },
+  "devDependencies": {
+    "cypress": "^13.17.0",
+    "mysql2": "^3.14.0"
+  }
+}
