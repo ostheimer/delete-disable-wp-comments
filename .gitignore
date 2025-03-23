@@ -1,0 +1,36 @@
+# IDE und Editor Dateien
+.cursor/
+.cursor
+.vscode/
+.idea/
+
+# Abhängigkeiten
+/node_modules
+/vendor
+
+# Entwicklungs-Tools
+/cypress
+cypress.config.js
+package.json
+package-lock.json
+
+# Betriebssystem-spezifische Dateien
+.DS_Store
+Thumbs.db
+
+# Temporäre Dateien
+*.log
+*.tmp
+*.temp
+
+# Docker
+docker-compose.yml
+.docker/
+
+# Umgebungsvariablen
+.env
+.env.*
+
+# Build-Ausgaben
+/dist
+/build 
