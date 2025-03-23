@@ -11,8 +11,6 @@
 # Entwicklungs-Tools
 /cypress
 cypress.config.js
-package.json
-package-lock.json
 
 # Betriebssystem-spezifische Dateien
 .DS_Store
