@@ -1,6 +1,96 @@
 # Delete & Disable Comments
 
-A powerful WordPress plugin for managing and disabling comments.
+A WordPress plugin to manage and disable comments. Delete spam comments, backup and remove all comments, or disable comments site-wide.
+
+=== Delete & Disable Comments ===
+Contributors: ostheimer
+Tags: comments, spam, delete, disable, backup
+Requires at least: 5.0
+Tested up to: 6.4.3
+Stable tag: 1.0.0
+Requires PHP: 7.2
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+
+## Description
+
+This plugin provides a simple and efficient way to manage comments on your WordPress site. It offers three main features:
+
+1. **Delete Spam Comments**: Remove all comments marked as spam from your database.
+2. **Delete All Comments**: Remove all comments from your website with the option to create a backup first.
+3. **Disable Comments**: Toggle comments on or off for your entire website.
+
+## Installation
+
+1. Upload the plugin files to the `/wp-content/plugins/delete-disable-comments` directory, or install the plugin through the WordPress plugins screen directly.
+2. Activate the plugin through the 'Plugins' screen in WordPress.
+3. Use the Tools->Delete & Disable Comments screen to manage your comments.
+
+## Usage
+
+After installation, you can find the plugin under the Tools menu in your WordPress admin area.
+
+### Delete Spam Comments
+- Click the "Delete Spam Comments" button to remove all spam comments from your database.
+- A confirmation message will be shown after successful deletion.
+
+### Delete All Comments
+- Before deleting all comments, you can download a backup by clicking the "Download Backup" button.
+- Click "Delete All Comments" to remove all comments from your website.
+- A confirmation message will be shown after successful deletion.
+
+### Disable Comments
+- Use the toggle switch to enable or disable comments site-wide.
+- When disabled, all existing comments will be hidden and new comments will be prevented.
+- The status will be preserved even after theme changes.
+
+## Security
+
+- All actions require admin privileges
+- Nonce verification for all operations
+- Data sanitization and validation
+- Secure file operations
+- XSS prevention through escaping
+
+## Requirements
+
+- WordPress 5.0 or higher
+- PHP 7.2 or higher
+- MySQL 5.6 or higher
+
+## Support
+
+For support, please create an issue in the [GitHub repository](https://github.com/ostheimer/delete-disable-wp-comments).
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This plugin is licensed under the GPL v2 or later.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License, version 2, as
+published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+
+## Changelog
+
+### 1.0.0
+* Initial release
+* Added spam comment deletion
+* Added all comments deletion with backup
+* Added site-wide comment toggle
+* Added German translations
 
 ## 🌟 Features
 
@@ -15,57 +105,6 @@ A powerful WordPress plugin for managing and disabling comments.
   - English (USA) - en_US
   - English (GB) - en_GB
   - English (Standard) - en
-
-## 📋 Requirements
-
-- WordPress 5.0 or higher
-- PHP 7.4 or higher
-- MySQL 5.6 or higher
-
-## 💻 Installation
-
-1. Download the plugin ZIP file
-2. Go to your WordPress dashboard "Plugins" → "Add New"
-3. Click "Upload Plugin"
-4. Select the downloaded ZIP file
-5. Click "Install Now"
-6. After installation, click "Activate"
-
-## 🔧 Usage
-
-### Delete Spam Comments
-1. Navigate to "Comments" → "Delete & Disable Comments"
-2. Click "Delete Spam Comments"
-3. Confirm the action in the dialog
-
-### Delete All Comments
-1. Navigate to "Comments" → "Delete & Disable Comments"
-2. Optional: Click "Download Backup" to create a backup
-3. Click "Delete All Comments"
-4. Confirm the action in the dialog
-
-### Disable Comments
-1. Navigate to "Comments" → "Delete & Disable Comments"
-2. Use the toggle switch to enable/disable comments
-3. The change takes effect immediately
-
-## 🔒 Security
-
-- Only administrators have access to plugin functions
-- All actions require confirmation
-- CSRF protection through WordPress nonces
-- Backup option before deleting all comments
-
-## 🌐 Advanced Comment Disabling
-
-When comments are disabled:
-- Comment REST API endpoints are disabled
-- Comment links are removed from post meta
-- Comment widgets are disabled
-- Comment support is removed for all post types
-- Comment section is hidden in the frontend
-- Theme-specific comment styles are removed
-- Comment-related Gutenberg blocks are removed
 
 ## 🛠 Troubleshooting
 
@@ -89,15 +128,6 @@ When comments are disabled:
 ## 🤝 Contributing
 
 Found a bug or have suggestions for improvements? Feel free to create an issue or pull request on GitHub.
-
-## 📄 License
-
-This plugin is licensed under GPL v2 or later. See [LICENSE](LICENSE) for details.
-
-## 👥 Authors
-
-- Andreas Ostheimer
-- [GitHub Repository](https://github.com/ostheimer/delete-disable-wp-comments)
 
 ## 🙏 Acknowledgments
 

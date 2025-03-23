@@ -7,41 +7,41 @@ if (!defined('ABSPATH')) {
 function delete_disable_comments_admin_page() {
     ?>
     <div class="wrap">
-        <h1><?php _e('Delete & Disable Comments', 'delete-disable-comments'); ?></h1>
+        <h1><?php esc_html_e('Delete & Disable Comments', 'delete-disable-comments'); ?></h1>
         
         <div class="notice-container"></div>
         
         <div class="card">
-            <h2><?php _e('Delete Spam Comments', 'delete-disable-comments'); ?></h2>
-            <p><?php _e('Remove all comments marked as spam from your database.', 'delete-disable-comments'); ?></p>
+            <h2><?php esc_html_e('Delete Spam Comments', 'delete-disable-comments'); ?></h2>
+            <p><?php esc_html_e('Remove all comments marked as spam from your database.', 'delete-disable-comments'); ?></p>
             <button class="button button-primary" data-cy="delete-spam-btn" id="delete-spam-comments">
-                <?php _e('Delete Spam Comments', 'delete-disable-comments'); ?>
+                <?php esc_html_e('Delete Spam Comments', 'delete-disable-comments'); ?>
             </button>
         </div>
         
         <div class="card">
-            <h2><?php _e('Delete All Comments', 'delete-disable-comments'); ?></h2>
-            <p><?php _e('Remove all comments from your website. You can download a backup before deletion.', 'delete-disable-comments'); ?></p>
+            <h2><?php esc_html_e('Delete All Comments', 'delete-disable-comments'); ?></h2>
+            <p><?php esc_html_e('Remove all comments from your website. You can download a backup before deletion.', 'delete-disable-comments'); ?></p>
             <button class="button button-primary" data-cy="delete-all-btn" id="delete-all-comments">
-                <?php _e('Delete All Comments', 'delete-disable-comments'); ?>
+                <?php esc_html_e('Delete All Comments', 'delete-disable-comments'); ?>
             </button>
             <button class="button" data-cy="backup-btn" id="download-backup">
-                <?php _e('Download Backup', 'delete-disable-comments'); ?>
+                <?php esc_html_e('Download Backup', 'delete-disable-comments'); ?>
             </button>
         </div>
         
         <div class="card">
-            <h2><?php _e('Disable Comments', 'delete-disable-comments'); ?></h2>
-            <p><?php _e('Toggle comments on or off for your entire website.', 'delete-disable-comments'); ?></p>
+            <h2><?php esc_html_e('Disable Comments', 'delete-disable-comments'); ?></h2>
+            <p><?php esc_html_e('Toggle comments on or off for your entire website.', 'delete-disable-comments'); ?></p>
             <div class="toggle-container">
                 <label class="switch">
-                    <input type="checkbox" class="toggle-switch" id="toggle-comments" <?php echo get_option('disable_comments') ? 'checked' : ''; ?>>
+                    <input type="checkbox" data-cy="toggle-comments" id="toggle-comments" <?php echo esc_attr(get_option('disable_comments') ? 'checked' : ''); ?>>
                     <span class="slider round"></span>
                 </label>
-                <span class="toggle-label">
-                    <?php echo get_option('disable_comments') ? 
+                <span class="toggle-label" data-cy="toggle-status">
+                    <?php echo esc_html(get_option('disable_comments') ? 
                         __('Comments are currently disabled', 'delete-disable-comments') : 
-                        __('Comments are currently enabled', 'delete-disable-comments'); ?>
+                        __('Comments are currently enabled', 'delete-disable-comments')); ?>
                 </span>
             </div>
         </div>
@@ -53,10 +53,10 @@ function delete_disable_comments_admin_page() {
             <p id="confirm-message"></p>
             <div class="modal-buttons">
                 <button class="button button-primary" data-cy="confirm-dialog-confirm" id="confirm-yes">
-                    <?php _e('Yes', 'delete-disable-comments'); ?>
+                    <?php esc_html_e('Yes', 'delete-disable-comments'); ?>
                 </button>
                 <button class="button" data-cy="confirm-dialog-cancel" id="confirm-no">
-                    <?php _e('No', 'delete-disable-comments'); ?>
+                    <?php esc_html_e('No', 'delete-disable-comments'); ?>
                 </button>
             </div>
         </div>

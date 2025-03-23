@@ -41,15 +41,10 @@ function delete_disable_comments_load_textdomain() {
     $domain = 'delete-disable-comments';
     $locale = determine_locale();
     
-    // Debug output
-    error_log('Loading translations for locale: ' . $locale);
-    
     // Try plugin languages directory first
     $plugin_mofile = dirname(__FILE__) . '/languages/' . $domain . '-' . $locale . '.mo';
     if (file_exists($plugin_mofile)) {
-        error_log('Found plugin MO file: ' . $plugin_mofile);
         $loaded = load_textdomain($domain, $plugin_mofile);
-        error_log('Loaded from plugin directory: ' . ($loaded ? 'yes' : 'no'));
         if ($loaded) {
             return;
         }
@@ -58,15 +53,21 @@ function delete_disable_comments_load_textdomain() {
     // Try WordPress languages directory as fallback
     $wp_mofile = WP_LANG_DIR . '/plugins/' . $domain . '-' . $locale . '.mo';
     if (file_exists($wp_mofile)) {
-        error_log('Found WordPress MO file: ' . $wp_mofile);
-        $loaded = load_textdomain($domain, $wp_mofile);
-        error_log('Loaded from WordPress directory: ' . ($loaded ? 'yes' : 'no'));
+        load_textdomain($domain, $wp_mofile);
+    }
+    
+    // If specific locale failed, try the generic de_DE as fallback for all German variants
+    if (strpos($locale, 'de_') === 0) {
+        $fallback_mofile = dirname(__FILE__) . '/languages/' . $domain . '-de_DE.mo';
+        if (file_exists($fallback_mofile)) {
+            load_textdomain($domain, $fallback_mofile);
+        }
     }
 }
 
 // Make sure translations are loaded before anything else
 remove_action('plugins_loaded', 'delete_disable_comments_load_textdomain');
-add_action('init', 'delete_disable_comments_load_textdomain', 0);
+add_action('plugins_loaded', 'delete_disable_comments_load_textdomain', 0);
 
 // Include backend functions
 require_once DELETE_DISABLE_COMMENTS_PLUGIN_DIR . 'includes/functions.php';
@@ -99,7 +100,28 @@ function delete_disable_comments_admin_enqueue_scripts($hook) {
         'deleteDisableCommentsAjax',
         array(
             'ajaxurl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('delete_disable_comments_nonce')
+            'nonce' => wp_create_nonce('delete_disable_comments_nonce'),
+            'error_toggling' => esc_html__('Error toggling comments.', 'delete-disable-comments'),
+            'network_error' => esc_html__('Network error while updating comments.', 'delete-disable-comments'),
+            'comments_disabled' => esc_html__('Comments are currently disabled', 'delete-disable-comments'),
+            'comments_enabled' => esc_html__('Comments are currently enabled', 'delete-disable-comments'),
+            'confirm_delete_spam' => esc_html__('Do you really want to delete all spam comments?', 'delete-disable-comments'),
+            'confirm_delete_all' => esc_html__('Do you really want to delete ALL comments? This action cannot be undone!', 'delete-disable-comments'),
+            'deleting' => esc_html__('Deleting...', 'delete-disable-comments'),
+            'updating' => esc_html__('Updating...', 'delete-disable-comments'),
+            'creating_backup' => esc_html__('Creating backup...', 'delete-disable-comments'),
+            'success_delete_spam' => esc_html__('Spam comments have been successfully deleted.', 'delete-disable-comments'),
+            'success_delete_all' => esc_html__('All comments have been successfully deleted.', 'delete-disable-comments'),
+            'success_backup' => esc_html__('Backup has been successfully created.', 'delete-disable-comments'),
+            'error_delete_spam' => esc_html__('Error deleting spam comments.', 'delete-disable-comments'),
+            'error_delete_all' => esc_html__('Error deleting all comments.', 'delete-disable-comments'),
+            'error_backup' => esc_html__('Error creating backup.', 'delete-disable-comments'),
+            'network_error_spam' => esc_html__('Network error while deleting spam comments.', 'delete-disable-comments'),
+            'network_error_all' => esc_html__('Network error while deleting all comments.', 'delete-disable-comments'),
+            'network_error_backup' => esc_html__('Network error while creating backup.', 'delete-disable-comments'),
+            'delete_spam_button' => esc_html__('Delete Spam Comments', 'delete-disable-comments'),
+            'delete_all_button' => esc_html__('Delete All Comments', 'delete-disable-comments'),
+            'backup_button' => esc_html__('Download Backup', 'delete-disable-comments')
         )
     );
 }
@@ -107,8 +129,8 @@ add_action('admin_enqueue_scripts', 'delete_disable_comments_admin_enqueue_scrip
 
 // Add admin menu
 function delete_disable_comments_admin_menu() {
-    $menu_title = __('Delete & Disable Comments', 'delete-disable-comments');
-    $page_title = __('Delete & Disable Comments', 'delete-disable-comments');
+    $menu_title = esc_html__('Delete & Disable Comments', 'delete-disable-comments');
+    $page_title = esc_html__('Delete & Disable Comments', 'delete-disable-comments');
     
     add_submenu_page(
         'tools.php',           // Parent slug (Werkzeuge)
@@ -135,32 +157,32 @@ function delete_disable_comments_admin_page() {
         <div class="delete-disable-comments-controls">
             <!-- Delete Spam Comments -->
             <div class="card">
-                <h2><?php _e('Delete Spam Comments', 'delete-disable-comments'); ?></h2>
-                <p><?php _e('Remove all comments marked as spam from your database.', 'delete-disable-comments'); ?></p>
-                <button id="delete-spam-comments" class="button button-primary"><?php _e('Delete Spam Comments', 'delete-disable-comments'); ?></button>
+                <h2><?php esc_html_e('Delete Spam Comments', 'delete-disable-comments'); ?></h2>
+                <p><?php esc_html_e('Remove all comments marked as spam from your database.', 'delete-disable-comments'); ?></p>
+                <button id="delete-spam-comments" class="button button-primary"><?php esc_html_e('Delete Spam Comments', 'delete-disable-comments'); ?></button>
             </div>
 
             <!-- Delete All Comments -->
             <div class="card">
-                <h2><?php _e('Delete All Comments', 'delete-disable-comments'); ?></h2>
-                <p><?php _e('Remove all comments from your website. You can download a backup before deletion.', 'delete-disable-comments'); ?></p>
-                <button id="backup-comments" class="button"><?php _e('Download Backup', 'delete-disable-comments'); ?></button>
-                <button id="delete-all-comments" class="button button-primary"><?php _e('Delete All Comments', 'delete-disable-comments'); ?></button>
+                <h2><?php esc_html_e('Delete All Comments', 'delete-disable-comments'); ?></h2>
+                <p><?php esc_html_e('Remove all comments from your website. You can download a backup before deletion.', 'delete-disable-comments'); ?></p>
+                <button id="backup-comments" class="button"><?php esc_html_e('Download Backup', 'delete-disable-comments'); ?></button>
+                <button id="delete-all-comments" class="button button-primary"><?php esc_html_e('Delete All Comments', 'delete-disable-comments'); ?></button>
             </div>
 
             <!-- Disable Comments -->
             <div class="card">
-                <h2><?php _e('Disable Comments', 'delete-disable-comments'); ?></h2>
-                <p><?php _e('Toggle comments on or off for your entire website.', 'delete-disable-comments'); ?></p>
+                <h2><?php esc_html_e('Disable Comments', 'delete-disable-comments'); ?></h2>
+                <p><?php esc_html_e('Toggle comments on or off for your entire website.', 'delete-disable-comments'); ?></p>
                 <div class="toggle-container">
                     <label class="switch">
-                        <input type="checkbox" id="toggle-comments" <?php checked(get_option('disable_comments', false)); ?>>
+                        <input type="checkbox" id="toggle-comments" <?php echo esc_attr(checked(get_option('disable_comments', false), true, false)); ?>>
                         <span class="slider round"></span>
                     </label>
-                    <div class="comment-status <?php echo get_option('disable_comments', false) ? 'disabled' : 'enabled'; ?>">
-                        <?php echo get_option('disable_comments', false) ? 
+                    <div class="comment-status <?php echo esc_attr(get_option('disable_comments', false) ? 'disabled' : 'enabled'); ?>">
+                        <?php echo esc_html(get_option('disable_comments', false) ? 
                             __('Comments are currently disabled', 'delete-disable-comments') : 
-                            __('Comments are currently enabled', 'delete-disable-comments'); 
+                            __('Comments are currently enabled', 'delete-disable-comments')); 
                         ?>
                     </div>
                 </div>
@@ -188,8 +210,15 @@ register_deactivation_hook(__FILE__, 'delete_disable_comments_deactivate');
 function delete_disable_comments_init() {
     // If comments are disabled, remove support for comments and trackbacks
     if (get_option('disable_comments', false)) {
-        // Disable comments for all post types
-        $post_types = get_post_types(array('public' => true), 'names');
+        // Get post types with comments enabled and cache the result
+        $cache_key = 'ddc_post_types_with_comments';
+        $post_types = wp_cache_get($cache_key);
+        
+        if (false === $post_types) {
+            $post_types = get_post_types(array('public' => true), 'names');
+            wp_cache_set($cache_key, $post_types, 'delete-disable-comments', HOUR_IN_SECONDS);
+        }
+        
         foreach ($post_types as $post_type) {
             if (post_type_supports($post_type, 'comments')) {
                 remove_post_type_support($post_type, 'comments');
@@ -197,9 +226,21 @@ function delete_disable_comments_init() {
             }
         }
 
-        // Close comments on all existing posts
+        // Close comments on all posts with caching
         global $wpdb;
-        $wpdb->query("UPDATE {$wpdb->posts} SET comment_status = 'closed', ping_status = 'closed'");
+        $cache_key = 'ddc_comments_closed';
+        $comments_closed = wp_cache_get($cache_key);
+        
+        if (false === $comments_closed) {
+            $wpdb->query(
+                $wpdb->prepare(
+                    "UPDATE $wpdb->posts SET comment_status = %s, ping_status = %s",
+                    'closed',
+                    'closed'
+                )
+            );
+            wp_cache_set($cache_key, true, 'delete-disable-comments', HOUR_IN_SECONDS);
+        }
 
         // Ensure new posts have comments disabled by default
         update_option('default_comment_status', 'closed');
@@ -228,7 +269,7 @@ function delete_disable_comments_init() {
         // Remove comments from post type supports
         add_action('template_redirect', function() {
             if (is_comment_feed()) {
-                wp_die(__('Comments are closed.', 'delete-disable-comments'), '', array('response' => 403));
+                wp_die(esc_html__('Comments are closed.', 'delete-disable-comments'), '', array('response' => 403));
             }
         });
 
@@ -310,7 +351,7 @@ function delete_disable_comments_init() {
         }, 10, 2);
     }
 }
-add_action('init', 'delete_disable_comments_init', 9999);
+add_action('init', 'delete_disable_comments_init', 100);
 
 // Override comment template when comments are disabled
 function delete_disable_comments_override_template($template) {

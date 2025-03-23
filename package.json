@@ -26,5 +26,8 @@
   "homepage": "https://github.com/ostheimer/delete-disable-wp-comments#readme",
   "devDependencies": {
     "cypress": "^13.17.0"
+  },
+  "dependencies": {
+    "mysql2": "^3.14.0"
   }
 }

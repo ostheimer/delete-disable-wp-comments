@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Delete & Disable Comments 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/ostheimer/delete-disable-wp-comments/issues\n"
-"POT-Creation-Date: 2024-03-23 09:07+0100\n"
-"PO-Revision-Date: 2024-03-23 09:55+0100\n"
+"POT-Creation-Date: 2024-03-23 21:49+0100\n"
+"PO-Revision-Date: 2024-03-23 21:49+0100\n"
 "Last-Translator: Andreas Ostheimer\n"
 "Language-Team: German (Austria)\n"
 "Language: de_AT\n"
@@ -14,29 +14,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "Delete & Disable Comments"
-msgstr "Kommentare löschen & deaktivieren"
-
-msgid "Delete Spam Comments"
-msgstr "Spam-Kommentare löschen"
-
-msgid "Remove all comments marked as spam from your database."
-msgstr "Entfernen Sie alle als Spam markierten Kommentare aus Ihrer Datenbank."
-
-msgid "Delete All Comments"
-msgstr "Alle Kommentare löschen"
-
-msgid "Remove all comments from your website. You can download a backup before deletion."
-msgstr "Entfernen Sie alle Kommentare von Ihrer Website. Sie können vor dem Löschen ein Backup herunterladen."
-
-msgid "Download Backup"
-msgstr "Backup herunterladen"
-
-msgid "Disable Comments"
-msgstr "Kommentare deaktivieren"
-
 msgid "Toggle comments on or off for your entire website."
 msgstr "Aktivieren oder deaktivieren Sie Kommentare für Ihre gesamte Website."
+
+msgid "Error toggling comments."
+msgstr "Fehler beim Umschalten der Kommentare."
+
+msgid "Network error while updating comments."
+msgstr "Netzwerkfehler beim Aktualisieren der Kommentare."
 
 msgid "Comments are currently disabled"
 msgstr "Kommentare sind derzeit deaktiviert"
@@ -44,11 +29,95 @@ msgstr "Kommentare sind derzeit deaktiviert"
 msgid "Comments are currently enabled"
 msgstr "Kommentare sind derzeit aktiviert"
 
-msgid "Comments have been disabled site-wide."
-msgstr "Kommentare wurden für die gesamte Website deaktiviert."
+msgid "Do you really want to delete all spam comments?"
+msgstr "Möchten Sie wirklich alle Spam-Kommentare löschen?"
 
-msgid "Comments have been enabled site-wide."
-msgstr "Kommentare wurden für die gesamte Website aktiviert."
+msgid "Deleting..."
+msgstr "Wird gelöscht..."
+
+msgid "Spam comments have been successfully deleted."
+msgstr "Spam-Kommentare wurden erfolgreich gelöscht."
+
+msgid "Error deleting spam comments."
+msgstr "Fehler beim Löschen der Spam-Kommentare."
+
+msgid "Network error while deleting spam comments."
+msgstr "Netzwerkfehler beim Löschen der Spam-Kommentare."
+
+msgid "Delete Spam Comments"
+msgstr "Spam-Kommentare löschen"
+
+msgid "Do you really want to delete ALL comments? This action cannot be undone!"
+msgstr "Möchten Sie wirklich ALLE Kommentare löschen? Diese Aktion kann nicht rückgängig gemacht werden!"
+
+msgid "All comments have been successfully deleted."
+msgstr "Alle Kommentare wurden erfolgreich gelöscht."
+
+msgid "Error deleting all comments."
+msgstr "Fehler beim Löschen aller Kommentare."
+
+msgid "Network error while deleting all comments."
+msgstr "Netzwerkfehler beim Löschen aller Kommentare."
+
+msgid "Delete All Comments"
+msgstr "Alle Kommentare löschen"
+
+msgid "Creating backup..."
+msgstr "Backup wird erstellt..."
+
+msgid "Backup has been successfully created."
+msgstr "Backup wurde erfolgreich erstellt."
+
+msgid "Error creating backup."
+msgstr "Fehler beim Erstellen des Backups."
+
+msgid "Network error while creating backup."
+msgstr "Netzwerkfehler beim Erstellen des Backups."
+
+msgid "Download Backup"
+msgstr "Backup herunterladen"
+
+msgid "Updating..."
+msgstr "Wird aktualisiert..."
+
+msgid "Remove all comments marked as spam from your database."
+msgstr "Entfernen Sie alle als Spam markierten Kommentare aus Ihrer Datenbank."
+
+msgid "Remove all comments from your website. You can download a backup before deletion."
+msgstr "Entfernen Sie alle Kommentare von Ihrer Website. Sie können vor dem Löschen ein Backup herunterladen."
+
+msgid "Comments are closed."
+msgstr "Kommentare sind geschlossen."
+
+msgid "Comments are disabled."
+msgstr "Kommentare sind deaktiviert."
+
+msgid "Security check failed."
+msgstr "Sicherheitsüberprüfung fehlgeschlagen."
+
+msgid "Insufficient permissions."
+msgstr "Unzureichende Berechtigungen."
+
+msgid "Invalid request."
+msgstr "Ungültige Anfrage."
+
+msgid "Failed to update comment settings."
+msgstr "Fehler beim Aktualisieren der Kommentareinstellungen."
+
+msgid "Successfully deleted all comments."
+msgstr "Alle Kommentare wurden erfolgreich gelöscht."
+
+msgid "No comments found."
+msgstr "Keine Kommentare gefunden."
+
+msgid "No comments found to backup."
+msgstr "Keine Kommentare zum Sichern gefunden."
+
+msgid "Failed to create backup file."
+msgstr "Fehler beim Erstellen der Backup-Datei."
+
+msgid "Backup created successfully."
+msgstr "Backup wurde erfolgreich erstellt."
 
 msgid "%d spam comment has been deleted."
 msgid_plural "%d spam comments have been deleted."
@@ -60,11 +129,11 @@ msgid_plural "%d comments have been deleted."
 msgstr[0] "%d Kommentar wurde gelöscht."
 msgstr[1] "%d Kommentare wurden gelöscht."
 
-msgid "Error toggling comments."
-msgstr "Fehler beim Umschalten der Kommentare."
+msgid "Comments have been disabled site-wide."
+msgstr "Kommentare wurden für die gesamte Website deaktiviert."
 
-msgid "Comments are closed."
-msgstr "Kommentare sind geschlossen."
+msgid "Comments have been enabled site-wide."
+msgstr "Kommentare wurden für die gesamte Website aktiviert."
 
-msgid "Comments are disabled."
-msgstr "Kommentare sind deaktiviert." 
+msgid "Delete & Disable Comments"
+msgstr "Kommentare löschen & deaktivieren" 

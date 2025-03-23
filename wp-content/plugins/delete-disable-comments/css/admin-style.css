@@ -60,21 +60,22 @@
 /* Card Styling */
 .card {
     background: #fff;
-    border: 1px solid #ccd0d4;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    border: 1px solid #c3c4c7;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    margin-top: 20px;
     padding: 20px;
-    margin: 0;
     position: relative;
 }
 
 .card h2 {
     margin-top: 0;
-    margin-bottom: 15px;
     font-size: 1.3em;
+    padding: 0;
+    line-height: 1.4;
 }
 
 .card p {
-    margin-bottom: 20px;
+    margin: 1em 0;
     color: #646970;
 }
 
@@ -87,8 +88,7 @@
 .toggle-container {
     display: flex;
     align-items: center;
-    gap: 15px;
-    margin-top: 20px;
+    margin: 10px 0;
 }
 
 /* Switch */
@@ -97,7 +97,7 @@
     display: inline-block;
     width: 60px;
     height: 34px;
-    flex-shrink: 0;
+    margin-right: 10px;
 }
 
 /* Hide default HTML checkbox */
@@ -134,6 +134,11 @@ input:checked + .slider {
     background-color: #2271b1;
 }
 
+input:disabled + .slider {
+    opacity: 0.7;
+    cursor: wait;
+}
+
 input:focus + .slider {
     box-shadow: 0 0 1px #2271b1;
 }
@@ -152,38 +157,35 @@ input:checked + .slider:before {
 }
 
 /* Status Text */
-.comment-status {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 500;
-    flex-grow: 1;
+.toggle-label {
+    margin-left: 10px;
+    line-height: 34px;
 }
 
-.comment-status.enabled {
-    color: #2271b1;
+.toggle-label.loading {
+    opacity: 0.7;
 }
 
-.comment-status.disabled {
-    color: #ccc;
+/* Status Message */
+#status-message {
+    margin: 15px 0;
+    padding: 8px 12px;
 }
 
 /* Success/Error Messages */
 .notice {
-    margin: 15px 0;
+    display: none;
+    margin: 10px 0;
     padding: 10px;
-    border-radius: 4px;
-}
-
-.notice-success {
-    background-color: #dff0d8;
-    border: 1px solid #d6e9c6;
-    color: #3c763d;
+    border-left: 4px solid #00a32a;
 }
 
 .notice-error {
-    background-color: #f2dede;
-    border: 1px solid #ebccd1;
-    color: #a94442;
+    border-left-color: #d63638;
+}
+
+.notice-success {
+    border-left-color: #00a32a;
 }
 
 /* Loading Indicator */

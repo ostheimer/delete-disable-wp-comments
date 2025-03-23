@@ -1,14 +1,22 @@
 jQuery(document).ready(function($) {
-    // Hilfsfunktion zum Anzeigen von Benachrichtigungen
-    function showNotice(message, type) {
+    // Show notification function
+    function showNotice(message, type = 'success') {
+        // Remove any existing notices
+        $('.notice').remove();
+        
+        // Create notice element
         const notice = $('<div class="notice notice-' + type + ' is-dismissible"><p>' + message + '</p></div>');
-        // Füge die Meldung nach der Überschrift ein
+        
+        // Insert notice at the top of the page
         $('.wrap h1').after(notice);
         
-        // Mache die Meldung nach 3 Sekunden automatisch ausblendbar
+        // Add fade-in effect
+        notice.hide().fadeIn();
+        
+        // Auto-hide after 3 seconds
         setTimeout(function() {
             notice.fadeOut(function() {
-                notice.remove();
+                $(this).remove();
             });
         }, 3000);
     }
@@ -23,7 +31,7 @@ jQuery(document).ready(function($) {
         }
     }
 
-    // Initialize toggle state from server
+    // Initialize toggle state
     function initializeToggleState() {
         $.ajax({
             url: deleteDisableCommentsAjax.ajaxurl,
@@ -34,64 +42,29 @@ jQuery(document).ready(function($) {
             },
             success: function(response) {
                 if (response.success) {
-                    const isDisabled = response.data.disabled === "1" || response.data.disabled === true;
-                    console.log('Initial state:', response.data.disabled, isDisabled);
-                    $('#toggle-comments').prop('checked', isDisabled);
-                    
-                    // Update status text
-                    const statusDiv = $('.comment-status');
-                    statusDiv.text(response.data.message);
-                    statusDiv.removeClass('enabled disabled').addClass(isDisabled ? 'disabled' : 'enabled');
-                }
-            }
-        });
-    }
-    initializeToggleState();
-
-    // Toggle comments
-    $('#toggle-comments').on('change', function() {
-        const isDisabled = $(this).prop('checked');
-        console.log('Toggle state:', isDisabled);
-        
-        $.ajax({
-            url: deleteDisableCommentsAjax.ajaxurl,
-            type: 'POST',
-            data: {
-                action: 'toggle_comments',
-                nonce: deleteDisableCommentsAjax.nonce,
-                disabled: isDisabled ? "1" : "0"
-            },
-            success: function(response) {
-                if (response.success) {
-                    console.log('Server response:', response.data);
-                    // Use the translated message from the server
-                    showNotice(response.data.message, 'success');
-                    
-                    // Update the status text and class
-                    const statusDiv = $('.comment-status');
-                    statusDiv.text(response.data.message);
-                    statusDiv.removeClass('enabled disabled').addClass(isDisabled ? 'disabled' : 'enabled');
-                } else {
-                    showNotice('Error toggling comments.', 'error');
+                    $('#toggle-comments').prop('checked', response.data.disabled === "1");
+                    $('.comment-status').text(response.data.message);
+                    $('.comment-status').removeClass('enabled disabled').addClass(response.data.status);
                 }
             },
             error: function() {
-                showNotice('Error toggling comments.', 'error');
+                showNotice(deleteDisableCommentsAjax.network_error, 'error');
             }
         });
-    });
+    }
+
+    // Initialize on page load
+    initializeToggleState();
 
     // Handle delete spam comments
-    $('#delete-spam-comments').on('click', function(e) {
-        e.preventDefault();
-        const button = $(this);
-
-        if (!confirm('Möchten Sie wirklich alle Spam-Kommentare löschen?')) {
+    $('#delete-spam-comments').on('click', function() {
+        if (!confirm(deleteDisableCommentsAjax.confirm_delete_spam)) {
             return;
         }
 
-        toggleLoading(button, true);
-        
+        const $button = $(this);
+        $button.prop('disabled', true).text(deleteDisableCommentsAjax.deleting);
+
         $.ajax({
             url: deleteDisableCommentsAjax.ajaxurl,
             type: 'POST',
@@ -101,30 +74,28 @@ jQuery(document).ready(function($) {
             },
             success: function(response) {
                 if (response.success) {
-                    showNotice(response.data.message, 'success');
+                    showNotice(deleteDisableCommentsAjax.success_delete_spam);
                 } else {
-                    showNotice(response.data, 'error');
+                    showNotice(response.data.message || deleteDisableCommentsAjax.error_delete_spam, 'error');
                 }
             },
             error: function() {
-                showNotice('Ein Fehler ist aufgetreten.', 'error');
+                showNotice(deleteDisableCommentsAjax.network_error_spam, 'error');
             },
             complete: function() {
-                toggleLoading(button, false);
+                $button.prop('disabled', false).text(deleteDisableCommentsAjax.delete_spam_button);
             }
         });
     });
 
     // Handle delete all comments
-    $('#delete-all-comments').on('click', function(e) {
-        e.preventDefault();
-        const button = $(this);
-
-        if (!confirm('WARNUNG: Möchten Sie wirklich ALLE Kommentare löschen? Diese Aktion kann nicht rückgängig gemacht werden. Es wird empfohlen, vorher ein Backup zu erstellen.')) {
+    $('#delete-all-comments').on('click', function() {
+        if (!confirm(deleteDisableCommentsAjax.confirm_delete_all)) {
             return;
         }
 
-        toggleLoading(button, true);
+        const $button = $(this);
+        $button.prop('disabled', true).text(deleteDisableCommentsAjax.deleting);
 
         $.ajax({
             url: deleteDisableCommentsAjax.ajaxurl,
@@ -135,25 +106,24 @@ jQuery(document).ready(function($) {
             },
             success: function(response) {
                 if (response.success) {
-                    showNotice(response.data.message, 'success');
+                    showNotice(deleteDisableCommentsAjax.success_delete_all);
                 } else {
-                    showNotice(response.data, 'error');
+                    showNotice(response.data.message || deleteDisableCommentsAjax.error_delete_all, 'error');
                 }
             },
             error: function() {
-                showNotice('Ein Fehler ist aufgetreten.', 'error');
+                showNotice(deleteDisableCommentsAjax.network_error_all, 'error');
             },
             complete: function() {
-                toggleLoading(button, false);
+                $button.prop('disabled', false).text(deleteDisableCommentsAjax.delete_all_button);
             }
         });
     });
 
-    // Handle backup download
-    $('#backup-comments').on('click', function(e) {
-        e.preventDefault();
-        const button = $(this);
-        toggleLoading(button, true);
+    // Handle backup comments
+    $('#backup-comments').on('click', function() {
+        const $button = $(this);
+        $button.prop('disabled', true).text(deleteDisableCommentsAjax.creating_backup);
 
         $.ajax({
             url: deleteDisableCommentsAjax.ajaxurl,
@@ -163,23 +133,67 @@ jQuery(document).ready(function($) {
                 nonce: deleteDisableCommentsAjax.nonce
             },
             success: function(response) {
-                if (response.success) {
-                    // CSV-Datei herunterladen
-                    const blob = new Blob([atob(response.data.content)], { type: 'text/csv' });
+                if (response.success && response.data.file_url) {
+                    showNotice(deleteDisableCommentsAjax.success_backup);
+                    // Create temporary link and click it to start download
                     const link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = response.data.filename;
+                    link.href = response.data.file_url;
+                    link.download = '';
+                    document.body.appendChild(link);
                     link.click();
-                    showNotice('Backup wurde erfolgreich heruntergeladen.', 'success');
+                    document.body.removeChild(link);
                 } else {
-                    showNotice(response.data, 'error');
+                    showNotice(response.data.message || deleteDisableCommentsAjax.error_backup, 'error');
                 }
             },
             error: function() {
-                showNotice('Fehler beim Herunterladen des Backups.', 'error');
+                showNotice(deleteDisableCommentsAjax.network_error_backup, 'error');
             },
             complete: function() {
-                toggleLoading(button, false);
+                $button.prop('disabled', false).text(deleteDisableCommentsAjax.backup_button);
+            }
+        });
+    });
+
+    // Handle toggle comments
+    $('#toggle-comments').on('change', function() {
+        const $toggle = $(this);
+        const $status = $('.comment-status');
+        const isDisabled = $toggle.prop('checked');
+        
+        // Show loading state
+        $toggle.prop('disabled', true);
+        $status.text(deleteDisableCommentsAjax.updating);
+
+        $.ajax({
+            url: deleteDisableCommentsAjax.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'toggle_comments',
+                disabled: isDisabled,
+                nonce: deleteDisableCommentsAjax.nonce
+            },
+            success: function(response) {
+                if (response.success) {
+                    showNotice(response.data.message);
+                    $status.text(isDisabled ? 
+                        deleteDisableCommentsAjax.comments_disabled : 
+                        deleteDisableCommentsAjax.comments_enabled
+                    );
+                    $status.removeClass('enabled disabled').addClass(response.data.status);
+                } else {
+                    // Revert toggle state on error
+                    $toggle.prop('checked', !isDisabled);
+                    showNotice(response.data.message || deleteDisableCommentsAjax.error_toggling, 'error');
+                }
+            },
+            error: function() {
+                // Revert toggle state on network error
+                $toggle.prop('checked', !isDisabled);
+                showNotice(deleteDisableCommentsAjax.network_error, 'error');
+            },
+            complete: function() {
+                $toggle.prop('disabled', false);
             }
         });
     });
