@@ -1,8 +1,29 @@
-.manage-comments-controls {
+.delete-disable-comments-controls {
     margin-top: 20px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
+}
+
+.delete-disable-comments-control {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+.delete-disable-comments-control h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+    font-weight: 600;
+}
+
+.delete-disable-comments-control p {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #555;
 }
 
 .manage-comments-control {

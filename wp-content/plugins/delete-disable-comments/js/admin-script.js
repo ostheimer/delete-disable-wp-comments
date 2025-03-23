@@ -23,66 +23,60 @@ jQuery(document).ready(function($) {
         }
     }
 
-    // Initialisiere den Toggle-Status beim Laden
+    // Initialize toggle state from server
     function initializeToggleState() {
-        // Setze den Toggle-Status basierend auf dem localStorage
-        const isDisabled = localStorage.getItem('commentsDisabled') === 'true';
-        $('#toggle-comments').prop('checked', isDisabled);
-    }
-
-    // Initialisiere den Toggle-Status beim Laden der Seite
-    initializeToggleState();
-
-    // Kommentare aktivieren/deaktivieren
-    $('#toggle-comments').on('change', function() {
-        const checkbox = $(this);
-        const isDisabled = checkbox.prop('checked');
-        const statusElement = $('.comment-status');
-
         $.ajax({
-            url: manageCommentsAjax.ajaxurl,
+            url: deleteDisableCommentsAjax.ajaxurl,
             type: 'POST',
             data: {
-                action: 'toggle_comments',
-                disabled: isDisabled,
-                nonce: manageCommentsAjax.nonce
+                action: 'get_comments_status',
+                nonce: deleteDisableCommentsAjax.nonce
             },
             success: function(response) {
                 if (response.success) {
-                    // Korrekte Meldung basierend auf dem Status
-                    const message = isDisabled ? 
-                        'Kommentare wurden site-weit deaktiviert.' : 
-                        'Kommentare wurden site-weit aktiviert.';
-                    showNotice(message, 'success');
+                    const isDisabled = response.data.disabled === "1" || response.data.disabled === true;
+                    console.log('Initial state:', response.data.disabled, isDisabled);
+                    $('#toggle-comments').prop('checked', isDisabled);
                     
-                    // Status-Text und Klasse aktualisieren
-                    statusElement
-                        .text(isDisabled ? 'Comments are currently disabled' : 'Comments are currently enabled')
-                        .removeClass('enabled disabled')
-                        .addClass(isDisabled ? 'disabled' : 'enabled');
+                    // Update status text
+                    const statusDiv = $('.comment-status');
+                    statusDiv.text(response.data.message);
+                    statusDiv.removeClass('enabled disabled').addClass(isDisabled ? 'disabled' : 'enabled');
+                }
+            }
+        });
+    }
+    initializeToggleState();
+
+    // Toggle comments
+    $('#toggle-comments').on('change', function() {
+        const isDisabled = $(this).prop('checked');
+        console.log('Toggle state:', isDisabled);
+        
+        $.ajax({
+            url: deleteDisableCommentsAjax.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'toggle_comments',
+                nonce: deleteDisableCommentsAjax.nonce,
+                disabled: isDisabled ? "1" : "0"
+            },
+            success: function(response) {
+                if (response.success) {
+                    console.log('Server response:', response.data);
+                    // Use the translated message from the server
+                    showNotice(response.data.message, 'success');
                     
-                    // Speichere den Status im localStorage
-                    localStorage.setItem('commentsDisabled', isDisabled);
+                    // Update the status text and class
+                    const statusDiv = $('.comment-status');
+                    statusDiv.text(response.data.message);
+                    statusDiv.removeClass('enabled disabled').addClass(isDisabled ? 'disabled' : 'enabled');
                 } else {
-                    showNotice(response.data, 'error');
-                    checkbox.prop('checked', !isDisabled);
-                    
-                    // Status-Text und Klasse zurücksetzen
-                    statusElement
-                        .text(!isDisabled ? 'Comments are currently disabled' : 'Comments are currently enabled')
-                        .removeClass('enabled disabled')
-                        .addClass(!isDisabled ? 'disabled' : 'enabled');
+                    showNotice('Error toggling comments.', 'error');
                 }
             },
             error: function() {
-                showNotice('Ein Fehler ist aufgetreten.', 'error');
-                checkbox.prop('checked', !isDisabled);
-                
-                // Status-Text und Klasse zurücksetzen
-                statusElement
-                    .text(!isDisabled ? 'Comments are currently disabled' : 'Comments are currently enabled')
-                    .removeClass('enabled disabled')
-                    .addClass(!isDisabled ? 'disabled' : 'enabled');
+                showNotice('Error toggling comments.', 'error');
             }
         });
     });
@@ -99,11 +93,11 @@ jQuery(document).ready(function($) {
         toggleLoading(button, true);
         
         $.ajax({
-            url: manageCommentsAjax.ajaxurl,
+            url: deleteDisableCommentsAjax.ajaxurl,
             type: 'POST',
             data: {
                 action: 'delete_spam_comments',
-                nonce: manageCommentsAjax.nonce
+                nonce: deleteDisableCommentsAjax.nonce
             },
             success: function(response) {
                 if (response.success) {
@@ -133,11 +127,11 @@ jQuery(document).ready(function($) {
         toggleLoading(button, true);
 
         $.ajax({
-            url: manageCommentsAjax.ajaxurl,
+            url: deleteDisableCommentsAjax.ajaxurl,
             type: 'POST',
             data: {
                 action: 'delete_all_comments',
-                nonce: manageCommentsAjax.nonce
+                nonce: deleteDisableCommentsAjax.nonce
             },
             success: function(response) {
                 if (response.success) {
@@ -162,11 +156,11 @@ jQuery(document).ready(function($) {
         toggleLoading(button, true);
 
         $.ajax({
-            url: manageCommentsAjax.ajaxurl,
+            url: deleteDisableCommentsAjax.ajaxurl,
             type: 'POST',
             data: {
                 action: 'backup_comments',
-                nonce: manageCommentsAjax.nonce
+                nonce: deleteDisableCommentsAjax.nonce
             },
             success: function(response) {
                 if (response.success) {

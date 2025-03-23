@@ -1,7 +1,17 @@
 <?php
 /**
- * Backend functions for the Manage Comments plugin
+ * Backend functions for the Delete & Disable Comments plugin
  */
+
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    define('ABSPATH', dirname(dirname(dirname(dirname(__FILE__)))) . '/');
+}
+
+// Include WordPress files
+require_once(ABSPATH . 'wp-load.php');
+require_once(ABSPATH . 'wp-admin/includes/admin.php');
+require_once(ABSPATH . 'wp-includes/pluggable.php');
 
 // If this file is called directly, abort.
 if (!defined('WPINC')) {
@@ -11,9 +21,9 @@ if (!defined('WPINC')) {
 /**
  * Delete all spam comments from the database
  */
-function manage_comments_delete_spam() {
+function delete_disable_comments_delete_spam() {
     // Check nonce for security
-    if (!check_ajax_referer('manage_comments_nonce', 'nonce', false)) {
+    if (!check_ajax_referer('delete_disable_comments_nonce', 'nonce', false)) {
         wp_send_json_error('Invalid nonce');
         return;
     }
@@ -54,20 +64,20 @@ function manage_comments_delete_spam() {
                 '%d spam comment has been deleted.',
                 '%d spam comments have been deleted.',
                 $spam_count,
-                'manage-comments'
+                'delete-disable-comments'
             ),
             $spam_count
         )
     ));
 }
-add_action('wp_ajax_delete_spam_comments', 'manage_comments_delete_spam');
+add_action('wp_ajax_delete_spam_comments', 'delete_disable_comments_delete_spam');
 
 /**
  * Generate and download a backup of all comments
  */
-function manage_comments_backup() {
+function delete_disable_comments_backup() {
     // Check nonce
-    if (!check_ajax_referer('manage_comments_nonce', 'nonce', false)) {
+    if (!check_ajax_referer('delete_disable_comments_nonce', 'nonce', false)) {
         wp_send_json_error('Invalid nonce');
         return;
     }
@@ -130,14 +140,14 @@ function manage_comments_backup() {
         'filename' => $filename
     ));
 }
-add_action('wp_ajax_backup_comments', 'manage_comments_backup');
+add_action('wp_ajax_backup_comments', 'delete_disable_comments_backup');
 
 /**
  * Delete all comments from the database
  */
-function manage_comments_delete_all() {
+function delete_disable_comments_delete_all() {
     // Check nonce for security
-    if (!check_ajax_referer('manage_comments_nonce', 'nonce', false)) {
+    if (!check_ajax_referer('delete_disable_comments_nonce', 'nonce', false)) {
         wp_send_json_error('Invalid nonce');
         return;
     }
@@ -169,20 +179,20 @@ function manage_comments_delete_all() {
                 '%d comment has been deleted.',
                 '%d comments have been deleted.',
                 $comment_count,
-                'manage-comments'
+                'delete-disable-comments'
             ),
             $comment_count
         )
     ));
 }
-add_action('wp_ajax_delete_all_comments', 'manage_comments_delete_all');
+add_action('wp_ajax_delete_all_comments', 'delete_disable_comments_delete_all');
 
 /**
  * Toggle comments on/off site-wide
  */
-function manage_comments_toggle() {
+function delete_disable_comments_toggle() {
     // Check nonce for security
-    if (!check_ajax_referer('manage_comments_nonce', 'nonce', false)) {
+    if (!check_ajax_referer('delete_disable_comments_nonce', 'nonce', false)) {
         wp_send_json_error('Invalid nonce');
         return;
     }
@@ -194,14 +204,14 @@ function manage_comments_toggle() {
     }
 
     // Get the disabled state from the AJAX request
-    $disabled = isset($_POST['disabled']) ? (bool) $_POST['disabled'] : false;
-
-    // Update the option
+    $disabled = isset($_POST['disabled']) ? $_POST['disabled'] : "0";
+    
+    // Update the option (force string value)
     update_option('disable_comments', $disabled);
 
     global $wpdb;
 
-    if ($disabled) {
+    if ($disabled === "1") {
         // Disable comments for all post types
         $post_types = get_post_types(array('public' => true), 'names');
         foreach ($post_types as $post_type) {
@@ -233,20 +243,23 @@ function manage_comments_toggle() {
         update_option('default_ping_status', 'open');
     }
 
+    // Update the success message based on the new status
     wp_send_json_success(array(
-        'message' => $disabled
-            ? __('Comments have been disabled site-wide.', 'manage-comments')
-            : __('Comments have been enabled site-wide.', 'manage-comments')
+        'message' => $disabled === "1"
+            ? __('Comments have been disabled site-wide.', 'delete-disable-comments')
+            : __('Comments have been enabled site-wide.', 'delete-disable-comments'),
+        'status' => $disabled === "1" ? 'disabled' : 'enabled',
+        'disabled' => $disabled
     ));
 }
-add_action('wp_ajax_toggle_comments', 'manage_comments_toggle');
+add_action('wp_ajax_toggle_comments', 'delete_disable_comments_toggle');
 
 /**
  * Get the current status of comments
  */
-function manage_comments_get_status() {
+function delete_disable_comments_get_status() {
     // Check nonce for security
-    if (!check_ajax_referer('manage_comments_nonce', 'nonce', false)) {
+    if (!check_ajax_referer('delete_disable_comments_nonce', 'nonce', false)) {
         wp_send_json_error('Invalid nonce');
         return;
     }
@@ -257,11 +270,15 @@ function manage_comments_get_status() {
         return;
     }
 
-    // Get the current status
-    $disabled = get_option('disable_comments', '0');
+    // Get the current status (force string value)
+    $disabled = get_option('disable_comments', "0");
 
     wp_send_json_success(array(
-        'disabled' => $disabled
+        'disabled' => $disabled,
+        'message' => $disabled === "1"
+            ? __('Comments are currently disabled', 'delete-disable-comments')
+            : __('Comments are currently enabled', 'delete-disable-comments'),
+        'status' => $disabled === "1" ? 'disabled' : 'enabled'
     ));
 }
-add_action('wp_ajax_get_comments_status', 'manage_comments_get_status'); 
+add_action('wp_ajax_get_comments_status', 'delete_disable_comments_get_status'); 
