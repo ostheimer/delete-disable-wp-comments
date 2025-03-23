@@ -1,40 +1,22 @@
 # Delete & Disable Comments
 
-A WordPress plugin for efficient comment management. This plugin allows administrators to delete spam comments, backup and delete all comments, and globally disable comments.
+A WordPress plugin for efficient comment management. This repository contains both the plugin source code and development environment.
 
 ## 🌟 Features
 
-- **Delete Spam Comments**: Remove all comments marked as spam with a single click
-- **Manage All Comments**: 
-  - Backup option before deletion
-  - Complete deletion of all comments
-- **Globally Disable Comments**:
-  - Disable comment REST API endpoints
-  - Remove comment links from post meta
-  - Disable comment widgets
-  - Remove comment support for all post types
-  - Additional filters to hide comment sections
-  - Remove theme-specific comment styles
-  - Remove comment-related Gutenberg blocks
+See the [Plugin README](wp-content/plugins/delete-disable-comments/README.md) for detailed feature information.
 
-## 📋 Requirements
+## 🛠 Development Setup
 
-- WordPress 5.0 or higher
-- PHP 7.4 or higher
-- MySQL 5.6 or higher
+### Prerequisites
 
-## 💻 Installation
+- Node.js 16 or higher
+- npm 8 or higher
+- Docker and Docker Compose
+- PHP 7.4 or higher (for local development)
+- Composer (for PHP dependencies)
 
-1. Download the plugin ZIP file
-2. Go to your WordPress dashboard "Plugins" > "Add New"
-3. Click "Upload Plugin"
-4. Select the downloaded ZIP file
-5. Click "Install Now"
-6. Activate the plugin
-
-## 🛠 Development
-
-### Setting up the Development Environment
+### Getting Started
 
 ```bash
 # Clone repository
@@ -46,9 +28,17 @@ cd delete-disable-wp-comments
 # Install dependencies
 npm install
 
-# Start Docker containers
+# Start development environment
 docker-compose up -d
 ```
+
+### Development Environment
+
+The development environment includes:
+- WordPress installation with the plugin
+- MySQL database
+- PHPMyAdmin for database management
+- Cypress for end-to-end testing
 
 ### Available Commands
 
@@ -56,37 +46,54 @@ docker-compose up -d
 # Run tests
 npm test
 
-# Run Cypress tests
+# Open Cypress Test Runner
 npm run cypress
 
 # Create plugin ZIP
 npm run build
 ```
 
+## 🧪 Testing
+
+### End-to-End Tests
+The project uses Cypress for end-to-end testing. Tests are located in the `cypress/e2e` directory.
+
+To run the tests:
+1. Ensure the development environment is running
+2. Execute `npm test` for headless testing
+3. Or run `npm run cypress` for interactive testing
+
+### Test User
+Default test user credentials:
+- Username: `comment`
+- Password: `comment`
+
+## 📦 Building
+
+To create a distribution ZIP file:
+
+```bash
+npm run build
+```
+
+This creates `delete-disable-comments.zip` in the `wp-content/plugins` directory.
+
 ## 🌍 Internationalization
 
-The plugin is available in:
+The plugin supports multiple languages. Translation files are located in:
+`wp-content/plugins/delete-disable-comments/languages/`
+
+Currently supported:
 - German (Standard, Formal, Austria, Switzerland)
 - English (US, UK)
 
-## 🔒 Security
+## 👥 Contributing
 
-- Only administrators have access to plugin functions
-- Confirmation dialogs before destructive actions
-- Backup option before deleting comments
-- Security nonces for all AJAX actions
-
-## 📝 Changelog
-
-### Version 1.0.0
-- Initial public release
-- Implemented core functionality
-- Added multilingual support
-- Implemented security features
-
-## 👥 Contributors
-
-- Andreas Ostheimer ([@ostheimer](https://github.com/ostheimer))
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
 ## 📄 License
 
@@ -94,4 +101,6 @@ This project is licensed under the GPLv2 or later - see the [LICENSE](LICENSE) f
 
 ## 🤝 Support
 
-For questions or issues, please create a [GitHub Issue](https://github.com/ostheimer/delete-disable-wp-comments/issues). 
+For plugin usage and documentation, see the [Plugin README](wp-content/plugins/delete-disable-comments/README.md).
+
+For development questions or issues, please create a [GitHub Issue](https://github.com/ostheimer/delete-disable-wp-comments/issues). 

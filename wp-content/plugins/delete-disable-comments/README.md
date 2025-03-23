@@ -1,104 +1,104 @@
 # Delete & Disable Comments
 
-Ein leistungsstarkes WordPress-Plugin zum Verwalten und Deaktivieren von Kommentaren.
+A powerful WordPress plugin for managing and disabling comments.
 
-## 🌟 Funktionen
+## 🌟 Features
 
-- **Spam-Kommentare löschen**: Entfernen Sie alle als Spam markierten Kommentare mit einem Klick
-- **Alle Kommentare löschen**: Löschen Sie alle Kommentare mit Backup-Option
-- **Kommentare deaktivieren**: Schalten Sie die Kommentarfunktion für die gesamte Website ein oder aus
-- **Mehrsprachig**: Verfügbar in:
-  - Deutsch (Sie) - de_DE
-  - Deutsch (Österreich) - de_AT
-  - Deutsch (Schweiz) - de_CH
-  - Deutsch (Standard) - de
-  - Englisch (USA) - en_US
-  - Englisch (GB) - en_GB
-  - Englisch (Standard) - en
+- **Delete Spam Comments**: Remove all comments marked as spam with a single click
+- **Delete All Comments**: Delete all comments with backup option
+- **Disable Comments**: Toggle the comment functionality for the entire website
+- **Multilingual**: Available in:
+  - German (Formal) - de_DE
+  - German (Austria) - de_AT
+  - German (Switzerland) - de_CH
+  - German (Standard) - de
+  - English (USA) - en_US
+  - English (GB) - en_GB
+  - English (Standard) - en
 
-## 📋 Voraussetzungen
+## 📋 Requirements
 
-- WordPress 5.0 oder höher
-- PHP 7.4 oder höher
-- MySQL 5.6 oder höher
+- WordPress 5.0 or higher
+- PHP 7.4 or higher
+- MySQL 5.6 or higher
 
 ## 💻 Installation
 
-1. Laden Sie die ZIP-Datei des Plugins herunter
-2. Gehen Sie in Ihrem WordPress-Dashboard zu "Plugins" → "Installieren"
-3. Klicken Sie auf "Plugin hochladen"
-4. Wählen Sie die heruntergeladene ZIP-Datei aus
-5. Klicken Sie auf "Jetzt installieren"
-6. Nach der Installation klicken Sie auf "Aktivieren"
+1. Download the plugin ZIP file
+2. Go to your WordPress dashboard "Plugins" → "Add New"
+3. Click "Upload Plugin"
+4. Select the downloaded ZIP file
+5. Click "Install Now"
+6. After installation, click "Activate"
 
-## 🔧 Verwendung
+## 🔧 Usage
 
-### Spam-Kommentare löschen
-1. Navigieren Sie zu "Kommentare" → "Delete & Disable Comments"
-2. Klicken Sie auf "Spam-Kommentare löschen"
-3. Bestätigen Sie die Aktion im Dialog
+### Delete Spam Comments
+1. Navigate to "Comments" → "Delete & Disable Comments"
+2. Click "Delete Spam Comments"
+3. Confirm the action in the dialog
 
-### Alle Kommentare löschen
-1. Navigieren Sie zu "Kommentare" → "Delete & Disable Comments"
-2. Optional: Klicken Sie auf "Backup herunterladen" um eine Sicherung zu erstellen
-3. Klicken Sie auf "Alle Kommentare löschen"
-4. Bestätigen Sie die Aktion im Dialog
+### Delete All Comments
+1. Navigate to "Comments" → "Delete & Disable Comments"
+2. Optional: Click "Download Backup" to create a backup
+3. Click "Delete All Comments"
+4. Confirm the action in the dialog
 
-### Kommentare deaktivieren
-1. Navigieren Sie zu "Kommentare" → "Delete & Disable Comments"
-2. Nutzen Sie den Toggle-Schalter um Kommentare zu aktivieren/deaktivieren
-3. Die Änderung wird sofort wirksam
+### Disable Comments
+1. Navigate to "Comments" → "Delete & Disable Comments"
+2. Use the toggle switch to enable/disable comments
+3. The change takes effect immediately
 
-## 🔒 Sicherheit
+## 🔒 Security
 
-- Nur Administratoren haben Zugriff auf die Plugin-Funktionen
-- Alle Aktionen erfordern eine Bestätigung
-- CSRF-Schutz durch WordPress Nonces
-- Backup-Option vor dem Löschen aller Kommentare
+- Only administrators have access to plugin functions
+- All actions require confirmation
+- CSRF protection through WordPress nonces
+- Backup option before deleting all comments
 
-## 🌐 Erweiterte Kommentar-Deaktivierung
+## 🌐 Advanced Comment Disabling
 
-Bei Deaktivierung der Kommentare werden:
-- Kommentar-REST-API-Endpunkte deaktiviert
-- Kommentar-Links aus Post-Meta entfernt
-- Kommentar-Widgets deaktiviert
-- Kommentar-Unterstützung für alle Post-Types entfernt
-- Kommentarbereich im Frontend ausgeblendet
-- Theme-spezifische Kommentar-Styles entfernt
-- Kommentar-bezogene Gutenberg-Blöcke entfernt
+When comments are disabled:
+- Comment REST API endpoints are disabled
+- Comment links are removed from post meta
+- Comment widgets are disabled
+- Comment support is removed for all post types
+- Comment section is hidden in the frontend
+- Theme-specific comment styles are removed
+- Comment-related Gutenberg blocks are removed
 
-## 🛠 Fehlerbehebung
+## 🛠 Troubleshooting
 
-### Kommentare erscheinen trotz Deaktivierung
-1. Prüfen Sie, ob Ihr Theme die Kommentare hart-codiert anzeigt
-2. Leeren Sie den Cache Ihres Browsers und Server-Caches
-3. Deaktivieren Sie temporär andere Plugins, die Kommentare beeinflussen könnten
+### Comments Still Appear After Disabling
+1. Check if your theme has hardcoded comments
+2. Clear your browser and server cache
+3. Temporarily disable other plugins that might affect comments
 
-### Übersetzungen werden nicht angezeigt
-1. Stellen Sie sicher, dass die korrekte Sprache in WordPress eingestellt ist
-2. Überprüfen Sie, ob die Sprachdateien korrekt geladen werden
-3. Leeren Sie den WordPress-Cache
+### Translations Not Showing
+1. Ensure the correct language is set in WordPress
+2. Verify that language files are loading correctly
+3. Clear the WordPress cache
 
 ## 📝 Changelog
 
 ### Version 1.0.0 (2024-03-23)
-- Initiale Veröffentlichung
-- Grundlegende Funktionen implementiert
-- Mehrsprachige Unterstützung hinzugefügt
+- Initial release
+- Implemented core functionality
+- Added multilingual support
 
-## 🤝 Mitwirken
+## 🤝 Contributing
 
-Fehler gefunden oder Verbesserungsvorschläge? Erstellen Sie gerne einen Issue oder Pull Request auf GitHub.
+Found a bug or have suggestions for improvements? Feel free to create an issue or pull request on GitHub.
 
-## 📄 Lizenz
+## 📄 License
 
-Dieses Plugin ist unter der GPL v2 oder später lizenziert. Siehe [LICENSE](LICENSE) für Details.
+This plugin is licensed under GPL v2 or later. See [LICENSE](LICENSE) for details.
 
-## 👥 Autoren
+## 👥 Authors
 
 - Andreas Ostheimer
 - [GitHub Repository](https://github.com/ostheimer/delete-disable-wp-comments)
 
-## 🙏 Danksagung
+## 🙏 Acknowledgments
 
-Besonderer Dank an alle Mitwirkenden und die WordPress-Community für ihre Unterstützung und Feedback. 
+Special thanks to all contributors and the WordPress community for their support and feedback. 
