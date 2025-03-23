@@ -1,0 +1,113 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# Backend Structure Document
+
+This document outlines the backend architecture and infrastructure for the WordPress plugin designed to efficiently manage comments. The plugin is built with the goal of simplifying comment administration by offering features like spam deletion, total comment removal (with backup), and a toggle to disable/enable commenting. Below, we break down the system using plain everyday language.
+
+## Backend Architecture
+
+- The plugin is built as an add-on to WordPress, which means it works within WordPress's existing framework. It uses PHP for backend operations, integrating into the admin panel for ease of use.
+- We use WordPress hooks and filters as our primary design pattern to ensure that our plugin interacts properly with WordPress core functionalities without disrupting the overall system.
+- The architecture is modular. Each feature (delete spam, delete all comments with backup, and disable comments) is organized into individual functions. This modularity supports easier maintenance and future scalability.
+- By leveraging well-known WordPress design practices, the plugin remains light, efficient, and easy to update or extend.
+
+## Database Management
+
+- The plugin uses the existing MySQL database that comes with WordPress. There is no need for a separate database system.
+- Data is stored in standard WordPress tables, particularly the comments table. Our operations—such as deleting spam comments or all comments—are handled through optimized SQL queries to minimize server load.
+- Data management follows WordPress standards. For example, before any destructive action, such as deleting all comments, it allows for a backup (data export), ensuring that the integrity of content can be maintained by the site administrator.
+
+## Database Schema
+
+Since the plugin works with the WordPress core database, the main table we interact with is the comments table. Here's a human-friendly description of how the data is organized:
+
+- **wp_comments Table (Primary Focus):**
+  - Holds all comments posted on the site.
+  - Each comment includes fields like comment ID, post ID, author details, comment content, date, and status (approved, pending, spam, etc.).
+
+If viewed as a simplified SQL schema, it might look like this (keeping in mind this is part of WordPress):
+
+  - Table: wp_comments
+    - id: Unique identifier for each comment (Primary Key)
+    - comment_post_ID: Identifier linking the comment to a post
+    - comment_author: Name of the author
+    - comment_author_email: Email of the author
+    - comment_date: Date and time when the comment was posted
+    - comment_content: The text of the comment
+    - comment_approved: Status flag (approved, pending, spam)
+
+No additional tables are necessary, as the plugin manipulates data within these existing structures.
+
+## API Design and Endpoints
+
+- The plugin makes use of WordPress's built-in AJAX capabilities to handle administrative actions. This allows smooth, asynchronous operations without reloading the admin panel.
+- The design is primarily REST-like in spirit, although it doesn't expose any public API. Instead, it uses a series of endpoints accessible by WordPress's admin interface.
+- **Key Endpoints and Their Purposes:**
+  - **Delete Spam Comments Endpoint:** Uses AJAX to trigger an SQL query that removes all comments marked as spam.
+  - **Delete All Comments Endpoint:** Initiated after a confirmation dialog, this endpoint first offers an option to backup all existing comments before executing the deletion process.
+  - **Disable/Enable Comments Endpoint:** Toggles a site-wide option to disable or enable new comments. This interacts with WordPress's settings and comment-post functionalities.
+
+  **Neue Funktionen zur Kommentardeaktivierung:**
+  - Deaktivierung der Kommentar-REST-API-Endpunkte
+  - Entfernung von Kommentar-Links aus Post-Meta
+  - Deaktivierung von Kommentar-Widgets
+  - Entfernung der Kommentar-Unterstützung für alle Post-Types
+  - Zusätzliche Filter zum Ausblenden des Kommentarbereichs
+  - Entfernung von Theme-spezifischen Kommentar-Styles
+  - Entfernung von Kommentar-bezogenen Gutenberg-Blöcken
+
+## Hosting Solutions
+
+- The plugin is designed to run on standard WordPress hosting environments. This could be any of the popular providers (like Bluehost, SiteGround, or WP Engine) that support PHP and MySQL.
+- The chosen hosting solution leverages shared resources under WordPress's umbrella. These environments offer reliability, ease of scaling, and cost-effective management which fits well with a single-site deployment.
+
+## Infrastructure Components
+
+- **Load Balancers & CDNs:** While not directly configured by the plugin, the hosting environment often includes load balancers and content delivery networks to ensure the site runs efficiently. This indirectly benefits the plugin by ensuring overall site performance remains high during heavy usage.
+- **Caching Mechanisms:** The plugin benefits from any caching implemented at the WordPress or server level, reducing repeated database calls especially when the site experiences high traffic.
+- **Backup Solutions:** Though managed by WordPress or hosting providers, the plugin provides an option to export comments before large deletion operations. This is a crucial part of preserving data integrity.
+
+## Security Measures
+
+- **User Authentication & Authorization:** The plugin is designed for administrators only. It uses WordPress's built-in user roles to ensure that only privileged users can access and execute plugin functions.
+- **Nonces and Permission Checks:** Every action initiated through the plugin is secured using WordPress nonces (a security token system), protecting against unauthorized or malicious requests.
+- **Confirmation Dialogs:** Before performing destructive actions like deleting all comments, confirmation dialogs are shown. This extra step minimizes accidental data loss.
+- **Data Encryption:** While the plugin leverages WordPress's standard practices, all sensitive operations run over secure connections (HTTPS recommended) ensuring safe data transmission.
+
+## Monitoring and Maintenance
+
+- **Logging:** The plugin can integrate with WordPress logging systems to track every action performed (deletions, toggles), thus providing an audit trail if needed.
+- **Performance Monitoring:** Administrators can utilize WordPress debug and performance plugins, as well as server-level monitoring tools, to keep track of the plugin's performance and any potential issues.
+- **Regular Updates:** The plugin is maintained with updates to adhere to the latest WordPress guidelines and security practices, ensuring that it remains compatible and secure with evolving platform updates.
+- **Backup Checks:** The built-in backup feature not only preserves data but also acts as a safeguard that can be cross-verified regularly to ensure that data is retrievable in case of issues.
+
+## Conclusion and Overall Backend Summary
+
+- The backend structure uses WordPress's robust environment as its cornerstone. By leveraging PHP, MySQL, and the native admin interface, the plugin integrates seamlessly into WordPress, making comment management straightforward for administrators.
+- Every component—the REST-like API endpoints via AJAX, the structured interaction with the comments database, and the emphasis on security and performance—has been designed to address the core requirements of simplicity, performance, and safety.
+- Unique aspects include the clear separation of functions (modular design), integration of a backup mechanism right before destructive operations, and adherence to WordPress.org compliance guidelines. These features ensure that administrators can manage comments confidently and efficiently.
+- As a result, the backend is not only rigorous in terms of security and performance but also easy to understand and maintain, aligning perfectly with the project goal of simplifying comment management on WordPress sites.
+
+
+# Tech Stack Used (bullet points):
+- WordPress Plugin Platform
+- PHP (Backend Language)
+- MySQL (via WordPress built-in database)
+- HTML, CSS, JavaScript (for Admin Interface)
+- WordPress AJAX & WP Nonces (for API Protection)
+
+This document should give you a comprehensive look at the backend architecture and supporting infrastructure for the plugin, ensuring clarity and confidence in how the system will operate.
+
+## Database Schema
+
+Die folgenden Datenbankänderungen werden vorgenommen:
+
+```sql
+UPDATE wp_posts SET comment_status = 'closed', ping_status = 'closed';
+UPDATE wp_options SET option_value = 'closed' WHERE option_name IN ('default_comment_status', 'default_ping_status');
+```

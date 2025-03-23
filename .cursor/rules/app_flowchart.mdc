@@ -1,0 +1,25 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+flowchart TD
+    A[WordPress Admin Dashboard] --> B[Plugin Main Panel]
+    B --> C[Delete Spam Comments]
+    B --> D[Delete All Comments]
+    B --> E[Disable Comments]
+    C --> F[Execute Spam Deletion]
+    D --> G[Confirmation Prompt]
+    G --> H[Backup Option]
+    H --> I[Execute All Comments Deletion]
+    E --> J[Execute Comments Toggle]
+    F --> K[Operation Successful]
+    I --> K
+    J --> K
+    F --> L[Error Handling]
+    I --> L
+    J --> L
+    B --> M[Settings Page]
+    M --> K

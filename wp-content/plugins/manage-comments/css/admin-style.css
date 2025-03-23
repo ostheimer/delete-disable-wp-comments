@@ -1,0 +1,189 @@
+.manage-comments-controls {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.manage-comments-control {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.manage-comments-control h2 {
+    margin-top: 0;
+    color: #23282d;
+    font-size: 1.3em;
+    margin-bottom: 1em;
+}
+
+.manage-comments-control p {
+    color: #646970;
+    margin-bottom: 1.5em;
+}
+
+.button-danger {
+    background: #dc3232 !important;
+    border-color: #ba2020 !important;
+    color: #fff !important;
+}
+
+.button-danger:hover {
+    background: #ba2020 !important;
+    border-color: #a01c1c !important;
+}
+
+/* Card Styling */
+.card {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    padding: 20px;
+    margin: 0;
+    position: relative;
+}
+
+.card h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+}
+
+.card p {
+    margin-bottom: 20px;
+    color: #646970;
+}
+
+/* Button Styling */
+.button {
+    margin-right: 10px;
+}
+
+/* Toggle Switch Container */
+.toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    flex-shrink: 0;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #2271b1;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2271b1;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* Status Text */
+.comment-status {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    flex-grow: 1;
+}
+
+.comment-status.enabled {
+    color: #2271b1;
+}
+
+.comment-status.disabled {
+    color: #ccc;
+}
+
+/* Success/Error Messages */
+.notice {
+    margin: 15px 0;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.notice-success {
+    background-color: #dff0d8;
+    border: 1px solid #d6e9c6;
+    color: #3c763d;
+}
+
+.notice-error {
+    background-color: #f2dede;
+    border: 1px solid #ebccd1;
+    color: #a94442;
+}
+
+/* Loading Indicator */
+.loading {
+    display: none;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.loading:after {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+} 

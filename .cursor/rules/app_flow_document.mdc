@@ -1,0 +1,32 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# App Flow Document
+
+## Onboarding and Sign-In/Sign-Up
+
+The plugin is accessed only through the WordPress dashboard, so there is no separate sign-up or sign-in process for this tool. Site administrators already log in using WordPress’s built-in authentication system, and once they are authenticated they will have access to all the functionalities of this plugin. When a new site administrator first accesses their WordPress dashboard, they will find this plugin listed in the admin menu. The plugin is designed to be integrated seamlessly with the WordPress admin interface, taking advantage of existing user permissions. If an administrator ever logs out of WordPress, they will need to sign in again through the standard WordPress login page to regain access to the plugin features. Additionally, if a password is lost, recovery is handled by WordPress’s own password recovery system, ensuring administrators always have a straightforward pathway to access their accounts while safeguarding the plugin's functionalities.
+
+## Main Dashboard or Home Page
+
+After logging into the WordPress dashboard and navigating to the plugin’s menu item, the administrator is presented with a clear and concise main control panel. This page follows the familiar WordPress admin design and includes three central options: one to delete spam comments, another to delete all comments from the site, and a toggle to enable or disable site-wide comments. The interface is simple and uncluttered so that the main controls are immediately visible and intuitive. Administrators can quickly switch between these tools and also see status updates or success messages after any action is executed, ensuring they always understand the current state of the comment section operations.
+
+## Detailed Feature Flows and Page Transitions
+
+From the main dashboard, when an administrator selects the control to delete spam comments, a confirmation dialog appears explaining the consequences of the action before proceeding. Once confirmed, the plugin executes an optimized query to remove all comments marked as spam, and a confirmation message is displayed upon completion. If the administrator chooses to delete all comments, an additional warning dialog is presented to emphasize the irreversible nature of the deletion. An option to download a backup of all current comments is offered in this workflow, ensuring that the administrator has a safety net. After confirming, the plugin performs the deletion and reports success with an on-screen notification. When toggling the comments feature, the administrator is provided with a simple on/off switch that, once changed, immediately disables or re-enables comments on the site. For administrators who wish to change additional operational settings, an optional settings page is accessible from the main control panel. This page includes additional configurations such as verifying future comment management sessions and choosing preferred language options, and it maintains a consistent navigation scheme that guides the administrator back to the main dashboard upon completing any updates.
+
+## Settings and Account Management
+
+Within the plugin, the settings page acts as an auxiliary module that enables administrators to tailor the plugin’s behavior to their specific needs. This page allows administrators to manage additional details such as verifying or customizing backup options and configuring warnings for destructive actions like mass deletions. The language settings can be adjusted here, starting with English and German, along with provisions for adding more languages in the future. As the settings page is seamlessly integrated into the WordPress admin interface, navigating back to the main dashboard is as simple as clicking a dedicated link that is consistently available on every page. This clear flow ensures that administrative tasks and comment management operations remain integrated into a single, unified experience, keeping site management simple and consistent.
+
+## Error States and Alternate Paths
+
+In scenarios where an error occurs—such as invalid responses to a confirmation dialog or unexpected connectivity issues—the plugin is designed to provide an immediate error message via the same dialog box or a dedicated notification area within the dashboard. If a destructive action such as deleting all comments fails due to incorrect confirmations or technical issues, the error message will clearly indicate the nature of the problem and instruct the administrator on necessary steps. The interface makes it abundantly clear when an action is not permitted, for instance if a non-administrative user attempts to access these controls, by immediately redirecting unauthorized attempts back to the main WordPress dashboard with an error warning. This ensures that the user never becomes lost in the operations, and that security and data integrity always remain as the top priority.
+
+## Conclusion and Overall App Journey
+
+The journey through this plugin begins with accessing the WordPress dashboard where the administrative user is already signed in. The administrator finds the plugin conveniently listed in the admin menu and quickly lands on a streamlined main panel that presents the key actions related to comment management. With a user interface that mirrors the native WordPress design, administrators easily navigate through each function, whether they are purging spam comments, clearing all comments, or toggling the comment functionality to protect the site from unwanted posts. Each irreversible action is guarded by clear, unambiguous confirmation dialogs and supplemented by backup options to secure data before deletion. Once the action is confirmed, the plugin efficiently performs the database operations, keeping performance high and server load low. If any error arises, the plugin manages it gracefully by providing precise error messages and redirecting the administrator back to the safe flow. Ultimately, the entire experience is built for ease-of-use, robust functionality, and secure management, ensuring that every step from logging in to executing comment management tasks is clear, connected, and reliable.

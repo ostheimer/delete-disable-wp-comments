@@ -1,0 +1,86 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# Tech Stack Document
+
+This document explains the technology choices made for our WordPress comment management plugin. Our goal is to provide a tool that allows site administrators to clean up and control the comment section efficiently, especially on sites with high spam volumes. We will explain every part of the tech stack in everyday language.
+
+## Frontend Technologies
+
+For the frontend, we are using the built-in WordPress admin interface. This choice ensures a unified look and feel throughout the administration panel, making it easy for users to navigate and use the plugin. Key points include:
+
+*   **WordPress Admin Interface**:
+
+    *   We leverage the standard WordPress admin design so the plugin looks and feels natural within the dashboard.
+    *   This helps administrators quickly understand how to work with our three main controls: deleting spam comments, deleting all comments, and disabling comments site-wide.
+
+## Backend Technologies
+
+The backend is built primarily using PHP, which is the main language for developing WordPress plugins. This allows us to interact efficiently with the WordPress database and execute operations safely and quickly. Here’s what is used:
+
+*   **PHP**:
+
+    *   It handles all the logic behind comment deletion and management.
+    *   PHP works with WordPress’s core functions to securely execute database operations.
+
+*   **WordPress Database Functions**:
+
+    *   By using native WordPress methods for database interactions, we ensure that operations such as bulk deletion are optimized and maintain the overall integrity and performance of the site.
+
+## Infrastructure and Deployment
+
+To ensure that the plugin is reliable and easy to deploy, we base our infrastructure on the robust foundation provided by WordPress. Although much of the heavy lifting is handled by WordPress itself, we still follow best practices for deployment and version control:
+
+*   **WordPress Plugin Structure**:
+
+    *   Our plugin is packaged following WordPress standards, making it easy to install and update through the WordPress dashboard.
+
+*   **Version Control (e.g., Git)**:
+
+    *   We use a version control system to manage changes to the code efficiently, track updates, and collaborate seamlessly.
+
+*   **Continuous Integration / Continuous Deployment (CI/CD)**:
+
+    *   While WordPress plugins often have a manual review process before release, we follow CI/CD best practices internally to ensure quality, reliability, and faster updates.
+
+## Third-Party Integrations
+
+For this plugin, third-party integrations are minimal as it is designed to work within the WordPress ecosystem. However, there are additional parts that add value:
+
+*   **Backup Capability**:
+
+    *   Even though this is handled internally, we have built in a feature that lets administrators download a copy of all comments before performing any destructive action. This acts as a safety net in case anything goes wrong.
+
+*   **Localization**:
+
+    *   The plugin supports multiple languages (default in English and German from the start) with plans to add additional languages, ensuring that users worldwide can benefit from its functionalities.
+
+## Security and Performance Considerations
+
+Security and performance are of utmost importance, especially when making changes that affect website data. Here's how we address these concerns:
+
+*   **Security Measures**:
+
+    *   **Permission Checks**: Only users with administrator rights can perform comment management actions. This prevents unauthorized or accidental operations.
+    *   **Confirmation Steps**: A warning message is displayed before executing destructive actions like deleting all comments. This ensures that administrators are making a deliberate decision.
+
+*   **Performance Optimizations**:
+
+    *   **Optimized Database Operations**: We use efficient database queries to handle comment deletions, ensuring that the plugin does not put undue strain on the website.
+    *   **Feedback Mechanisms**: After an action is executed, the plugin provides immediate feedback. This confirms to the user that the action was successful and helps maintain system performance awareness.
+
+## Conclusion and Overall Tech Stack Summary
+
+To recap, this WordPress plugin uses a well-thought-out tech stack that enhances both usability and performance:
+
+*   **Frontend**: It utilizes WordPress’s default admin interface to provide a familiar and user-friendly experience.
+*   **Backend**: PHP and WordPress’s built-in database functions form the backbone of secure and efficient operations.
+*   **Infrastructure**: By adhering to WordPress plugin standards and using version control and CI/CD practices internally, we ensure reliability and ease of updates.
+*   **Third-Party Integrations**: Additional features such as a backup system for comments and multilingual support expand its functionality without complicating the user experience.
+*   **Security & Performance**: Robust permission checks, confirmation dialogs for destructive actions, and optimized queries ensure that the plugin is both safe and responsive.
+
+This tech stack was chosen carefully to align with our goals: providing a simple yet powerful tool for administrators to manage comments efficiently, minimizing risk while ensuring optimal performance. The design principles ensure that both novice and experienced administrators can confidently use the plugin to maintain a clean and controlled comment section on their WordPress sites.

@@ -1,0 +1,169 @@
+---
+description: Apply these rules when making changes to the project
+globs: 
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# Project Requirements Document
+
+## 1. Project Overview
+
+This project is all about developing a WordPress plugin that helps site administrators manage the comment sections on their websites easily. With this plugin, administrators can quickly clean up spam by deleting all spam-marked comments, wipe out all comments if needed, or shut down the comment system site-wide to prevent any new input. The core idea is to give administrators a one-click, no-fuss solution to keep their comment sections clean, efficient, and under control, even when dealing with large volumes of spam or unwanted comments.
+
+The plugin is being built to tackle the common frustration and time consumption associated with manual comment moderation, especially on sites that experience a high volume of spam. Its key objectives are to simplify the administrative process, ensure data safety through confirmations and a backup download option, and deliver a smooth and integrated experience that follows WordPress's design and security conventions. Success will be measured by ease of use, performance under heavy comment loads, and adherence to WordPress.org plugin standards, including localization capabilities.
+
+## 2. In-Scope vs. Out-of-Scope
+
+### In-Scope
+
+*   Development of a WordPress plugin using PHP for backend operations.
+
+*   Integration within the WordPress admin interface.
+
+*   Three main plugin controls:
+
+    *   Delete all spam comments.
+    *   Delete all comments (with confirmation and backup download option).
+    *   Global toggle to disable or enable comments across the site.
+
+*   Implementation of a backup feature to download the current comments before deletion.
+
+*   Confirmation pop-ups for every destructive action to prevent accidental data loss.
+
+*   Robust permission checks limiting functionality only to user administrators.
+
+*   Adhering to WordPress.org guidelines, including localization support with English and German in the initial release (with future capability to add more languages).
+
+*   Optimized database queries that handle large volumes of comments efficiently.
+
+### Out-of-Scope
+
+*   Support for non-administrator user roles; only administrators are allowed to execute the plugin’s functions.
+*   Automated or scheduled deletion of spam comments (automatic scheduling is not included).
+*   Any notifications such as email alerts post cleanup actions.
+*   Deep customization of spam identification beyond WordPress’s default settings.
+*   Support for WordPress multisite environments; the plugin is designed for single-site usage only.
+
+## 3. User Flow
+
+An administrator who logs into the WordPress dashboard will notice a new menu item related to the plugin. Clicking on this menu item takes them directly to the plugin's main control panel. Here, they see a straightforward interface that echoes WordPress’ own admin design, containing three main controls: one for deleting spam comments, one for deleting all comments, and a toggle for disabling or enabling comments across the website.
+
+When the administrator selects a destructive action like deleting all comments, the plugin presents a confirmation dialog box that explains the impact of the action. This confirmation step requires the administrator to explicitly agree before proceeding. Additionally, the interface offers a backup option so the administrator can download a copy of all comments as a precautionary measure. Once the action is confirmed, the plugin efficiently executes the request with optimized queries and provides immediate feedback on successful completion.
+
+## 4. Core Features (Bullet Points)
+
+*   **Spam Comment Deletion**
+
+    *   Deletes all comments marked as spam by WordPress.
+    *   Uses optimized queries for fast and effective cleanup.
+
+*   **Complete Comment Deletion**
+
+    *   Removes every comment from the website.
+    *   Includes a confirmation dialog to prevent accidental deletion.
+    *   Provides a backup feature to download a copy of comments before deletion.
+
+*   **Disable Comments Globally**
+
+    *   A toggle control that turns off the commenting feature for the entire site.
+    *   Prevents new comments from being added while enabled.
+
+*   **Admin Panel Interface**
+
+    *   Embedded in the WordPress dashboard for a seamless integration.
+    *   Three clear controls mapped to their respective actions.
+
+*   **User Safety Measures**
+
+    *   Confirmation dialogs before executing any destructive action.
+    *   Backup download capability as an extra precaution against data loss.
+
+*   **Localization**
+
+    *   Supports English and German in the initial release.
+    *   Designed to easily add more languages in future versions.
+
+*   **Performance and Security**
+
+    *   Optimized database operations to safeguard server performance.
+    *   Robust permission checks to restrict actions to administrators only.
+
+## 5. Tech Stack & Tools
+
+*   **Frontend**
+
+    *   Utilizes the standard WordPress admin interface conventions.
+    *   Leverages HTML, CSS, and JavaScript as needed for UI components.
+
+*   **Backend**
+
+    *   PHP as the primary language to build the functionality.
+    *   WordPress’ built-in functions and hooks for plugin integration.
+
+*   **WordPress Platform**
+
+    *   Designed as a plugin that integrates seamlessly with WordPress sites.
+    *   Adhering to WordPress coding standards and security practices.
+
+*   **Development Tools**
+
+    *   Recommended IDE: Cursor (an advanced IDE providing AI-powered coding suggestions).
+
+*   **Deployment & Compliance**
+
+    *   Built to meet WordPress.org plugin directory guidelines, including localization support (English and German initially).
+
+## 6. Non-Functional Requirements
+
+*   **Performance**
+
+    *   Must execute database operations quickly even with large comment volumes.
+    *   Minimal load on the server during cleanup processes.
+
+*   **Security**
+
+    *   Only users with administrator privileges can access and execute plugin actions.
+    *   All destructive operations are gated behind confirmation dialogs to prevent misclicks and accidental data loss.
+
+*   **Usability**
+
+    *   Interface must mirror WordPress’s admin design for familiarity.
+    *   Clear and concise design to minimize training and support needs.
+
+*   **Localization & Compliance**
+
+    *   Default language is English with German support included from initial implementation.
+    *   The plugin structure should support adding more languages easily in future releases.
+
+## 7. Constraints & Assumptions
+
+*   The plugin will be used only by site administrators; non-administrator roles are explicitly restricted.
+*   It is assumed that the WordPress installation where this plugin is deployed is up-to-date and running on a single site configuration (no multisite support).
+*   The plugin will rely on WordPress's built-in mechanisms for comment marking (i.e., spam identification).
+*   All actions are executed using PHP and within the WordPress environment; thus, the plugin assumes stable PHP and MySQL versions consistent with WordPress requirements.
+*   It is assumed that proper server permissions and configurations are in place to handle backup downloads and large database operations.
+
+## 8. Known Issues & Potential Pitfalls
+
+*   **Database Performance**
+
+    *   Deleting a large number of comments in a single operation might strain the database. To mitigate this, the plugin should use optimized queries and possibly batch operations if necessary in the future.
+
+*   **Accidental Data Loss**
+
+    *   Although confirmation prompts and backup options are provided, there remains a risk of human error. It is important that these safeguards are reliably implemented.
+
+*   **Integration with WordPress Updates**
+
+    *   Future changes in WordPress or its admin interface might affect the plugin’s compatibility. Regular updates and adherence to WordPress coding standards will help avoid such issues.
+
+*   **Backup Size and Performance**
+
+    *   Downloading backups for sites with an extremely large comment database could be time-consuming. Recommendations for a maximum file size or further enhancements may be considered in future releases.
+
+*   **Localization Challenges**
+
+    *   Adding new languages requires careful planning to ensure that translation files remain updated with new feature additions. A clear process for incorporating new languages should be outlined for future development.
+
+This document serves as the core reference for the WordPress comment management plugin. It provides clear instructions for the AI model regarding the functionality, design, and scope of the project, ensuring that subsequent technical documents can be generated without ambiguity.
