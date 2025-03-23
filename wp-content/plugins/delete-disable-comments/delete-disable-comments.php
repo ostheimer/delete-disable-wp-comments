@@ -232,13 +232,23 @@ function delete_disable_comments_init() {
         $comments_closed = wp_cache_get($cache_key);
         
         if (false === $comments_closed) {
-            $wpdb->query(
-                $wpdb->prepare(
-                    "UPDATE $wpdb->posts SET comment_status = %s, ping_status = %s",
-                    'closed',
-                    'closed'
-                )
-            );
+            // Get all posts
+            $posts = get_posts(array(
+                'post_type' => 'any',
+                'posts_per_page' => -1,
+                'post_status' => 'any',
+                'fields' => 'ids'
+            ));
+            
+            // Update each post individually
+            foreach ($posts as $post_id) {
+                wp_update_post(array(
+                    'ID' => $post_id,
+                    'comment_status' => 'closed',
+                    'ping_status' => 'closed'
+                ));
+            }
+            
             wp_cache_set($cache_key, true, 'delete-disable-comments', HOUR_IN_SECONDS);
         }
 
@@ -365,7 +375,7 @@ add_filter('comments_template', 'delete_disable_comments_override_template', 20)
 // Disable comments feed
 function delete_disable_comments_disable_feeds() {
     if (get_option('disable_comments', '0') === '1') {
-        wp_die(__('Comments are disabled.', 'delete-disable-comments'));
+        wp_die(esc_html__('Comments are disabled.', 'delete-disable-comments'));
     }
 }
 add_action('do_feed_rss2_comments', 'delete_disable_comments_disable_feeds', 1);

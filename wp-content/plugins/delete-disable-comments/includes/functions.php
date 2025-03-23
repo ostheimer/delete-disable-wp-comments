@@ -38,28 +38,28 @@ function delete_spam_comments() {
         );
     }
 
-    global $wpdb;
-    
     // Get spam comments count from cache
     $spam_count = wp_cache_get('spam_comments_count', 'delete-disable-comments');
     if (false === $spam_count) {
-        $spam_count = $wpdb->get_var(
-            $wpdb->prepare(
-                "SELECT COUNT(*) FROM $wpdb->comments WHERE comment_approved = %s",
-                'spam'
-            )
+        $args = array(
+            'status' => 'spam',
+            'count' => true
         );
+        $spam_count = get_comments($args);
         wp_cache_set('spam_comments_count', $spam_count, 'delete-disable-comments', HOUR_IN_SECONDS);
     }
 
     if ($spam_count > 0) {
+        // Get all spam comments
+        $spam_comments = get_comments(array(
+            'status' => 'spam',
+            'fields' => 'ids'
+        ));
+        
         // Delete spam comments
-        $deleted = $wpdb->query(
-            $wpdb->prepare(
-                "DELETE FROM $wpdb->comments WHERE comment_approved = %s",
-                'spam'
-            )
-        );
+        foreach ($spam_comments as $comment_id) {
+            wp_delete_comment($comment_id, true);
+        }
         
         // Clear cache
         wp_cache_delete('spam_comments_count', 'delete-disable-comments');
@@ -69,7 +69,7 @@ function delete_spam_comments() {
             'message' => sprintf(
                 /* translators: %d: number of deleted comments */
                 esc_html__('Successfully deleted %d spam comments.', 'delete-disable-comments'),
-                $deleted
+                $spam_count
             )
         );
     }
@@ -100,19 +100,27 @@ function delete_all_comments() {
         );
     }
 
-    global $wpdb;
-    
     // Get total comments count from cache
     $total_count = wp_cache_get('total_comments_count', 'delete-disable-comments');
     if (false === $total_count) {
-        $total_count = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->comments");
+        $args = array(
+            'count' => true
+        );
+        $total_count = get_comments($args);
         wp_cache_set('total_comments_count', $total_count, 'delete-disable-comments', HOUR_IN_SECONDS);
     }
 
     if ($total_count > 0) {
-        // Delete all comments
-        $deleted = $wpdb->query("TRUNCATE TABLE $wpdb->comments");
-        $wpdb->query("TRUNCATE TABLE $wpdb->commentmeta");
+        // Get all comments
+        $comments = get_comments(array(
+            'fields' => 'ids',
+            'number' => 0 // Get all comments
+        ));
+        
+        // Delete all comments and their meta
+        foreach ($comments as $comment_id) {
+            wp_delete_comment($comment_id, true);
+        }
         
         // Clear cache
         wp_cache_delete('total_comments_count', 'delete-disable-comments');
@@ -149,13 +157,41 @@ function backup_comments() {
         );
     }
 
-    global $wpdb;
-    
     // Get comments from database with caching
     $comments = wp_cache_get('all_comments_backup', 'delete-disable-comments');
     if (false === $comments) {
-        $comments = $wpdb->get_results("SELECT * FROM $wpdb->comments", ARRAY_A);
-        wp_cache_set('all_comments_backup', $comments, 'delete-disable-comments', HOUR_IN_SECONDS);
+        $comments = get_comments(array(
+            'status' => 'all',
+            'type' => 'comment',
+            'number' => 0, // Get all comments
+            'orderby' => 'comment_ID',
+            'order' => 'ASC'
+        ));
+        
+        // Convert comments to array format
+        $comments_array = array();
+        foreach ($comments as $comment) {
+            $comments_array[] = array(
+                'comment_ID' => $comment->comment_ID,
+                'comment_post_ID' => $comment->comment_post_ID,
+                'comment_author' => $comment->comment_author,
+                'comment_author_email' => $comment->comment_author_email,
+                'comment_author_url' => $comment->comment_author_url,
+                'comment_author_IP' => $comment->comment_author_IP,
+                'comment_date' => $comment->comment_date,
+                'comment_date_gmt' => $comment->comment_date_gmt,
+                'comment_content' => $comment->comment_content,
+                'comment_karma' => $comment->comment_karma,
+                'comment_approved' => $comment->comment_approved,
+                'comment_agent' => $comment->comment_agent,
+                'comment_type' => $comment->comment_type,
+                'comment_parent' => $comment->comment_parent,
+                'user_id' => $comment->user_id
+            );
+        }
+        
+        wp_cache_set('all_comments_backup', $comments_array, 'delete-disable-comments', HOUR_IN_SECONDS);
+        $comments = $comments_array;
     }
     
     if (empty($comments)) {
@@ -232,17 +268,23 @@ function toggle_comments() {
         return;
     }
 
-    if (!isset($_POST['disabled'])) {
+    // Properly sanitize and validate the input
+    if (!isset($_POST['disabled']) || !is_string($_POST['disabled'])) {
         wp_send_json_error(array(
-            'message' => esc_html__('Invalid request.', 'delete-disable-comments')
+            'message' => esc_html__('Invalid input format.', 'delete-disable-comments')
         ));
         return;
     }
     
-    // Properly unslash and sanitize the input
-    $disabled = wp_unslash($_POST['disabled']);
-    $disabled = sanitize_text_field($disabled);
-    $disabled = filter_var($disabled, FILTER_VALIDATE_BOOLEAN);
+    $disabled = sanitize_text_field(wp_unslash($_POST['disabled']));
+    $disabled = filter_var($disabled, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+    
+    if ($disabled === null) {
+        wp_send_json_error(array(
+            'message' => esc_html__('Invalid boolean value.', 'delete-disable-comments')
+        ));
+        return;
+    }
     
     // Update option with strict boolean to string conversion
     $update_result = update_option('disable_comments', $disabled ? '1' : '0');
@@ -271,13 +313,23 @@ function toggle_comments() {
         $comments_closed = wp_cache_get($cache_key);
         
         if (false === $comments_closed) {
-            $wpdb->query(
-                $wpdb->prepare(
-                    "UPDATE $wpdb->posts SET comment_status = %s, ping_status = %s",
-                    'closed',
-                    'closed'
-                )
-            );
+            // Get all posts
+            $posts = get_posts(array(
+                'post_type' => $post_types,
+                'posts_per_page' => -1,
+                'post_status' => 'any',
+                'fields' => 'ids'
+            ));
+            
+            // Update each post
+            foreach ($posts as $post_id) {
+                wp_update_post(array(
+                    'ID' => $post_id,
+                    'comment_status' => 'closed',
+                    'ping_status' => 'closed'
+                ));
+            }
+            
             wp_cache_set($cache_key, true, 'delete-disable-comments', HOUR_IN_SECONDS);
         }
         
