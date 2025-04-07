@@ -1,5 +1,5 @@
 === Delete & Disable Comments ===
-Contributors: ostheimer
+Contributors: helpstring
 Tags: comments, spam, delete, disable, backup
 Requires at least: 5.0
 Tested up to: 6.7

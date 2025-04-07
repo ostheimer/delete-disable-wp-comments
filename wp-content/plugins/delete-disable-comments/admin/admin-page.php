@@ -1,10 +1,10 @@
 <?php
-// Prevent direct access
-if (!defined('ABSPATH')) {
-    exit;
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
-function delete_disable_comments_admin_page() {
+function ddc_admin_page() {
     ?>
     <div class="wrap">
         <h1><?php esc_html_e('Delete & Disable Comments', 'delete-disable-comments'); ?></h1>
@@ -35,11 +35,11 @@ function delete_disable_comments_admin_page() {
             <p><?php esc_html_e('Toggle comments on or off for your entire website.', 'delete-disable-comments'); ?></p>
             <div class="toggle-container">
                 <label class="switch">
-                    <input type="checkbox" data-cy="toggle-comments" id="toggle-comments" <?php echo esc_attr(get_option('disable_comments') ? 'checked' : ''); ?>>
+                    <input type="checkbox" data-cy="toggle-comments" id="toggle-comments" <?php echo esc_attr(get_option('ddc_disable_comments') ? 'checked' : ''); ?>>
                     <span class="slider round"></span>
                 </label>
                 <span class="toggle-label" data-cy="toggle-status">
-                    <?php echo esc_html(get_option('disable_comments') ? 
+                    <?php echo esc_html(get_option('ddc_disable_comments') ? 
                         __('Comments are currently disabled', 'delete-disable-comments') : 
                         __('Comments are currently enabled', 'delete-disable-comments')); ?>
                 </span>
