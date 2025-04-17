@@ -3,7 +3,7 @@
  * Plugin Name: Delete & Disable Comments
  * Plugin URI: https://github.com/ostheimer/delete-disable-wp-comments
  * Description: A WordPress plugin that helps site administrators manage comments by deleting spam comments, removing all comments with backup, or disabling comments site-wide.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Andreas Ostheimer
  * Author URI: https://github.com/ostheimer
  * License: GPL v2 or later
@@ -22,42 +22,42 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Removed direct loading of wp-load.php via require_once to comply with review.
 
 // Define plugin constants
-define('DDC_VERSION', '1.0.0');
-define('DDC_PLUGIN_DIR', plugin_dir_path(__FILE__));
-define('DDC_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('DDWPC_VERSION', '1.0.1');
+define('DDWPC_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('DDWPC_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 // Include backend functions
-require_once DDC_PLUGIN_DIR . 'includes/functions.php';
-require_once DDC_PLUGIN_DIR . 'admin/admin-page.php';
+require_once DDWPC_PLUGIN_DIR . 'includes/functions.php';
+require_once DDWPC_PLUGIN_DIR . 'admin/admin-page.php';
 
 // Enqueue admin styles and scripts
-function ddc_admin_enqueue_scripts($hook) {
+function ddwpc_admin_enqueue_scripts($hook) {
     // Only load on our plugin's admin page
     if ($hook !== 'tools_page_delete-disable-comments') {
         return;
     }
 
     wp_enqueue_style(
-        'ddc-admin-style',
-        DDC_PLUGIN_URL . 'css/admin-style.css',
+        'ddwpc-admin-style',
+        DDWPC_PLUGIN_URL . 'css/admin-style.css',
         array(),
-        DDC_VERSION
+        DDWPC_VERSION
     );
 
     wp_enqueue_script(
-        'ddc-admin-script',
-        DDC_PLUGIN_URL . 'js/admin-script.js',
+        'ddwpc-admin-script',
+        DDWPC_PLUGIN_URL . 'js/admin-script.js',
         array('jquery'),
-        DDC_VERSION,
+        DDWPC_VERSION,
         true
     );
 
     wp_localize_script(
-        'ddc-admin-script',
-        'ddcAjax',
+        'ddwpc-admin-script',
+        'ddwpcAjax',
         array(
             'ajaxurl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('ddc_nonce'),
+            'nonce' => wp_create_nonce('ddwpc_nonce'),
             'error_toggling' => esc_html__('Error toggling comments.', 'delete-disable-comments'),
             'network_error' => esc_html__('Network error while updating comments.', 'delete-disable-comments'),
             'comments_disabled' => esc_html__('Comments are currently disabled', 'delete-disable-comments'),
@@ -82,10 +82,10 @@ function ddc_admin_enqueue_scripts($hook) {
         )
     );
 }
-add_action('admin_enqueue_scripts', 'ddc_admin_enqueue_scripts');
+add_action('admin_enqueue_scripts', 'ddwpc_admin_enqueue_scripts');
 
 // Add admin menu
-function ddc_admin_menu() {
+function ddwpc_admin_menu() {
     $menu_title = esc_html__('Delete & Disable Comments', 'delete-disable-comments');
     $page_title = esc_html__('Delete & Disable Comments', 'delete-disable-comments');
     
@@ -95,31 +95,31 @@ function ddc_admin_menu() {
         $menu_title,          
         'manage_options',     
         'delete-disable-comments', 
-        'ddc_admin_page' 
+        'ddwpc_admin_page' 
     );
 }
-add_action('admin_menu', 'ddc_admin_menu');
+add_action('admin_menu', 'ddwpc_admin_menu');
 
 // Activation Hook
-function ddc_activate() {
+function ddwpc_activate() {
     // Add default options
-    add_option('ddc_disable_comments', false);
+    add_option('ddwpc_disable_comments', false);
 }
-register_activation_hook(__FILE__, 'ddc_activate');
+register_activation_hook(__FILE__, 'ddwpc_activate');
 
 // Deactivation Hook
-function ddc_deactivate() {
+function ddwpc_deactivate() {
     // Cleanup if needed
-    delete_option('ddc_disable_comments');
+    delete_option('ddwpc_disable_comments');
 }
-register_deactivation_hook(__FILE__, 'ddc_deactivate');
+register_deactivation_hook(__FILE__, 'ddwpc_deactivate');
 
 // Initialize the plugin
-function ddc_init() {
+function ddwpc_init() {
     // If comments are disabled, remove support for comments and trackbacks
-    if (get_option('ddc_disable_comments', false)) {
+    if (get_option('ddwpc_disable_comments', false)) {
         // Get post types with comments enabled and cache the result
-        $cache_key = 'ddc_post_types_with_comments';
+        $cache_key = 'ddwpc_post_types_with_comments';
         $post_types = wp_cache_get($cache_key);
         
         if (false === $post_types) {
@@ -136,7 +136,7 @@ function ddc_init() {
 
         // Close comments on all posts with caching
         global $wpdb;
-        $cache_key = 'ddc_comments_closed';
+        $cache_key = 'ddwpc_comments_closed';
         $comments_closed = wp_cache_get($cache_key);
         
         if (false === $comments_closed) {
@@ -180,10 +180,10 @@ function ddc_init() {
         });
 
         // Additional filters to hide comments UI
-        add_filter('comments_template', 'ddc_use_blank_template', 20);
+        add_filter('comments_template', 'ddwpc_use_blank_template', 20);
         
         // Remove comments from post type supports
-        add_action('template_redirect', 'ddc_block_comment_feed');
+        add_action('template_redirect', 'ddwpc_block_comment_feed');
 
         // Remove comments from admin bar
         add_action('admin_init', function() {
@@ -193,16 +193,16 @@ function ddc_init() {
         });
 
         // Remove comments CSS from theme
-        add_action('wp_enqueue_scripts', 'ddc_dequeue_comment_styles');
+        add_action('wp_enqueue_scripts', 'ddwpc_dequeue_comment_styles');
 
         // Hide existing comments
         add_filter('comments_array', '__return_empty_array', 20);
         
         // Disable comments REST API endpoint
-        add_filter('rest_endpoints', 'ddc_disable_rest_endpoints_filter');
+        add_filter('rest_endpoints', 'ddwpc_disable_rest_endpoints_filter');
 
         // Remove comment-related blocks
-        add_filter('allowed_block_types_all', 'ddc_remove_comment_blocks');
+        add_filter('allowed_block_types_all', 'ddwpc_remove_comment_blocks');
 
         // Remove comment links from post meta
         add_filter('post_comments_feed_link', '__return_false');
@@ -212,10 +212,10 @@ function ddc_init() {
         add_filter('get_comments_number', '__return_zero');
 
         // Remove comment-related widgets
-        add_action('widgets_init', 'ddc_unregister_comment_widgets');
+        add_action('widgets_init', 'ddwpc_unregister_comment_widgets');
 
         // Remove comment support from post types
-        add_action('init', 'ddc_remove_post_type_comment_support', 100);
+        add_action('init', 'ddwpc_remove_post_type_comment_support', 100);
 
         // Remove comment form
         add_filter('comments_template_query_args', '__return_empty_array');
@@ -223,30 +223,30 @@ function ddc_init() {
         add_filter('comments_array', '__return_empty_array');
 
         // Remove comment patterns from theme
-        add_filter('theme_file_path', 'ddc_filter_theme_comment_patterns', 10, 2);
+        add_filter('theme_file_path', 'ddwpc_filter_theme_comment_patterns', 10, 2);
     }
 }
-add_action('init', 'ddc_init', 100);
+add_action('init', 'ddwpc_init', 100);
 
 // Callback Functions (previously anonymous or defined elsewhere)
 
-function ddc_use_blank_template($template) {
-     if (get_option('ddc_disable_comments', '0') === '1') {
-        return DDC_PLUGIN_DIR . 'templates/blank.php';
+function ddwpc_use_blank_template($template) {
+     if (get_option('ddwpc_disable_comments', '0') === '1') {
+        return DDWPC_PLUGIN_DIR . 'templates/blank.php';
     }
     return $template;
 }
 
-function ddc_block_comment_feed() {
-    if (get_option('ddc_disable_comments', '0') === '1') {
+function ddwpc_block_comment_feed() {
+    if (get_option('ddwpc_disable_comments', '0') === '1') {
         if (is_comment_feed()) {
             wp_die(esc_html__('Comments are closed.', 'delete-disable-comments'), '', array('response' => 403));
         }
     }
 }
 
-function ddc_dequeue_comment_styles() {
-    if (get_option('ddc_disable_comments', '0') === '1') {
+function ddwpc_dequeue_comment_styles() {
+    if (get_option('ddwpc_disable_comments', '0') === '1') {
         wp_dequeue_style('comments-template');
         wp_dequeue_style('twentytwentyfive-comments');
         wp_dequeue_style('wp-block-comments');
@@ -254,8 +254,8 @@ function ddc_dequeue_comment_styles() {
     }
 }
 
-function ddc_disable_rest_endpoints_filter($endpoints) {
-    if (get_option('ddc_disable_comments', '0') === '1') {
+function ddwpc_disable_rest_endpoints_filter($endpoints) {
+    if (get_option('ddwpc_disable_comments', '0') === '1') {
         if (isset($endpoints['/wp/v2/comments'])) {
             unset($endpoints['/wp/v2/comments']);
         }
@@ -266,8 +266,8 @@ function ddc_disable_rest_endpoints_filter($endpoints) {
     return $endpoints;
 }
 
-function ddc_remove_comment_blocks($allowed_blocks) {
-    if (get_option('ddc_disable_comments', '0') === '1') {
+function ddwpc_remove_comment_blocks($allowed_blocks) {
+    if (get_option('ddwpc_disable_comments', '0') === '1') {
         if (!is_array($allowed_blocks)) {
             return $allowed_blocks;
         }
@@ -285,14 +285,14 @@ function ddc_remove_comment_blocks($allowed_blocks) {
     return $allowed_blocks;
 }
 
-function ddc_unregister_comment_widgets() {
-    if (get_option('ddc_disable_comments', '0') === '1') {
+function ddwpc_unregister_comment_widgets() {
+    if (get_option('ddwpc_disable_comments', '0') === '1') {
         unregister_widget('WP_Widget_Recent_Comments');
     }
 }
 
-function ddc_remove_post_type_comment_support() {
-    if (get_option('ddc_disable_comments', '0') === '1') {
+function ddwpc_remove_post_type_comment_support() {
+    if (get_option('ddwpc_disable_comments', '0') === '1') {
         $post_types = get_post_types(array('public' => true), 'names');
         foreach ($post_types as $post_type) {
             if (post_type_supports($post_type, 'comments')) {
@@ -303,41 +303,41 @@ function ddc_remove_post_type_comment_support() {
     }
 }
 
-function ddc_filter_theme_comment_patterns($path, $file) {
-    if (get_option('ddc_disable_comments', '0') === '1') {
+function ddwpc_filter_theme_comment_patterns($path, $file) {
+    if (get_option('ddwpc_disable_comments', '0') === '1') {
         if ($file === 'patterns/comments.php') {
-            return DDC_PLUGIN_DIR . 'templates/blank.php';
+            return DDWPC_PLUGIN_DIR . 'templates/blank.php';
         }
     }
     return $path;
 }
 
-// --- Hooks from includes/functions.php (already prefixed and registered in ddc_register_ajax_handlers) ---
-// add_action('wp_ajax_ddc_delete_spam', 'ddc_delete_spam_comments');
-// add_action('wp_ajax_ddc_delete_all', 'ddc_delete_all_comments');
-// add_action('wp_ajax_ddc_backup_comments', 'ddc_backup_comments'); 
-// add_action('wp_ajax_ddc_toggle_comments', 'ddc_toggle_comments'); 
-// add_action('wp_ajax_ddc_get_status', 'ddc_get_status');
+// --- Hooks from includes/functions.php (already prefixed and registered in ddwpc_register_ajax_handlers) ---
+// add_action('wp_ajax_ddwpc_delete_spam', 'ddwpc_delete_spam_comments');
+// add_action('wp_ajax_ddwpc_delete_all', 'ddwpc_delete_all_comments');
+// add_action('wp_ajax_ddwpc_backup_comments', 'ddwpc_backup_comments'); 
+// add_action('wp_ajax_ddwpc_toggle_comments', 'ddwpc_toggle_comments'); 
+// add_action('wp_ajax_ddwpc_get_status', 'ddwpc_get_status');
 
 // --- Other Hooks (using prefixed functions where needed) ---
-// add_action('plugins_loaded', 'ddc_load_textdomain'); // Already done
-// add_action('admin_enqueue_scripts', 'ddc_admin_enqueue_scripts'); // Already done
-// add_action('admin_menu', 'ddc_admin_menu'); // Already done
-// register_activation_hook(__FILE__, 'ddc_activate'); // Already done
-// register_deactivation_hook(__FILE__, 'ddc_deactivate'); // Already done
-// add_action('init', 'ddc_init', 100); // Already done
-add_filter('comments_template', 'ddc_use_blank_template', 20); 
-add_action('template_redirect', 'ddc_block_comment_feed');
-// add_action('wp_before_admin_bar_render', 'ddc_admin_bar_render'); // Covered by closure in ddc_init
-add_action('wp_enqueue_scripts', 'ddc_dequeue_comment_styles', 100); 
-// add_filter('comments_array', 'ddc_hide_existing_comments', 20, 2); // Using __return_empty_array in ddc_init
-add_filter('rest_endpoints', 'ddc_disable_rest_endpoints_filter'); 
-add_action('widgets_init', 'ddc_unregister_comment_widgets');
+// add_action('plugins_loaded', 'ddwpc_load_textdomain'); // Already done
+// add_action('admin_enqueue_scripts', 'ddwpc_admin_enqueue_scripts'); // Already done
+// add_action('admin_menu', 'ddwpc_admin_menu'); // Already done
+// register_activation_hook(__FILE__, 'ddwpc_activate'); // Already done
+// register_deactivation_hook(__FILE__, 'ddwpc_deactivate'); // Already done
+// add_action('init', 'ddwpc_init', 100); // Already done
+add_filter('comments_template', 'ddwpc_use_blank_template', 20); 
+add_action('template_redirect', 'ddwpc_block_comment_feed');
+// add_action('wp_before_admin_bar_render', 'ddwpc_admin_bar_render'); // Covered by closure in ddwpc_init
+add_action('wp_enqueue_scripts', 'ddwpc_dequeue_comment_styles', 100); 
+// add_filter('comments_array', 'ddwpc_hide_existing_comments', 20, 2); // Using __return_empty_array in ddwpc_init
+add_filter('rest_endpoints', 'ddwpc_disable_rest_endpoints_filter'); 
+add_action('widgets_init', 'ddwpc_unregister_comment_widgets');
 
 
 /* // Remove the include from the end of the file
 // Include the admin page function if it exists as a separate file
-if (file_exists(DDC_PLUGIN_DIR . 'admin/admin-page.php')) {
-    require_once DDC_PLUGIN_DIR . 'admin/admin-page.php';
+if (file_exists(DDWPC_PLUGIN_DIR . 'admin/admin-page.php')) {
+    require_once DDWPC_PLUGIN_DIR . 'admin/admin-page.php';
 }
 */

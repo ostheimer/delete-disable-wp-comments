@@ -27,22 +27,22 @@ jQuery(document).ready(function($) {
     // Handle Delete Spam Comments
     $('#delete-spam-comments').on('click', function() {
         var $button = $(this);
-        showConfirmDialog(ddcAjax.confirm_delete_spam, function(confirmed) { // Use prefixed JS object
+        showConfirmDialog(ddwpcAjax.confirm_delete_spam, function(confirmed) { // Use prefixed JS object
             if (confirmed) {
-                $button.text(ddcAjax.deleting).prop('disabled', true); // Use prefixed JS object
-                $.post(ddcAjax.ajaxurl, { // Use prefixed JS object
-                    action: 'ddc_delete_spam', // Prefixed action
-                    nonce: ddcAjax.nonce // Use prefixed JS object
+                $button.text(ddwpcAjax.deleting).prop('disabled', true); // Use prefixed JS object
+                $.post(ddwpcAjax.ajaxurl, { // Use prefixed JS object
+                    action: 'ddwpc_delete_spam', // Prefixed action
+                    nonce: ddwpcAjax.nonce // Use prefixed JS object
                 }, function(response) {
-                    $button.text(ddcAjax.delete_spam_button).prop('disabled', false); // Use prefixed JS object
+                    $button.text(ddwpcAjax.delete_spam_button).prop('disabled', false); // Use prefixed JS object
                     if (response.success) {
                         showMessage(response.data.message, 'success');
                     } else {
-                        showMessage(response.data.message || ddcAjax.error_delete_spam, 'error'); // Use prefixed JS object
+                        showMessage(response.data.message || ddwpcAjax.error_delete_spam, 'error'); // Use prefixed JS object
                     }
                 }).fail(function() {
-                    $button.text(ddcAjax.delete_spam_button).prop('disabled', false); // Use prefixed JS object
-                    showMessage(ddcAjax.network_error_spam, 'error'); // Use prefixed JS object
+                    $button.text(ddwpcAjax.delete_spam_button).prop('disabled', false); // Use prefixed JS object
+                    showMessage(ddwpcAjax.network_error_spam, 'error'); // Use prefixed JS object
                 });
             }
         });
@@ -51,22 +51,22 @@ jQuery(document).ready(function($) {
     // Handle Delete All Comments
     $('#delete-all-comments').on('click', function() {
         var $button = $(this);
-        showConfirmDialog(ddcAjax.confirm_delete_all, function(confirmed) { // Use prefixed JS object
+        showConfirmDialog(ddwpcAjax.confirm_delete_all, function(confirmed) { // Use prefixed JS object
             if (confirmed) {
-                $button.text(ddcAjax.deleting).prop('disabled', true); // Use prefixed JS object
-                $.post(ddcAjax.ajaxurl, { // Use prefixed JS object
-                    action: 'ddc_delete_all', // Prefixed action
-                    nonce: ddcAjax.nonce // Use prefixed JS object
+                $button.text(ddwpcAjax.deleting).prop('disabled', true); // Use prefixed JS object
+                $.post(ddwpcAjax.ajaxurl, { // Use prefixed JS object
+                    action: 'ddwpc_delete_all', // Prefixed action
+                    nonce: ddwpcAjax.nonce // Use prefixed JS object
                 }, function(response) {
-                    $button.text(ddcAjax.delete_all_button).prop('disabled', false); // Use prefixed JS object
+                    $button.text(ddwpcAjax.delete_all_button).prop('disabled', false); // Use prefixed JS object
                     if (response.success) {
                         showMessage(response.data.message, 'success');
                     } else {
-                        showMessage(response.data.message || ddcAjax.error_delete_all, 'error'); // Use prefixed JS object
+                        showMessage(response.data.message || ddwpcAjax.error_delete_all, 'error'); // Use prefixed JS object
                     }
                 }).fail(function() {
-                    $button.text(ddcAjax.delete_all_button).prop('disabled', false); // Use prefixed JS object
-                    showMessage(ddcAjax.network_error_all, 'error'); // Use prefixed JS object
+                    $button.text(ddwpcAjax.delete_all_button).prop('disabled', false); // Use prefixed JS object
+                    showMessage(ddwpcAjax.network_error_all, 'error'); // Use prefixed JS object
                 });
             }
         });
@@ -75,22 +75,22 @@ jQuery(document).ready(function($) {
     // Handle Download Backup
     $('#download-backup').on('click', function() {
         var $button = $(this);
-        $button.text(ddcAjax.creating_backup).prop('disabled', true); // Use prefixed JS object
-        $.post(ddcAjax.ajaxurl, { // Use prefixed JS object
-            action: 'ddc_backup_comments', // Prefixed action
-            nonce: ddcAjax.nonce // Use prefixed JS object
+        $button.text(ddwpcAjax.creating_backup).prop('disabled', true); // Use prefixed JS object
+        $.post(ddwpcAjax.ajaxurl, { // Use prefixed JS object
+            action: 'ddwpc_backup_comments', // Prefixed action
+            nonce: ddwpcAjax.nonce // Use prefixed JS object
         }, function(response) {
-            $button.text(ddcAjax.backup_button).prop('disabled', false); // Use prefixed JS object
+            $button.text(ddwpcAjax.backup_button).prop('disabled', false); // Use prefixed JS object
             if (response.success) {
                 showMessage(response.data.message, 'success');
                 // Trigger file download
                 window.location.href = response.data.file_url;
             } else {
-                showMessage(response.data.message || ddcAjax.error_backup, 'error'); // Use prefixed JS object
+                showMessage(response.data.message || ddwpcAjax.error_backup, 'error'); // Use prefixed JS object
             }
         }).fail(function() {
-            $button.text(ddcAjax.backup_button).prop('disabled', false); // Use prefixed JS object
-            showMessage(ddcAjax.network_error_backup, 'error'); // Use prefixed JS object
+            $button.text(ddwpcAjax.backup_button).prop('disabled', false); // Use prefixed JS object
+            showMessage(ddwpcAjax.network_error_backup, 'error'); // Use prefixed JS object
         });
     });
 
@@ -100,11 +100,11 @@ jQuery(document).ready(function($) {
         var $statusLabel = $('.toggle-label');
         var disabled = $toggle.is(':checked');
 
-        $statusLabel.text(ddcAjax.updating); // Use prefixed JS object
+        $statusLabel.text(ddwpcAjax.updating); // Use prefixed JS object
 
-        $.post(ddcAjax.ajaxurl, { // Use prefixed JS object
-            action: 'ddc_toggle_comments', // Prefixed action
-            nonce: ddcAjax.nonce, // Use prefixed JS object
+        $.post(ddwpcAjax.ajaxurl, { // Use prefixed JS object
+            action: 'ddwpc_toggle_comments', // Prefixed action
+            nonce: ddwpcAjax.nonce, // Use prefixed JS object
             disabled: disabled ? 'true' : 'false' // Send as string
         }, function(response) {
             if (response.success) {
@@ -113,16 +113,16 @@ jQuery(document).ready(function($) {
                  // Ensure the toggle visually matches the state if AJAX call succeeded
                 $toggle.prop('checked', response.data.status === 'disabled');
             } else {
-                showMessage(response.data.message || ddcAjax.error_toggling, 'error'); // Use prefixed JS object
+                showMessage(response.data.message || ddwpcAjax.error_toggling, 'error'); // Use prefixed JS object
                 // Revert visual state on error
                 $toggle.prop('checked', !disabled);
-                $statusLabel.text(disabled ? ddcAjax.comments_enabled : ddcAjax.comments_disabled); // Use prefixed JS object
+                $statusLabel.text(disabled ? ddwpcAjax.comments_enabled : ddwpcAjax.comments_disabled); // Use prefixed JS object
             }
         }).fail(function() {
-            showMessage(ddcAjax.network_error, 'error'); // Use prefixed JS object
+            showMessage(ddwpcAjax.network_error, 'error'); // Use prefixed JS object
             // Revert visual state on error
             $toggle.prop('checked', !disabled);
-            $statusLabel.text(disabled ? ddcAjax.comments_enabled : ddcAjax.comments_disabled); // Use prefixed JS object
+            $statusLabel.text(disabled ? ddwpcAjax.comments_enabled : ddwpcAjax.comments_disabled); // Use prefixed JS object
         });
     });
 
@@ -131,9 +131,9 @@ jQuery(document).ready(function($) {
         var $toggle = $('#toggle-comments');
         var $statusLabel = $('.toggle-label');
 
-        $.post(ddcAjax.ajaxurl, { // Use prefixed JS object
-            action: 'ddc_get_status', // Prefixed action
-            nonce: ddcAjax.nonce // Use prefixed JS object
+        $.post(ddwpcAjax.ajaxurl, { // Use prefixed JS object
+            action: 'ddwpc_get_status', // Prefixed action
+            nonce: ddwpcAjax.nonce // Use prefixed JS object
         }, function(response) {
             if (response.success) {
                 var isDisabled = response.data.status === 'disabled';

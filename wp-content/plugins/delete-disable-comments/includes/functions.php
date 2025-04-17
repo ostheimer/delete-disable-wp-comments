@@ -24,9 +24,9 @@ if (!defined('WPINC')) {
 /**
  * Delete all spam comments from the database
  */
-function ddc_delete_spam_comments() {
+function ddwpc_delete_spam_comments() {
     // Verify nonce
-    if (!check_ajax_referer('ddc_nonce', 'nonce', false)) {
+    if (!check_ajax_referer('ddwpc_nonce', 'nonce', false)) {
         wp_send_json_error(array(
             'message' => esc_html__('Security check failed.', 'delete-disable-comments')
         ));
@@ -40,7 +40,7 @@ function ddc_delete_spam_comments() {
     }
 
     // Get spam comments count from cache
-    $cache_key = 'ddc_spam_comments_count';
+    $cache_key = 'ddwpc_spam_comments_count';
     $spam_count = wp_cache_get($cache_key, 'delete-disable-comments');
     if (false === $spam_count) {
         $args = array(
@@ -83,9 +83,9 @@ function ddc_delete_spam_comments() {
 /**
  * Delete all comments from the database
  */
-function ddc_delete_all_comments() {
+function ddwpc_delete_all_comments() {
     // Verify nonce
-    if (!check_ajax_referer('ddc_nonce', 'nonce', false)) {
+    if (!check_ajax_referer('ddwpc_nonce', 'nonce', false)) {
         wp_send_json_error(array(
             'message' => esc_html__('Security check failed.', 'delete-disable-comments')
         ));
@@ -99,7 +99,7 @@ function ddc_delete_all_comments() {
     }
 
     // Get total comments count from cache
-    $cache_key = 'ddc_total_comments_count';
+    $cache_key = 'ddwpc_total_comments_count';
     $total_count = wp_cache_get($cache_key, 'delete-disable-comments');
     if (false === $total_count) {
         $args = array(
@@ -137,9 +137,9 @@ function ddc_delete_all_comments() {
 /**
  * Create and download a backup of all comments
  */
-function ddc_backup_comments() {
+function ddwpc_backup_comments() {
     // Verify nonce
-    if (!check_ajax_referer('ddc_nonce', 'nonce', false)) {
+    if (!check_ajax_referer('ddwpc_nonce', 'nonce', false)) {
         wp_send_json_error(array(
             'message' => esc_html__('Security check failed.', 'delete-disable-comments')
         ));
@@ -153,7 +153,7 @@ function ddc_backup_comments() {
     }
 
     // Get comments from database with caching
-    $cache_key = 'ddc_all_comments_backup';
+    $cache_key = 'ddwpc_all_comments_backup';
     $comments = wp_cache_get($cache_key, 'delete-disable-comments');
     if (false === $comments) {
         $comments = get_comments(array(
@@ -254,9 +254,9 @@ function ddc_backup_comments() {
 /**
  * Toggle comments status
  */
-function ddc_toggle_comments() {
+function ddwpc_toggle_comments() {
     // Verify nonce
-    if (!check_ajax_referer('ddc_nonce', 'nonce', false)) {
+    if (!check_ajax_referer('ddwpc_nonce', 'nonce', false)) {
         wp_send_json_error(array(
             'message' => esc_html__('Security check failed.', 'delete-disable-comments')
         ));
@@ -290,11 +290,11 @@ function ddc_toggle_comments() {
     }
     
     // Update option with strict boolean to string conversion
-    $update_result = update_option('ddc_disable_comments', $disabled ? '1' : '0');
+    $update_result = update_option('ddwpc_disable_comments', $disabled ? '1' : '0');
     
     if ($update_result === false) {
         // Check if the value is already the same
-        $current_value = get_option('ddc_disable_comments');
+        $current_value = get_option('ddwpc_disable_comments');
         if ($current_value === ($disabled ? '1' : '0')) {
             // Value unchanged, not an error in this context
         } else {
@@ -306,7 +306,7 @@ function ddc_toggle_comments() {
     }
     
     // Get post types with comments enabled
-    $cache_key = 'ddc_post_types_with_comments';
+    $cache_key = 'ddwpc_post_types_with_comments';
     $post_types = wp_cache_get($cache_key);
     
     if (false === $post_types) {
@@ -318,7 +318,7 @@ function ddc_toggle_comments() {
     
     // Close comments on all posts if disabled
     if ($disabled) {
-        $cache_key_closed = 'ddc_comments_closed';
+        $cache_key_closed = 'ddwpc_comments_closed';
         $comments_closed = wp_cache_get($cache_key_closed);
         
         if (false === $comments_closed) {
@@ -360,9 +360,9 @@ function ddc_toggle_comments() {
 /**
  * Get the current status of comments
  */
-function ddc_get_status() {
+function ddwpc_get_status() {
     // Check nonce for security
-    if (!check_ajax_referer('ddc_nonce', 'nonce', false)) {
+    if (!check_ajax_referer('ddwpc_nonce', 'nonce', false)) {
         wp_send_json_error(array(
             'message' => esc_html__('Security check failed.', 'delete-disable-comments')
         ));
@@ -378,7 +378,7 @@ function ddc_get_status() {
     }
 
     // Get the current status (force string value)
-    $disabled = get_option('ddc_disable_comments', "0");
+    $disabled = get_option('ddwpc_disable_comments', "0");
 
     wp_send_json_success(array(
         'disabled' => $disabled,
@@ -392,11 +392,11 @@ function ddc_get_status() {
 /**
  * Register AJAX handlers for the plugin.
  */
-function ddc_register_ajax_handlers() {
-    add_action('wp_ajax_ddc_delete_spam', 'ddc_delete_spam_comments');
-    add_action('wp_ajax_ddc_delete_all', 'ddc_delete_all_comments');
-    add_action('wp_ajax_ddc_backup_comments', 'ddc_backup_comments');
-    add_action('wp_ajax_ddc_toggle_comments', 'ddc_toggle_comments');
-    add_action('wp_ajax_ddc_get_status', 'ddc_get_status');
+function ddwpc_register_ajax_handlers() {
+    add_action('wp_ajax_ddwpc_delete_spam', 'ddwpc_delete_spam_comments');
+    add_action('wp_ajax_ddwpc_delete_all', 'ddwpc_delete_all_comments');
+    add_action('wp_ajax_ddwpc_backup_comments', 'ddwpc_backup_comments');
+    add_action('wp_ajax_ddwpc_toggle_comments', 'ddwpc_toggle_comments');
+    add_action('wp_ajax_ddwpc_get_status', 'ddwpc_get_status');
 }
-add_action('init', 'ddc_register_ajax_handlers'); // Register handlers on init 
+add_action('init', 'ddwpc_register_ajax_handlers'); // Register handlers on init 

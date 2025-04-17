@@ -2,8 +2,8 @@
 Contributors: helpstring
 Tags: comments, spam, delete, disable, backup
 Requires at least: 5.0
-Tested up to: 6.7
-Stable tag: 1.0.0
+Tested up to: 6.8
+Stable tag: 1.0.1
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -45,6 +45,11 @@ No, disabling comments only prevents new comments from being added. Existing com
 
 == Changelog ==
 
+= 1.0.1 =
+* Renamed plugin prefixes from `ddc_` to `ddwpc_` across PHP and JS files.
+* Removed manual `load_plugin_textdomain()` call (auto-loaded by WordPress).
+* Removed direct core file loads (e.g. `require_once wp-load.php`).
+
 = 1.0.0 =
 * Initial release
 * Added spam comment deletion
@@ -52,6 +57,9 @@ No, disabling comments only prevents new comments from being added. Existing com
 * Added site-wide comment disable feature
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+* Changed all plugin function, constant, and script prefixes to `ddwpc_` and cleaned up core file loads and textdomain hooks.
 
 = 1.0.0 =
 Initial release of Delete & Disable Comments plugin. 
