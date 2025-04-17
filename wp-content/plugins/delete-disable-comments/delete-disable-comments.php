@@ -19,11 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Make sure we have access to WordPress functions
-if (!defined('ABSPATH')) {
-    /** Set up WordPress environment */
-    require_once(dirname(dirname(dirname(__DIR__))) . '/wp-load.php');
-}
+// Removed direct loading of wp-load.php via require_once to comply with review.
 
 // Define plugin constants
 define('DDC_VERSION', '1.0.0');

@@ -454,3 +454,6 @@ Based on the WordPress Plugin Directory review feedback:
 4.  **Datenspeicherung im Plugin-Ordner verhindern:** Ändere `includes/check-languages.php`, sodass Sprachdateien nicht in den Plugin-Ordner geschrieben werden. - **Erledigt**
 5.  **Eindeutige Namen verwenden (Präfix):** Füge allen Funktionen, Klassen, Konstanten, Hooks und Optionen (z.B. `delete_spam_comments`, `toggle_comments`, `disable_comments`) einen eindeutigen Präfix hinzu (z.B. `ddc_`). - **Erledigt**
 6.  **Direkten Dateizugriff verhindern:** Füge `if ( ! defined( 'ABSPATH' ) ) exit;` am Anfang aller relevanten PHP-Dateien hinzu. - **Erledigt**
+7.  **Direkte Core-File-Loads entfernen:** Entferne `require_once(dirname(dirname(dirname(__DIR__))) . '/wp-load.php');` und ähnliche direkte Aufrufe in `delete-disable-comments.php` und `includes/functions.php`. - **Erledigt**
+8.  **load_plugin_textdomain()-Aufruf entfernen:** Entferne den manuellen Aufruf von `load_plugin_textdomain()` in `delete-disable-comments.php`, da WordPress.org ab Core 4.6 die Übersetzungen automatisch lädt. - **Ausstehend**
+9.  **Längerer eindeutiger Präfix:** Ersetze den zu kurzen Präfix `ddc_` durch einen einzigartigen Präfix mit mindestens 5 Zeichen in allen Funktionen, Klassen, Konstanten, Optionen und Hooks. - **Ausstehend**
