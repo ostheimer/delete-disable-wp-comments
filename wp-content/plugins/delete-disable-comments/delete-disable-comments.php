@@ -26,16 +26,6 @@ define('DDC_VERSION', '1.0.0');
 define('DDC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('DDC_PLUGIN_URL', plugin_dir_url(__FILE__));
 
-// Load translations early
-function ddc_load_textdomain() {
-    load_plugin_textdomain(
-        'delete-disable-comments',
-        false,
-        dirname(plugin_basename(__FILE__)) . '/languages/'
-    );
-}
-add_action('plugins_loaded', 'ddc_load_textdomain');
-
 // Include backend functions
 require_once DDC_PLUGIN_DIR . 'includes/functions.php';
 require_once DDC_PLUGIN_DIR . 'admin/admin-page.php';
