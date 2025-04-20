@@ -196,10 +196,13 @@ function ddwpc_backup_comments() {
         ));
     }
     
-    // Create backup filename with gmdate
-    $filename = 'ddc-comments-backup-' . gmdate('Y-m-d-H-i-s') . '.csv';
-    $upload_dir = wp_upload_dir();
-    $backup_file = trailingslashit($upload_dir['path']) . $filename;
+    // Prepare backup directory under wp-content/uploads/delete-disable-comments
+    $backup_dir = WP_CONTENT_DIR . '/uploads/delete-disable-comments';
+    if ( ! file_exists( $backup_dir ) ) {
+        wp_mkdir_p( $backup_dir );
+    }
+    $filename = 'ddwpc-comments-backup-' . gmdate('Y-m-d-H-i-s') . '.csv';
+    $backup_file = rtrim( $backup_dir, '/' ) . '/' . $filename;
     
     // Initialize WP_Filesystem
     global $wp_filesystem;
@@ -235,7 +238,7 @@ function ddwpc_backup_comments() {
     }
     
     // Clean up old backup files
-    $backup_files = glob(trailingslashit($upload_dir['path']) . 'ddc-comments-backup-*.csv');
+    $backup_files = glob( rtrim( $backup_dir, '/' ) . '/ddwpc-comments-backup-*.csv' );
     if ($backup_files) {
         foreach ($backup_files as $file) {
             if ($file !== $backup_file && (time() - filemtime($file)) > DAY_IN_SECONDS) {
@@ -247,7 +250,7 @@ function ddwpc_backup_comments() {
     // Return download URL
     wp_send_json_success(array(
         'message' => esc_html__('Backup created successfully.', 'delete-disable-comments'),
-        'file_url' => trailingslashit($upload_dir['url']) . $filename
+        'file_url' => WP_CONTENT_URL . '/uploads/delete-disable-comments/' . $filename
     ));
 }
 

@@ -1,0 +1,4 @@
+comment_ID,comment_post_ID,comment_author,comment_author_email,comment_author_url,comment_author_IP,comment_date,comment_date_gmt,comment_content,comment_karma,comment_approved,comment_agent,comment_type,comment_parent,user_id
+"55","0","Benutzer Eins","eins@example.com","","","2025-04-20 20:49:31","2025-04-20 18:49:31","Dies ist ein Testkommentar 1","0","1","","comment","0","0"
+"56","0","Benutzer Zwei","zwei@example.com","","","2025-04-20 20:49:32","2025-04-20 18:49:32","Dies ist ein Testkommentar 2","0","1","","comment","0","0"
+"57","0","Benutzer Drei","drei@example.com","","","2025-04-20 20:49:32","2025-04-20 18:49:32","Dies ist ein Testkommentar 3","0","1","","comment","0","0"
