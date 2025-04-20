@@ -49,6 +49,8 @@ No, disabling comments only prevents new comments from being added. Existing com
 * Renamed plugin prefixes from `ddc_` to `ddwpc_` across PHP and JS files.
 * Removed manual `load_plugin_textdomain()` call (auto-loaded by WordPress).
 * Removed direct core file loads (e.g. `require_once wp-load.php`).
+* Updated backup directory path: CSV backups are now stored under `wp-content/uploads/delete-disable-comments` using `WP_CONTENT_DIR`, ensuring they are visible on the host.
+
 
 = 1.0.0 =
 * Initial release
@@ -60,6 +62,7 @@ No, disabling comments only prevents new comments from being added. Existing com
 
 = 1.0.1 =
 * Changed all plugin function, constant, and script prefixes to `ddwpc_` and cleaned up core file loads and textdomain hooks.
+* Changed backup location to `uploads/delete-disable-comments` so backup files appear correctly via host mount.
 
 = 1.0.0 =
 Initial release of Delete & Disable Comments plugin. 
