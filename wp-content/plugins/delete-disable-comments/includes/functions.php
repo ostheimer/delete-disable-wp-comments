@@ -8,17 +8,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Define time constants if not already defined (WordPress usually defines these)
+// Define time constants if not already defined (WordPress usually defines these).
 if ( ! defined( 'HOUR_IN_SECONDS' ) ) {
     define( 'HOUR_IN_SECONDS', 60 * 60 );
 }
 if ( ! defined( 'DAY_IN_SECONDS' ) ) {
     define( 'DAY_IN_SECONDS', 24 * HOUR_IN_SECONDS );
-}
-
-// If this file is called directly, abort.
-if (!defined('WPINC')) {
-    die;
 }
 
 /**
@@ -196,8 +191,9 @@ function ddwpc_backup_comments() {
         ));
     }
     
-    // Prepare backup directory under wp-content/uploads/delete-disable-comments
-    $backup_dir = WP_CONTENT_DIR . '/uploads/delete-disable-comments';
+    // Prepare backup directory under the uploads directory
+    $upload_dir = wp_upload_dir(); // Get upload directory paths and URLs
+    $backup_dir = trailingslashit( $upload_dir['basedir'] ) . 'delete-disable-comments'; // Plugin-specific folder
     if ( ! file_exists( $backup_dir ) ) {
         wp_mkdir_p( $backup_dir );
     }
@@ -248,10 +244,11 @@ function ddwpc_backup_comments() {
     }
     
     // Return download URL
-    wp_send_json_success(array(
-        'message' => esc_html__('Backup created successfully.', 'delete-disable-comments'),
-        'file_url' => WP_CONTENT_URL . '/uploads/delete-disable-comments/' . $filename
-    ));
+    $file_url = trailingslashit( $upload_dir['baseurl'] ) . 'delete-disable-comments/' . $filename;
+    wp_send_json_success( array(
+        'message'  => esc_html__( 'Backup created successfully.', 'delete-disable-comments' ),
+        'file_url' => $file_url,
+    ) );
 }
 
 /**
@@ -292,71 +289,95 @@ function ddwpc_toggle_comments() {
         return;
     }
     
-    // Update option with strict boolean to string conversion
-    $update_result = update_option('ddwpc_disable_comments', $disabled ? '1' : '0');
-    
-    if ($update_result === false) {
-        // Check if the value is already the same
-        $current_value = get_option('ddwpc_disable_comments');
-        if ($current_value === ($disabled ? '1' : '0')) {
-            // Value unchanged, not an error in this context
-        } else {
+    // Persist the new setting (string '0' / '1' for backwards compatibility).
+    $new_value     = $disabled ? '1' : '0';
+    $current_value = get_option('ddwpc_disable_comments');
+
+    if ((string) $current_value !== $new_value) {
+        if (false === update_option('ddwpc_disable_comments', $new_value)) {
             wp_send_json_error(array(
-                'message' => esc_html__('Failed to update comment settings.', 'delete-disable-comments')
+                'message' => esc_html__('Failed to update comment settings.', 'delete-disable-comments'),
             ));
             return;
         }
     }
-    
-    // Get post types with comments enabled
-    $cache_key = 'ddwpc_post_types_with_comments';
-    $post_types = wp_cache_get($cache_key);
-    
-    if (false === $post_types) {
-        $post_types = get_post_types(array('public' => true), 'names');
-        wp_cache_set($cache_key, $post_types, 'delete-disable-comments', HOUR_IN_SECONDS);
-    }
-    
-    global $wpdb;
-    
-    // Close comments on all posts if disabled
+
+    $closed_now = 0;
     if ($disabled) {
-        $cache_key_closed = 'ddwpc_comments_closed';
-        $comments_closed = wp_cache_get($cache_key_closed);
-        
-        if (false === $comments_closed) {
-            // Get all posts
-            $posts = get_posts(array(
-                'post_type' => $post_types,
-                'posts_per_page' => -1,
-                'post_status' => 'any',
-                'fields' => 'ids'
-            ));
-            
-            // Update each post
-            foreach ($posts as $post_id) {
-                wp_update_post(array(
-                    'ID' => $post_id,
-                    'comment_status' => 'closed',
-                    'ping_status' => 'closed'
-                ));
-            }
-            
-            wp_cache_set($cache_key_closed, true, 'delete-disable-comments', HOUR_IN_SECONDS);
-        }
-        
-        // Update default settings
-        update_option('default_comment_status', 'closed');
-        update_option('default_ping_status', 'closed');
+        // Apply WordPress defaults to keep new posts in line with the operator's intent.
+        ddwpc_apply_disable_comments_defaults(true);
+
+        // Close comments on existing posts in a single, side-effect-free SQL UPDATE.
+        // This intentionally does NOT use wp_update_post(): wp_update_post() would
+        // trigger save_post / transition_post_status / wp_after_insert_post hooks
+        // for every post, which has historically caused fatal errors in third-party
+        // plugins (e.g. WPML) when this code ran from the public init hook.
+        // See: https://github.com/ostheimer/delete-disable-wp-comments/issues/1
+        $closed_now = ddwpc_close_all_post_comments_in_db();
     }
-    
-    $message = $disabled ? 
-        esc_html__('Comments have been disabled site-wide.', 'delete-disable-comments') :
-        esc_html__('Comments have been enabled site-wide.', 'delete-disable-comments');
-    
+
+    $message = $disabled
+        ? sprintf(
+            /* translators: %d: number of posts whose comments were just closed */
+            esc_html(_n(
+                'Comments have been disabled site-wide. %d post was closed in the database.',
+                'Comments have been disabled site-wide. %d posts were closed in the database.',
+                $closed_now,
+                'delete-disable-comments'
+            )),
+            $closed_now
+        )
+        : esc_html__('Comments have been enabled site-wide.', 'delete-disable-comments');
+
     wp_send_json_success(array(
-        'message' => $message,
-        'status' => $disabled ? 'disabled' : 'enabled'
+        'message'    => $message,
+        'status'     => $disabled ? 'disabled' : 'enabled',
+        'closed_now' => $closed_now,
+    ));
+}
+
+/**
+ * Manually trigger the bulk-close action from the admin UI.
+ *
+ * Useful when the operator imports posts later, restores from backup,
+ * or used to run a previous version of the plugin where some posts may
+ * still have open comment_status / ping_status fields.
+ *
+ * Idempotent: returns 0 when nothing needs to be closed.
+ *
+ * @since 1.0.2
+ * @return void Sends a JSON response and exits.
+ */
+function ddwpc_close_all_now() {
+    if (!check_ajax_referer('ddwpc_nonce', 'nonce', false)) {
+        wp_send_json_error(array(
+            'message' => esc_html__('Security check failed.', 'delete-disable-comments'),
+        ));
+        return;
+    }
+
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(array(
+            'message' => esc_html__('Insufficient permissions.', 'delete-disable-comments'),
+        ));
+        return;
+    }
+
+    $closed = ddwpc_close_all_post_comments_in_db();
+
+    wp_send_json_success(array(
+        'message' => sprintf(
+            /* translators: %d: number of posts whose comments were just closed */
+            esc_html(_n(
+                '%d post was closed.',
+                '%d posts were closed.',
+                $closed,
+                'delete-disable-comments'
+            )),
+            $closed
+        ),
+        'closed'  => $closed,
+        'remaining' => ddwpc_count_posts_with_open_comments(),
     ));
 }
 
@@ -401,5 +422,5 @@ function ddwpc_register_ajax_handlers() {
     add_action('wp_ajax_ddwpc_backup_comments', 'ddwpc_backup_comments');
     add_action('wp_ajax_ddwpc_toggle_comments', 'ddwpc_toggle_comments');
     add_action('wp_ajax_ddwpc_get_status', 'ddwpc_get_status');
+    add_action('wp_ajax_ddwpc_close_all_now', 'ddwpc_close_all_now');
 }
-add_action('init', 'ddwpc_register_ajax_handlers'); // Register handlers on init 

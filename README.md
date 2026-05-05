@@ -28,6 +28,21 @@ Once comments are deleted, they cannot be recovered unless you have created a ba
 
 ## Changelog
 
+### 1.0.2 (kritischer Bugfix)
+
+* **Behebt** einen fatalen Fehler / White-Screen-Of-Death, der auftrat, wenn die Option "Disable comments site-wide" aktiv war und ein Plugin wie WPML, Yoast SEO oder Polylang auf den `save_post`-Hook hörte. Siehe [Issue #1](https://github.com/ostheimer/delete-disable-wp-comments/issues/1).
+* `ddwpc_init()` ruft `wp_update_post()` nicht mehr auf jedem Request auf. Stattdessen läuft die Bulk-Schließen-Logik nur noch bei Plugin-Aktivierung, beim expliziten Toggle "Disable comments site-wide" und über einen neuen manuellen Button **"Close all comments now"** auf der Einstellungsseite.
+* Der Bulk-Close läuft jetzt als einzelne, hook-freie SQL-`UPDATE`-Anweisung. Damit ist der Vorgang kompatibel mit allen Plugins, die `save_post` / `transition_post_status` / `wp_after_insert_post` abonnieren.
+* Die Standardeinstellungen `default_comment_status` und `default_ping_status` werden nur noch einmalig geschrieben, nicht bei jedem Aufruf.
+* Neu auf der Settings-Seite: Anzeige der Anzahl Posts, die in der DB noch offene Kommentare haben, plus Button zum sofortigen Schließen.
+* Neue interne Helper-Funktionen: `ddwpc_is_disable_comments_enabled()`, `ddwpc_apply_disable_comments_defaults()`, `ddwpc_close_all_post_comments_in_db()`, `ddwpc_count_posts_with_open_comments()`, `ddwpc_invalidate_posts_cache()`.
+
+### 1.0.1
+* Plugin-Präfixe von `ddc_` auf `ddwpc_` umgestellt (PHP & JS).
+* Manuellen `load_plugin_textdomain()`-Aufruf entfernt (wird seit WP 4.6 automatisch geladen).
+* Direkte Core-File-Includes (`require_once wp-load.php`) entfernt.
+* Backup-Verzeichnis: CSV-Backups liegen jetzt in `wp-content/uploads/delete-disable-comments`.
+
 ### 1.0.0
 * Initial release
 
@@ -46,11 +61,11 @@ This plugin is licensed under the GPL v2 or later.
 
 ## Tested up to
 
-* WordPress 6.4.3
+* WordPress 6.9
 
 ## Stable tag
 
-* 1.0.0
+* 1.0.2
 
 ## 🌟 Features
 
@@ -102,7 +117,12 @@ See the [Plugin README](wp-content/plugins/delete-disable-comments/README.md) fo
 │
 ├── cypress/                 # End-to-end tests
 │   └── e2e/                # Test specifications
-│       └── manage-comments.cy.js  # Comment management tests
+│       ├── manage-comments.cy.js          # Comment management tests
+│       └── init-hook-fatal-error.cy.js    # Regression coverage for issue #1
+│
+├── tests/                   # PHP-side tests
+│   └── php/
+│       └── test-bug-fix.php               # Standalone PHP smoke test for v1.0.2 fix
 │
 ├── documentation/          # Additional documentation
 │
@@ -139,6 +159,8 @@ See the [Plugin README](wp-content/plugins/delete-disable-comments/README.md) fo
 - **Development Files**:
   - `cypress/`: End-to-end test files and configurations
     - `manage-comments.cy.js`: Tests for all comment management features
+    - `init-hook-fatal-error.cy.js`: Regression coverage for [issue #1](https://github.com/ostheimer/delete-disable-wp-comments/issues/1) — verifies that toggling "Disable comments site-wide" never crashes the site and that the new "Close all comments now" maintenance button works.
+  - `tests/php/test-bug-fix.php`: Framework-free PHP smoke test that asserts the contract of the v1.0.2 fix (no `wp_update_post()` from `init`, single safe SQL UPDATE, idempotent option writes). Run with `php tests/php/test-bug-fix.php` — exit code 0 on success.
   - `documentation/`: Additional development documentation
   - `docker-compose.yml`: Docker environment configuration with WordPress, MySQL, and PHPMyAdmin
   - `package.json`: npm dependencies and development scripts

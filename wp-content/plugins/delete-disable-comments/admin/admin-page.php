@@ -35,15 +35,48 @@ function ddwpc_admin_page() {
             <p><?php esc_html_e('Toggle comments on or off for your entire website.', 'delete-disable-comments'); ?></p>
             <div class="toggle-container">
                 <label class="switch">
-                    <input type="checkbox" data-cy="toggle-comments" id="toggle-comments" <?php echo esc_attr(get_option('ddwpc_disable_comments') ? 'checked' : ''); ?>>
+                    <input type="checkbox" data-cy="toggle-comments" id="toggle-comments" <?php echo ddwpc_is_disable_comments_enabled() ? 'checked' : ''; ?>>
                     <span class="slider round"></span>
                 </label>
                 <span class="toggle-label" data-cy="toggle-status">
-                    <?php echo esc_html(get_option('ddwpc_disable_comments') ? 
-                        __('Comments are currently disabled', 'delete-disable-comments') : 
-                        __('Comments are currently enabled', 'delete-disable-comments')); ?>
+                    <?php echo esc_html(ddwpc_is_disable_comments_enabled()
+                        ? __('Comments are currently disabled', 'delete-disable-comments')
+                        : __('Comments are currently enabled', 'delete-disable-comments')); ?>
                 </span>
             </div>
+
+            <?php
+            $open_posts_count = ddwpc_count_posts_with_open_comments();
+            if (ddwpc_is_disable_comments_enabled() && $open_posts_count > 0) :
+                ?>
+                <div class="ddwpc-maintenance-notice" data-cy="open-posts-notice" style="margin-top:1em;padding:.75em 1em;background:#fff8e5;border-left:4px solid #dba617;">
+                    <p>
+                        <strong>
+                            <?php
+                            echo esc_html(sprintf(
+                                /* translators: %d: number of posts with open comments */
+                                _n(
+                                    '%d post in your database still has open comments or pings.',
+                                    '%d posts in your database still have open comments or pings.',
+                                    $open_posts_count,
+                                    'delete-disable-comments'
+                                ),
+                                $open_posts_count
+                            ));
+                            ?>
+                        </strong>
+                    </p>
+                    <p>
+                        <?php esc_html_e('Click the button below to close them in a single safe SQL update. This bypasses save_post hooks and is compatible with WPML, Yoast, and other plugins.', 'delete-disable-comments'); ?>
+                    </p>
+                    <button class="button button-secondary" data-cy="close-all-now-btn" id="ddwpc-close-all-now">
+                        <?php esc_html_e('Close all comments now', 'delete-disable-comments'); ?>
+                    </button>
+                    <span class="ddwpc-open-posts-count" data-cy="open-posts-count" style="margin-left:.5em;color:#666;">
+                        <?php echo esc_html($open_posts_count); ?>
+                    </span>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 

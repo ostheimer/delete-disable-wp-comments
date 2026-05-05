@@ -2,8 +2,8 @@
 Contributors: helpstring
 Tags: comments, spam, delete, disable, backup
 Requires at least: 5.0
-Tested up to: 6.8
-Stable tag: 1.0.1
+Tested up to: 6.9
+Stable tag: 1.0.2
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -45,6 +45,15 @@ No, disabling comments only prevents new comments from being added. Existing com
 
 == Changelog ==
 
+= 1.0.2 =
+* **Critical bug fix**: `ddwpc_init()` no longer iterates over every post on every page request. The previous implementation called `wp_update_post()` for every post in the database on every uncached request, which was both a severe performance regression *and* triggered fatal errors in third-party plugins that hook into `save_post` (notably WPML).
+* The bulk close-comments operation now runs only when the operator explicitly toggles "Disable comments site-wide" or clicks the new **Close all comments now** maintenance button on the settings screen.
+* The bulk operation now uses a single safe `$wpdb` UPDATE statement so it does not trigger `save_post`, `transition_post_status`, or `wp_after_insert_post` hooks. This makes it compatible with WPML, Yoast SEO, Avada/Fusion Builder, and similar plugins.
+* The settings screen now shows how many posts in the database still have open comments/pings, with a one-click button to close them.
+* Activation hook now sets `default_comment_status` and `default_ping_status` only once and only when the operator's setting requires it (no more option writes on every request).
+* New helper functions `ddwpc_is_disable_comments_enabled()`, `ddwpc_apply_disable_comments_defaults()`, `ddwpc_close_all_post_comments_in_db()`, and `ddwpc_count_posts_with_open_comments()`.
+* See: <https://github.com/ostheimer/delete-disable-wp-comments/issues/1>
+
 = 1.0.1 =
 * Renamed plugin prefixes from `ddc_` to `ddwpc_` across PHP and JS files.
 * Removed manual `load_plugin_textdomain()` call (auto-loaded by WordPress).
@@ -59,6 +68,9 @@ No, disabling comments only prevents new comments from being added. Existing com
 * Added site-wide comment disable feature
 
 == Upgrade Notice ==
+
+= 1.0.2 =
+Critical fix. Resolves a fatal error / WSOD that could appear with WPML and any plugin that hooks into save_post when the "Disable comments site-wide" toggle was on. Strongly recommended upgrade for anyone using the disable-comments feature.
 
 = 1.0.1 =
 * Changed all plugin function, constant, and script prefixes to `ddwpc_` and cleaned up core file loads and textdomain hooks.
