@@ -5,9 +5,9 @@
  * @package Delete & Disable Comments
  */
 
-// If this file is called directly, abort.
-if (!defined('WPINC')) {
-    die;
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
 }
 
 // This file intentionally left blank to prevent comment display 

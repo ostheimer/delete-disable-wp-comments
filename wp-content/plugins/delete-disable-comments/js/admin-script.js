@@ -126,6 +126,36 @@ jQuery(document).ready(function($) {
         });
     });
 
+    // Handle "Close all comments now" maintenance action
+    $(document).on('click', '#ddwpc-close-all-now', function() {
+        var $button = $(this);
+        var $notice = $button.closest('.ddwpc-maintenance-notice');
+        var $count  = $notice.find('.ddwpc-open-posts-count');
+
+        $button.text(ddwpcAjax.closing_now).prop('disabled', true);
+
+        $.post(ddwpcAjax.ajaxurl, {
+            action: 'ddwpc_close_all_now',
+            nonce: ddwpcAjax.nonce
+        }, function(response) {
+            $button.text(ddwpcAjax.close_all_now_button).prop('disabled', false);
+            if (response.success) {
+                showMessage(response.data.message, 'success');
+                if (typeof response.data.remaining !== 'undefined') {
+                    $count.text(response.data.remaining);
+                    if (response.data.remaining === 0) {
+                        $notice.fadeOut();
+                    }
+                }
+            } else {
+                showMessage((response.data && response.data.message) || ddwpcAjax.error_close_all_now, 'error');
+            }
+        }).fail(function() {
+            $button.text(ddwpcAjax.close_all_now_button).prop('disabled', false);
+            showMessage(ddwpcAjax.network_error_close_all_now, 'error');
+        });
+    });
+
     // Get initial status on page load
     function getInitialStatus() {
         var $toggle = $('#toggle-comments');

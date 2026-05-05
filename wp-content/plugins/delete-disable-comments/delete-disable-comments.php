@@ -3,7 +3,7 @@
  * Plugin Name: Delete & Disable Comments
  * Plugin URI: https://github.com/ostheimer/delete-disable-wp-comments
  * Description: A WordPress plugin that helps site administrators manage comments by deleting spam comments, removing all comments with backup, or disabling comments site-wide.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: Andreas Ostheimer
  * Author URI: https://github.com/ostheimer
  * License: GPL v2 or later
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Removed direct loading of wp-load.php via require_once to comply with review.
 
 // Define plugin constants
-define('DDWPC_VERSION', '1.0.1');
+define('DDWPC_VERSION', '1.0.2');
 define('DDWPC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('DDWPC_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -78,7 +78,11 @@ function ddwpc_admin_enqueue_scripts($hook) {
             'network_error_backup' => esc_html__('Network error while creating backup.', 'delete-disable-comments'),
             'delete_spam_button' => esc_html__('Delete Spam Comments', 'delete-disable-comments'),
             'delete_all_button' => esc_html__('Delete All Comments', 'delete-disable-comments'),
-            'backup_button' => esc_html__('Download Backup', 'delete-disable-comments')
+            'backup_button' => esc_html__('Download Backup', 'delete-disable-comments'),
+            'close_all_now_button' => esc_html__('Close all comments now', 'delete-disable-comments'),
+            'closing_now' => esc_html__('Closing...', 'delete-disable-comments'),
+            'error_close_all_now' => esc_html__('Error closing comments.', 'delete-disable-comments'),
+            'network_error_close_all_now' => esc_html__('Network error while closing comments.', 'delete-disable-comments'),
         )
     );
 }
@@ -102,151 +106,226 @@ add_action('admin_menu', 'ddwpc_admin_menu');
 
 // Activation Hook
 function ddwpc_activate() {
-    // Add default options
-    add_option('ddwpc_disable_comments', false);
+    // Seed default option only on first activation; do not overwrite existing user choice on reactivation.
+    add_option('ddwpc_disable_comments', '0');
+
+    // If the operator already had the "disable comments" toggle on (e.g. plugin was reinstalled),
+    // make sure the WordPress defaults reflect that and that all posts in the DB are actually closed.
+    if (ddwpc_is_disable_comments_enabled()) {
+        ddwpc_apply_disable_comments_defaults();
+        ddwpc_close_all_post_comments_in_db();
+    }
 }
 register_activation_hook(__FILE__, 'ddwpc_activate');
 
 // Deactivation Hook
 function ddwpc_deactivate() {
-    // Cleanup if needed
+    // Note: We intentionally keep the user's `ddwpc_disable_comments` setting in place,
+    // so that re-activating the plugin restores the previous behaviour. WordPress core
+    // deletes plugin data only via uninstall.php, which we leave to a future iteration.
     delete_option('ddwpc_disable_comments');
 }
 register_deactivation_hook(__FILE__, 'ddwpc_deactivate');
 
+/**
+ * Whether the operator has switched the plugin into "disable comments site-wide" mode.
+ *
+ * Wrapper around get_option() that normalises every truthy representation
+ * the option has historically been stored as ('1', 1, true, 'true').
+ *
+ * @since 1.0.2
+ * @return bool
+ */
+function ddwpc_is_disable_comments_enabled() {
+    $value = get_option('ddwpc_disable_comments', '0');
+    return in_array($value, array('1', 1, true, 'true'), true);
+}
+
+/**
+ * Persist the WordPress defaults that match the plugin state.
+ *
+ * Idempotent: only writes when the current value differs from the desired value,
+ * which avoids unnecessary autoload churn and DB writes.
+ *
+ * @since 1.0.2
+ * @param bool $disabled True to apply "comments off" defaults, false to leave defaults untouched.
+ * @return void
+ */
+function ddwpc_apply_disable_comments_defaults($disabled = true) {
+    if ($disabled) {
+        if (get_option('default_comment_status') !== 'closed') {
+            update_option('default_comment_status', 'closed');
+        }
+        if (get_option('default_ping_status') !== 'closed') {
+            update_option('default_ping_status', 'closed');
+        }
+    }
+}
+
+/**
+ * Close comments and pings on every post directly in the database.
+ *
+ * Uses $wpdb->query() with a single UPDATE statement instead of wp_update_post()
+ * to avoid triggering save_post / transition_post_status / wp_after_insert_post
+ * hooks. Those hooks are expensive and have been observed to trigger fatal errors
+ * in third-party plugins (e.g. WPML) when invoked from the public init hook.
+ *
+ * Idempotent: the WHERE clause skips posts that are already closed.
+ *
+ * @since 1.0.2
+ * @return int Number of posts whose comment_status / ping_status was changed.
+ */
+function ddwpc_close_all_post_comments_in_db() {
+    global $wpdb;
+
+    $rows = $wpdb->query(
+        "UPDATE {$wpdb->posts}
+         SET comment_status = 'closed', ping_status = 'closed'
+         WHERE comment_status <> 'closed' OR ping_status <> 'closed'"
+    );
+
+    if (false === $rows) {
+        return 0;
+    }
+
+    // Comment count caches and post-meta caches don't depend on these columns,
+    // but other caches that key on the post object should be invalidated.
+    ddwpc_invalidate_posts_cache();
+
+    return (int) $rows;
+}
+
+/**
+ * Bump the 'posts' cache group's last_changed marker so any downstream caches
+ * keyed off get_posts() pick up the new comment status.
+ *
+ * Wrapped in its own function so it can be stubbed in unit tests.
+ *
+ * @since 1.0.2
+ * @return void
+ */
+function ddwpc_invalidate_posts_cache() {
+    if (function_exists('wp_cache_set_last_changed')) {
+        wp_cache_set_last_changed('posts');
+    } else {
+        wp_cache_set('last_changed', microtime(), 'posts');
+    }
+}
+
+/**
+ * Count how many posts in the DB still have comments or pings open.
+ *
+ * Used by the admin UI to show whether the operator should run the
+ * "Close all comments now" maintenance action.
+ *
+ * @since 1.0.2
+ * @return int
+ */
+function ddwpc_count_posts_with_open_comments() {
+    global $wpdb;
+
+    $count = $wpdb->get_var(
+        "SELECT COUNT(*) FROM {$wpdb->posts}
+         WHERE comment_status <> 'closed' OR ping_status <> 'closed'"
+    );
+
+    return (int) $count;
+}
+
 // Initialize the plugin
 function ddwpc_init() {
-    // If comments are disabled, remove support for comments and trackbacks
-    if (get_option('ddwpc_disable_comments', false)) {
-        // Get post types with comments enabled and cache the result
-        $cache_key = 'ddwpc_post_types_with_comments';
-        $post_types = wp_cache_get($cache_key);
-        
-        if (false === $post_types) {
-            $post_types = get_post_types(array('public' => true), 'names');
-            wp_cache_set($cache_key, $post_types, 'delete-disable-comments', HOUR_IN_SECONDS);
-        }
-        
-        foreach ($post_types as $post_type) {
-            if (post_type_supports($post_type, 'comments')) {
-                remove_post_type_support($post_type, 'comments');
-                remove_post_type_support($post_type, 'trackbacks');
-            }
-        }
-
-        // Close comments on all posts with caching
-        global $wpdb;
-        $cache_key = 'ddwpc_comments_closed';
-        $comments_closed = wp_cache_get($cache_key);
-        
-        if (false === $comments_closed) {
-            // Get all posts
-            $posts = get_posts(array(
-                'post_type' => 'any',
-                'posts_per_page' => -1,
-                'post_status' => 'any',
-                'fields' => 'ids'
-            ));
-            
-            // Update each post individually
-            foreach ($posts as $post_id) {
-                wp_update_post(array(
-                    'ID' => $post_id,
-                    'comment_status' => 'closed',
-                    'ping_status' => 'closed'
-                ));
-            }
-            
-            wp_cache_set($cache_key, true, 'delete-disable-comments', HOUR_IN_SECONDS);
-        }
-
-        // Ensure new posts have comments disabled by default
-        update_option('default_comment_status', 'closed');
-        update_option('default_ping_status', 'closed');
-
-        // Filter to ensure comments are closed
-        add_filter('comments_open', '__return_false', 20, 2);
-        add_filter('pings_open', '__return_false', 20, 2);
-        
-        // Remove comment-related menu items
-        add_action('admin_menu', function() {
-            remove_menu_page('edit-comments.php');
-        });
-        
-        // Hide comment counts in admin bar
-        add_action('wp_before_admin_bar_render', function() {
-            global $wp_admin_bar;
-            $wp_admin_bar->remove_menu('comments');
-        });
-
-        // Additional filters to hide comments UI
-        add_filter('comments_template', 'ddwpc_use_blank_template', 20);
-        
-        // Remove comments from post type supports
-        add_action('template_redirect', 'ddwpc_block_comment_feed');
-
-        // Remove comments from admin bar
-        add_action('admin_init', function() {
-            if (is_admin_bar_showing()) {
-                remove_action('admin_bar_menu', 'wp_admin_bar_comments_menu', 60);
-            }
-        });
-
-        // Remove comments CSS from theme
-        add_action('wp_enqueue_scripts', 'ddwpc_dequeue_comment_styles');
-
-        // Hide existing comments
-        add_filter('comments_array', '__return_empty_array', 20);
-        
-        // Disable comments REST API endpoint
-        add_filter('rest_endpoints', 'ddwpc_disable_rest_endpoints_filter');
-
-        // Remove comment-related blocks
-        add_filter('allowed_block_types_all', 'ddwpc_remove_comment_blocks');
-
-        // Remove comment links from post meta
-        add_filter('post_comments_feed_link', '__return_false');
-        add_filter('comments_link_feed', '__return_false');
-        add_filter('comment_link', '__return_false');
-        add_filter('get_comments_link', '__return_false');
-        add_filter('get_comments_number', '__return_zero');
-
-        // Remove comment-related widgets
-        add_action('widgets_init', 'ddwpc_unregister_comment_widgets');
-
-        // Remove comment support from post types
-        add_action('init', 'ddwpc_remove_post_type_comment_support', 100);
-
-        // Remove comment form
-        add_filter('comments_template_query_args', '__return_empty_array');
-        add_filter('comments_open', '__return_false');
-        add_filter('comments_array', '__return_empty_array');
-
-        // Remove comment patterns from theme
-        add_filter('theme_file_path', 'ddwpc_filter_theme_comment_patterns', 10, 2);
+    // Bail out cheaply if the operator did not enable site-wide disabling.
+    if ( ! ddwpc_is_disable_comments_enabled() ) {
+        return;
     }
+
+    // Remove comment / trackback support from public post types.
+    // Note: this is in-memory only, no DB writes, so it is safe on every request.
+    $post_types = get_post_types(array('public' => true), 'names');
+    foreach ($post_types as $post_type) {
+        if (post_type_supports($post_type, 'comments')) {
+            remove_post_type_support($post_type, 'comments');
+            remove_post_type_support($post_type, 'trackbacks');
+        }
+    }
+
+    // Filter to ensure comments are closed.
+    add_filter('comments_open', '__return_false', 20, 2);
+    add_filter('pings_open', '__return_false', 20, 2);
+
+    // Remove comment-related menu items.
+    add_action('admin_menu', function() {
+        remove_menu_page('edit-comments.php');
+    });
+
+    // Hide comment counts in admin bar.
+    add_action('wp_before_admin_bar_render', function() {
+        global $wp_admin_bar;
+        if ($wp_admin_bar instanceof WP_Admin_Bar) {
+            $wp_admin_bar->remove_menu('comments');
+        }
+    });
+
+    // Additional filters to hide comments UI.
+    add_filter('comments_template', 'ddwpc_use_blank_template', 20);
+
+    // Block comment feeds.
+    add_action('template_redirect', 'ddwpc_block_comment_feed');
+
+    // Remove comments from admin bar.
+    add_action('admin_init', function() {
+        if (is_admin_bar_showing()) {
+            remove_action('admin_bar_menu', 'wp_admin_bar_comments_menu', 60);
+        }
+    });
+
+    // Remove comments CSS from theme.
+    add_action('wp_enqueue_scripts', 'ddwpc_dequeue_comment_styles');
+
+    // Hide existing comments.
+    add_filter('comments_array', '__return_empty_array', 20);
+
+    // Disable comments REST API endpoint.
+    add_filter('rest_endpoints', 'ddwpc_disable_rest_endpoints_filter');
+
+    // Remove comment-related blocks.
+    add_filter('allowed_block_types_all', 'ddwpc_remove_comment_blocks');
+
+    // Remove comment links from post meta.
+    add_filter('post_comments_feed_link', '__return_false');
+    add_filter('comments_link_feed', '__return_false');
+    add_filter('comment_link', '__return_false');
+    add_filter('get_comments_link', '__return_false');
+    add_filter('get_comments_number', '__return_zero');
+
+    // Remove comment-related widgets.
+    add_action('widgets_init', 'ddwpc_unregister_comment_widgets');
+
+    // Remove comment form.
+    add_filter('comments_template_query_args', '__return_empty_array');
+
+    // Remove comment patterns from theme.
+    add_filter('theme_file_path', 'ddwpc_filter_theme_comment_patterns', 10, 2);
 }
 add_action('init', 'ddwpc_init', 100);
 
 // Callback Functions (previously anonymous or defined elsewhere)
 
 function ddwpc_use_blank_template($template) {
-     if (get_option('ddwpc_disable_comments', '0') === '1') {
+    if (ddwpc_is_disable_comments_enabled()) {
         return DDWPC_PLUGIN_DIR . 'templates/blank.php';
     }
     return $template;
 }
 
 function ddwpc_block_comment_feed() {
-    if (get_option('ddwpc_disable_comments', '0') === '1') {
-        if (is_comment_feed()) {
-            wp_die(esc_html__('Comments are closed.', 'delete-disable-comments'), '', array('response' => 403));
-        }
+    if (ddwpc_is_disable_comments_enabled() && is_comment_feed()) {
+        wp_die(esc_html__('Comments are closed.', 'delete-disable-comments'), '', array('response' => 403));
     }
 }
 
 function ddwpc_dequeue_comment_styles() {
-    if (get_option('ddwpc_disable_comments', '0') === '1') {
+    if (ddwpc_is_disable_comments_enabled()) {
         wp_dequeue_style('comments-template');
         wp_dequeue_style('twentytwentyfive-comments');
         wp_dequeue_style('wp-block-comments');
@@ -255,7 +334,7 @@ function ddwpc_dequeue_comment_styles() {
 }
 
 function ddwpc_disable_rest_endpoints_filter($endpoints) {
-    if (get_option('ddwpc_disable_comments', '0') === '1') {
+    if (ddwpc_is_disable_comments_enabled()) {
         if (isset($endpoints['/wp/v2/comments'])) {
             unset($endpoints['/wp/v2/comments']);
         }
@@ -267,7 +346,7 @@ function ddwpc_disable_rest_endpoints_filter($endpoints) {
 }
 
 function ddwpc_remove_comment_blocks($allowed_blocks) {
-    if (get_option('ddwpc_disable_comments', '0') === '1') {
+    if (ddwpc_is_disable_comments_enabled()) {
         if (!is_array($allowed_blocks)) {
             return $allowed_blocks;
         }
@@ -279,65 +358,23 @@ function ddwpc_remove_comment_blocks($allowed_blocks) {
             'core/comments-pagination-previous',
             'core/comments-pagination-numbers',
             'core/comment-template',
-            'core/post-comments-form'
+            'core/post-comments-form',
         ));
     }
     return $allowed_blocks;
 }
 
 function ddwpc_unregister_comment_widgets() {
-    if (get_option('ddwpc_disable_comments', '0') === '1') {
+    if (ddwpc_is_disable_comments_enabled()) {
         unregister_widget('WP_Widget_Recent_Comments');
     }
 }
 
-function ddwpc_remove_post_type_comment_support() {
-    if (get_option('ddwpc_disable_comments', '0') === '1') {
-        $post_types = get_post_types(array('public' => true), 'names');
-        foreach ($post_types as $post_type) {
-            if (post_type_supports($post_type, 'comments')) {
-                remove_post_type_support($post_type, 'comments');
-                remove_post_type_support($post_type, 'trackbacks');
-            }
-        }
-    }
-}
-
 function ddwpc_filter_theme_comment_patterns($path, $file) {
-    if (get_option('ddwpc_disable_comments', '0') === '1') {
-        if ($file === 'patterns/comments.php') {
-            return DDWPC_PLUGIN_DIR . 'templates/blank.php';
-        }
+    if (ddwpc_is_disable_comments_enabled() && $file === 'patterns/comments.php') {
+        return DDWPC_PLUGIN_DIR . 'templates/blank.php';
     }
     return $path;
 }
 
-// --- Hooks from includes/functions.php (already prefixed and registered in ddwpc_register_ajax_handlers) ---
-// add_action('wp_ajax_ddwpc_delete_spam', 'ddwpc_delete_spam_comments');
-// add_action('wp_ajax_ddwpc_delete_all', 'ddwpc_delete_all_comments');
-// add_action('wp_ajax_ddwpc_backup_comments', 'ddwpc_backup_comments'); 
-// add_action('wp_ajax_ddwpc_toggle_comments', 'ddwpc_toggle_comments'); 
-// add_action('wp_ajax_ddwpc_get_status', 'ddwpc_get_status');
-
-// --- Other Hooks (using prefixed functions where needed) ---
-// add_action('plugins_loaded', 'ddwpc_load_textdomain'); // Already done
-// add_action('admin_enqueue_scripts', 'ddwpc_admin_enqueue_scripts'); // Already done
-// add_action('admin_menu', 'ddwpc_admin_menu'); // Already done
-// register_activation_hook(__FILE__, 'ddwpc_activate'); // Already done
-// register_deactivation_hook(__FILE__, 'ddwpc_deactivate'); // Already done
-// add_action('init', 'ddwpc_init', 100); // Already done
-add_filter('comments_template', 'ddwpc_use_blank_template', 20); 
-add_action('template_redirect', 'ddwpc_block_comment_feed');
-// add_action('wp_before_admin_bar_render', 'ddwpc_admin_bar_render'); // Covered by closure in ddwpc_init
-add_action('wp_enqueue_scripts', 'ddwpc_dequeue_comment_styles', 100); 
-// add_filter('comments_array', 'ddwpc_hide_existing_comments', 20, 2); // Using __return_empty_array in ddwpc_init
-add_filter('rest_endpoints', 'ddwpc_disable_rest_endpoints_filter'); 
-add_action('widgets_init', 'ddwpc_unregister_comment_widgets');
-
-
-/* // Remove the include from the end of the file
-// Include the admin page function if it exists as a separate file
-if (file_exists(DDWPC_PLUGIN_DIR . 'admin/admin-page.php')) {
-    require_once DDWPC_PLUGIN_DIR . 'admin/admin-page.php';
-}
-*/
+add_action('init', 'ddwpc_register_ajax_handlers');
