@@ -96,6 +96,8 @@ function esc_html__($s, $domain = null) { return $s; }
 function esc_html_e($s, $domain = null) { echo $s; }
 function esc_html($s) { return $s; }
 function esc_attr($s) { return $s; }
+function __($s, $domain = null) { return $s; }
+function _e($s, $domain = null) { echo $s; }
 function _n($single, $plural, $count, $domain = null) { return $count === 1 ? $single : $plural; }
 function add_submenu_page() { /* no-op */ }
 function remove_menu_page($slug) { /* no-op */ }
@@ -225,6 +227,35 @@ assert_eq(1, DDWPC_Test_State::$option_writes['default_ping_status'] ?? 0,
 echo "\n--- ddwpc_count_posts_with_open_comments() returns the wpdb result ---\n";
 DDWPC_Test_State::$open_posts_count = 12;
 assert_eq(12, ddwpc_count_posts_with_open_comments(), 'returns wpdb->get_var() result');
+
+echo "\n--- admin page does not run the COUNT query when toggle is off (review feedback) ---\n";
+DDWPC_Test_State::$options['ddwpc_disable_comments'] = '0';
+DDWPC_Test_State::$sql_query_count = 0;
+DDWPC_Test_State::$sql_queries     = [];
+require_once __DIR__ . '/../../wp-content/plugins/delete-disable-comments/admin/admin-page.php';
+ob_start();
+ddwpc_admin_page();
+ob_end_clean();
+$count_queries = array_filter(
+    DDWPC_Test_State::$sql_queries,
+    static fn(string $q): bool => str_contains($q, 'COUNT(*)')
+);
+assert_eq(0, count($count_queries),
+    'no COUNT(*) query is fired when the disable-comments toggle is off');
+
+DDWPC_Test_State::$options['ddwpc_disable_comments'] = '1';
+DDWPC_Test_State::$sql_query_count = 0;
+DDWPC_Test_State::$sql_queries     = [];
+DDWPC_Test_State::$open_posts_count = 0;
+ob_start();
+ddwpc_admin_page();
+ob_end_clean();
+$count_queries = array_filter(
+    DDWPC_Test_State::$sql_queries,
+    static fn(string $q): bool => str_contains($q, 'COUNT(*)')
+);
+assert_eq(1, count($count_queries),
+    'exactly one COUNT(*) query is fired when the disable-comments toggle is on');
 
 // ---------------------------------------------------------------------------
 // Summary

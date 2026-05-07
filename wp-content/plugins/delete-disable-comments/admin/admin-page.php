@@ -46,7 +46,13 @@ function ddwpc_admin_page() {
             </div>
 
             <?php
-            $open_posts_count = ddwpc_count_posts_with_open_comments();
+            // Only run the open-post count query when the disable toggle is on:
+            // the SELECT COUNT(*) over wp_posts becomes a full-table scan on
+            // large sites and would otherwise add latency to the settings page
+            // for operators who keep the toggle off.
+            $open_posts_count = ddwpc_is_disable_comments_enabled()
+                ? ddwpc_count_posts_with_open_comments()
+                : 0;
             if (ddwpc_is_disable_comments_enabled() && $open_posts_count > 0) :
                 ?>
                 <div class="ddwpc-maintenance-notice" data-cy="open-posts-notice" style="margin-top:1em;padding:.75em 1em;background:#fff8e5;border-left:4px solid #dba617;">
