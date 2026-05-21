@@ -1,11 +1,11 @@
-# Copyright (C) 2024 Andreas Ostheimer
+# Copyright (C) 2026 Andreas Ostheimer
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Delete & Disable Comments 1.0.0\n"
+"Project-Id-Version: Delete & Disable Comments 1.0.5\n"
 "Report-Msgid-Bugs-To: https://github.com/ostheimer/delete-disable-wp-comments/issues\n"
-"POT-Creation-Date: 2024-03-23 09:07+0100\n"
-"PO-Revision-Date: 2024-03-23 10:15+0100\n"
+"POT-Creation-Date: 2026-05-21 12:00+0200\n"
+"PO-Revision-Date: 2026-05-21 12:00+0200\n"
 "Last-Translator: Andreas Ostheimer\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -14,84 +14,240 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: admin/admin-page.php:10
+#: delete-disable-comments.php:93
+#: delete-disable-comments.php:94
 msgid "Delete & Disable Comments"
 msgstr "Kommentare löschen & deaktivieren"
 
+#: admin/admin-page.php:15
+#: delete-disable-comments.php:79
 msgid "Delete Spam Comments"
 msgstr "Spam-Kommentare löschen"
 
+#: admin/admin-page.php:16
 msgid "Remove all comments marked as spam from your database."
 msgstr "Entfernen Sie alle als Spam markierten Kommentare aus Ihrer Datenbank."
 
+#: admin/admin-page.php:23
+#: delete-disable-comments.php:80
 msgid "Delete All Comments"
 msgstr "Alle Kommentare löschen"
 
+#: admin/admin-page.php:24
 msgid "Remove all comments from your website. You can download a backup before deletion."
 msgstr "Entfernen Sie alle Kommentare von Ihrer Website. Sie können vor dem Löschen ein Backup herunterladen."
 
+#: admin/admin-page.php:29
+#: delete-disable-comments.php:81
 msgid "Download Backup"
 msgstr "Backup herunterladen"
 
+#: admin/admin-page.php:34
 msgid "Disable Comments"
 msgstr "Kommentare deaktivieren"
 
+#: admin/admin-page.php:35
 msgid "Toggle comments on or off for your entire website."
 msgstr "Aktivieren oder deaktivieren Sie Kommentare für Ihre gesamte Website."
 
+#: admin/admin-page.php:43
+#: admin/admin-page.php:44
+#: delete-disable-comments.php:63
+#: delete-disable-comments.php:64
+#: includes/functions.php:400
+#: includes/functions.php:401
 msgid "Comments are currently disabled"
 msgstr "Kommentare sind derzeit deaktiviert"
 
+#: admin/admin-page.php:43
+#: admin/admin-page.php:44
+#: delete-disable-comments.php:63
+#: delete-disable-comments.php:64
+#: includes/functions.php:400
+#: includes/functions.php:401
 msgid "Comments are currently enabled"
 msgstr "Kommentare sind derzeit aktiviert"
 
-msgid "Comments have been disabled site-wide."
-msgstr "Kommentare wurden für die gesamte Website deaktiviert."
+#: admin/admin-page.php:64
+msgid "%d post in your database still has open comments or pings."
+msgid_plural "%d posts in your database still have open comments or pings."
+msgstr[0] "%d Beitrag in Ihrer Datenbank hat noch offene Kommentare oder Pings."
+msgstr[1] "%d Beiträge in Ihrer Datenbank haben noch offene Kommentare oder Pings."
 
-msgid "Comments have been enabled site-wide."
-msgstr "Kommentare wurden für die gesamte Website aktiviert."
+#: admin/admin-page.php:76
+msgid "Click the button below to close them in a single safe SQL update. This bypasses save_post hooks and is compatible with WPML, Yoast, and other plugins."
+msgstr "Klicken Sie auf die Schaltfläche unten, um sie in einem einzigen sicheren SQL-Update zu schließen. Dies umgeht save_post-Hooks und ist kompatibel mit WPML, Yoast und anderen Plugins."
 
-msgid "%d spam comment has been deleted."
-msgid_plural "%d spam comments have been deleted."
-msgstr[0] "%d Spam-Kommentar wurde gelöscht."
-msgstr[1] "%d Spam-Kommentare wurden gelöscht."
+#: admin/admin-page.php:79
+#: delete-disable-comments.php:82
+msgid "Close all comments now"
+msgstr "Alle Kommentare jetzt schließen"
 
-msgid "%d comment has been deleted."
-msgid_plural "%d comments have been deleted."
-msgstr[0] "%d Kommentar wurde gelöscht."
-msgstr[1] "%d Kommentare wurden gelöscht."
+#: admin/admin-page.php:95
+msgid "Yes"
+msgstr "Ja"
 
+#: admin/admin-page.php:98
+msgid "No"
+msgstr "Nein"
+
+#: delete-disable-comments.php:61
 msgid "Error toggling comments."
 msgstr "Fehler beim Umschalten der Kommentare."
 
+#: delete-disable-comments.php:62
+msgid "Network error while updating comments."
+msgstr "Netzwerkfehler beim Aktualisieren der Kommentare."
+
+#: delete-disable-comments.php:65
+msgid "Do you really want to delete all spam comments?"
+msgstr "Möchten Sie wirklich alle Spam-Kommentare löschen?"
+
+#: delete-disable-comments.php:66
+msgid "Do you really want to delete ALL comments? This action cannot be undone!"
+msgstr "Möchten Sie wirklich ALLE Kommentare löschen? Diese Aktion kann nicht rückgängig gemacht werden!"
+
+#: delete-disable-comments.php:67
+msgid "Deleting..."
+msgstr "Wird gelöscht..."
+
+#: delete-disable-comments.php:68
+msgid "Updating..."
+msgstr "Wird aktualisiert..."
+
+#: delete-disable-comments.php:69
+msgid "Creating backup..."
+msgstr "Backup wird erstellt..."
+
+#: delete-disable-comments.php:70
+msgid "Spam comments have been successfully deleted."
+msgstr "Spam-Kommentare wurden erfolgreich gelöscht."
+
+#: delete-disable-comments.php:71
+msgid "All comments have been successfully deleted."
+msgstr "Alle Kommentare wurden erfolgreich gelöscht."
+
+#: delete-disable-comments.php:72
+msgid "Backup has been successfully created."
+msgstr "Backup wurde erfolgreich erstellt."
+
+#: delete-disable-comments.php:73
+msgid "Error deleting spam comments."
+msgstr "Fehler beim Löschen der Spam-Kommentare."
+
+#: delete-disable-comments.php:74
+msgid "Error deleting all comments."
+msgstr "Fehler beim Löschen aller Kommentare."
+
+#: delete-disable-comments.php:75
+msgid "Error creating backup."
+msgstr "Fehler beim Erstellen des Backups."
+
+#: delete-disable-comments.php:76
+msgid "Network error while deleting spam comments."
+msgstr "Netzwerkfehler beim Löschen der Spam-Kommentare."
+
+#: delete-disable-comments.php:77
+msgid "Network error while deleting all comments."
+msgstr "Netzwerkfehler beim Löschen aller Kommentare."
+
+#: delete-disable-comments.php:78
+msgid "Network error while creating backup."
+msgstr "Netzwerkfehler beim Erstellen des Backups."
+
+#: delete-disable-comments.php:83
+msgid "Closing..."
+msgstr "Wird geschlossen..."
+
+#: delete-disable-comments.php:84
+msgid "Error closing comments."
+msgstr "Fehler beim Schließen der Kommentare."
+
+#: delete-disable-comments.php:85
+msgid "Network error while closing comments."
+msgstr "Netzwerkfehler beim Schließen der Kommentare."
+
+#: delete-disable-comments.php:86
+msgid "Error loading status."
+msgstr "Fehler beim Laden des Status."
+
+#: delete-disable-comments.php:325
 msgid "Comments are closed."
 msgstr "Kommentare sind geschlossen."
 
-msgid "Comments are disabled."
-msgstr "Kommentare sind deaktiviert."
-
+#: includes/functions.php:26
+#: includes/functions.php:85
+#: includes/functions.php:139
+#: includes/functions.php:261
+#: includes/functions.php:344
+#: includes/functions.php:381
 msgid "Security check failed."
 msgstr "Sicherheitsüberprüfung fehlgeschlagen."
 
+#: includes/functions.php:33
+#: includes/functions.php:92
+#: includes/functions.php:146
+#: includes/functions.php:269
+#: includes/functions.php:351
+#: includes/functions.php:389
 msgid "Insufficient permissions."
 msgstr "Unzureichende Berechtigungen."
 
-msgid "Invalid request."
-msgstr "Ungültige Anfrage."
+#: includes/functions.php:67
+msgid "Successfully deleted %d spam comments."
+msgstr "%d Spam-Kommentare wurden erfolgreich gelöscht."
 
-msgid "Failed to update comment settings."
-msgstr "Fehler beim Aktualisieren der Kommentareinstellungen."
+#: includes/functions.php:74
+msgid "No spam comments found."
+msgstr "Keine Spam-Kommentare gefunden."
 
+#: includes/functions.php:123
 msgid "Successfully deleted all comments."
 msgstr "Alle Kommentare wurden erfolgreich gelöscht."
 
+#: includes/functions.php:128
 msgid "No comments found."
 msgstr "Keine Kommentare gefunden."
 
+#: includes/functions.php:190
 msgid "No comments found to backup."
 msgstr "Keine Kommentare zum Sichern gefunden."
 
+#: includes/functions.php:214
+msgid "Could not initialize WP_Filesystem. Check file permissions or provide FTP credentials if required."
+msgstr "WP_Filesystem konnte nicht initialisiert werden. Überprüfen Sie die Dateiberechtigungen oder geben Sie bei Bedarf FTP-Zugangsdaten an."
+
+#: includes/functions.php:232
 msgid "Failed to create backup file."
 msgstr "Fehler beim Erstellen der Backup-Datei."
 
+#: includes/functions.php:249
 msgid "Backup created successfully."
-msgstr "Backup wurde erfolgreich erstellt." 
+msgstr "Backup wurde erfolgreich erstellt."
+
+#: includes/functions.php:277
+msgid "Invalid input format."
+msgstr "Ungültiges Eingabeformat."
+
+#: includes/functions.php:287
+msgid "Invalid boolean value."
+msgstr "Ungültiger boolescher Wert."
+
+#: includes/functions.php:303
+msgid "Failed to update comment settings."
+msgstr "Fehler beim Aktualisieren der Kommentareinstellungen."
+
+#: includes/functions.php:318
+msgid "Comments have been disabled site-wide. Use \"Close all comments now\" below if existing posts still allow comments."
+msgstr "Kommentare wurden für die gesamte Website deaktiviert. Nutzen Sie unten „Alle Kommentare jetzt schließen“, falls bestehende Beiträge noch Kommentare zulassen."
+
+#: includes/functions.php:321
+msgid "Comments have been enabled site-wide."
+msgstr "Kommentare wurden für die gesamte Website aktiviert."
+
+#: includes/functions.php:362
+msgid "%d post was closed."
+msgid_plural "%d posts were closed."
+msgstr[0] "%d Beitrag wurde geschlossen."
+msgstr[1] "%d Beiträge wurden geschlossen."

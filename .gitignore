@@ -8,10 +8,6 @@
 /node_modules
 /vendor
 
-# Entwicklungs-Tools
-/cypress
-cypress.config.js
-
 # Betriebssystem-spezifische Dateien
 .DS_Store
 Thumbs.db
@@ -31,4 +27,7 @@ docker-compose.yml
 
 # Build-Ausgaben
 /dist
-/build 
+/build
+.venv-assets/
+# Lokale Secrets (nicht versionieren)
+.local/

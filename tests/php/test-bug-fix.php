@@ -257,6 +257,42 @@ $count_queries = array_filter(
 assert_eq(1, count($count_queries),
     'exactly one COUNT(*) query is fired when the disable-comments toggle is on');
 
+echo "\n--- ddwpc_toggle_comments() returns quickly without bulk SQL UPDATE ---\n";
+DDWPC_Test_State::$options['ddwpc_disable_comments'] = '0';
+DDWPC_Test_State::$sql_query_count = 0;
+DDWPC_Test_State::$sql_queries     = [];
+$_POST['disabled'] = 'true';
+$caught_success = false;
+try {
+    ddwpc_toggle_comments();
+} catch (RuntimeException $e) {
+    if ($e->getMessage() === 'json_success') {
+        $caught_success = true;
+    }
+}
+unset($_POST['disabled']);
+assert_eq(true, $caught_success, 'toggle ON responds with JSON success');
+assert_eq(0, DDWPC_Test_State::$sql_query_count, 'toggle ON does not run bulk SQL UPDATE');
+assert_eq(true, ddwpc_is_disable_comments_enabled(), 'toggle ON persists the disable option');
+assert_eq('closed', DDWPC_Test_State::$options['default_comment_status'] ?? null,
+    'toggle ON applies default_comment_status');
+
+DDWPC_Test_State::$options['ddwpc_disable_comments'] = '1';
+DDWPC_Test_State::$sql_query_count = 0;
+$_POST['disabled'] = 'false';
+$caught_success = false;
+try {
+    ddwpc_toggle_comments();
+} catch (RuntimeException $e) {
+    if ($e->getMessage() === 'json_success') {
+        $caught_success = true;
+    }
+}
+unset($_POST['disabled']);
+assert_eq(true, $caught_success, 'toggle OFF responds with JSON success');
+assert_eq(0, DDWPC_Test_State::$sql_query_count, 'toggle OFF does not run bulk SQL UPDATE');
+assert_eq(false, ddwpc_is_disable_comments_enabled(), 'toggle OFF clears the disable option');
+
 // ---------------------------------------------------------------------------
 // Summary
 // ---------------------------------------------------------------------------

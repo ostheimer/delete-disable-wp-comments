@@ -99,30 +99,37 @@ jQuery(document).ready(function($) {
         var $toggle = $(this);
         var $statusLabel = $('.toggle-label');
         var disabled = $toggle.is(':checked');
+        var previousChecked = !disabled;
 
-        $statusLabel.text(ddwpcAjax.updating); // Use prefixed JS object
+        $statusLabel.text(ddwpcAjax.updating);
+        $toggle.prop('disabled', true);
 
-        $.post(ddwpcAjax.ajaxurl, { // Use prefixed JS object
-            action: 'ddwpc_toggle_comments', // Prefixed action
-            nonce: ddwpcAjax.nonce, // Use prefixed JS object
-            disabled: disabled ? 'true' : 'false' // Send as string
-        }, function(response) {
-            if (response.success) {
-                $statusLabel.text(response.data.message);
-                $('.comment-status').removeClass('enabled disabled').addClass(response.data.status);
-                 // Ensure the toggle visually matches the state if AJAX call succeeded
-                $toggle.prop('checked', response.data.status === 'disabled');
-            } else {
-                showMessage(response.data.message || ddwpcAjax.error_toggling, 'error'); // Use prefixed JS object
-                // Revert visual state on error
-                $toggle.prop('checked', !disabled);
-                $statusLabel.text(disabled ? ddwpcAjax.comments_enabled : ddwpcAjax.comments_disabled); // Use prefixed JS object
+        $.post(ddwpcAjax.ajaxurl, {
+            action: 'ddwpc_toggle_comments',
+            nonce: ddwpcAjax.nonce,
+            disabled: disabled ? 'true' : 'false'
+        })
+        .done(function(response) {
+            if (response && response.success) {
+                // Reload so the maintenance notice and open-post count render server-side.
+                window.location.reload();
+                return;
             }
-        }).fail(function() {
-            showMessage(ddwpcAjax.network_error, 'error'); // Use prefixed JS object
-            // Revert visual state on error
-            $toggle.prop('checked', !disabled);
-            $statusLabel.text(disabled ? ddwpcAjax.comments_enabled : ddwpcAjax.comments_disabled); // Use prefixed JS object
+
+            var errorMessage = (response && response.data && response.data.message)
+                ? response.data.message
+                : ddwpcAjax.error_toggling;
+            showMessage(errorMessage, 'error');
+            $toggle.prop('checked', previousChecked);
+            $statusLabel.text(previousChecked ? ddwpcAjax.comments_disabled : ddwpcAjax.comments_enabled);
+        })
+        .fail(function() {
+            showMessage(ddwpcAjax.network_error, 'error');
+            $toggle.prop('checked', previousChecked);
+            $statusLabel.text(previousChecked ? ddwpcAjax.comments_disabled : ddwpcAjax.comments_enabled);
+        })
+        .always(function() {
+            $toggle.prop('disabled', false);
         });
     });
 
@@ -173,11 +180,11 @@ jQuery(document).ready(function($) {
             } else {
                 // Handle error fetching status if necessary
                 console.error('Error fetching initial comment status:', response.data.message);
-                $statusLabel.text('Error loading status');
+                $statusLabel.text(ddwpcAjax.error_loading_status);
             }
         }).fail(function() {
             console.error('Network error fetching initial comment status.');
-            $statusLabel.text('Error loading status');
+            $statusLabel.text(ddwpcAjax.error_loading_status);
         });
     }
     

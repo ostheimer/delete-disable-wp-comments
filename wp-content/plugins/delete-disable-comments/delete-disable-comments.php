@@ -3,7 +3,7 @@
  * Plugin Name: Delete & Disable Comments
  * Plugin URI: https://github.com/ostheimer/delete-disable-wp-comments
  * Description: A WordPress plugin that helps site administrators manage comments by deleting spam comments, removing all comments with backup, or disabling comments site-wide.
- * Version: 1.0.2
+ * Version: 1.0.5
  * Author: Andreas Ostheimer
  * Author URI: https://github.com/ostheimer
  * License: GPL v2 or later
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Removed direct loading of wp-load.php via require_once to comply with review.
 
 // Define plugin constants
-define('DDWPC_VERSION', '1.0.2');
+define('DDWPC_VERSION', '1.0.5');
 define('DDWPC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('DDWPC_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -83,6 +83,7 @@ function ddwpc_admin_enqueue_scripts($hook) {
             'closing_now' => esc_html__('Closing...', 'delete-disable-comments'),
             'error_close_all_now' => esc_html__('Error closing comments.', 'delete-disable-comments'),
             'network_error_close_all_now' => esc_html__('Network error while closing comments.', 'delete-disable-comments'),
+            'error_loading_status' => esc_html__('Error loading status.', 'delete-disable-comments'),
         )
     );
 }
@@ -178,6 +179,7 @@ function ddwpc_apply_disable_comments_defaults($disabled = true) {
 function ddwpc_close_all_post_comments_in_db() {
     global $wpdb;
 
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Intentional single bulk UPDATE; avoids per-post wp_update_post() and save_post hooks.
     $rows = $wpdb->query(
         "UPDATE {$wpdb->posts}
          SET comment_status = 'closed', ping_status = 'closed'
@@ -224,6 +226,7 @@ function ddwpc_invalidate_posts_cache() {
 function ddwpc_count_posts_with_open_comments() {
     global $wpdb;
 
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Intentional aggregate COUNT for admin maintenance UI; not suitable for object-cache wrapping.
     $count = $wpdb->get_var(
         "SELECT COUNT(*) FROM {$wpdb->posts}
          WHERE comment_status <> 'closed' OR ping_status <> 'closed'"

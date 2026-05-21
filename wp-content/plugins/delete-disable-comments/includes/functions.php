@@ -271,68 +271,58 @@ function ddwpc_toggle_comments() {
         return;
     }
 
-    // Properly sanitize and validate the input
-    if (!isset($_POST['disabled']) || !is_string($_POST['disabled'])) {
+    // Sanitize and validate the toggle payload (accept string or bool from jQuery).
+    if (!isset($_POST['disabled'])) {
         wp_send_json_error(array(
-            'message' => esc_html__('Invalid input format.', 'delete-disable-comments')
+            'message' => esc_html__('Invalid input format.', 'delete-disable-comments'),
         ));
         return;
     }
-    
-    $disabled_input = sanitize_text_field(wp_unslash($_POST['disabled']));
-    $disabled = filter_var($disabled_input, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-    
+
+    $disabled_raw = sanitize_text_field(wp_unslash($_POST['disabled']));
+    $disabled     = filter_var($disabled_raw, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+
     if ($disabled === null) {
         wp_send_json_error(array(
-            'message' => esc_html__('Invalid boolean value.', 'delete-disable-comments')
+            'message' => esc_html__('Invalid boolean value.', 'delete-disable-comments'),
         ));
         return;
     }
-    
+
     // Persist the new setting (string '0' / '1' for backwards compatibility).
     $new_value     = $disabled ? '1' : '0';
     $current_value = get_option('ddwpc_disable_comments');
 
     if ((string) $current_value !== $new_value) {
-        if (false === update_option('ddwpc_disable_comments', $new_value)) {
-            wp_send_json_error(array(
-                'message' => esc_html__('Failed to update comment settings.', 'delete-disable-comments'),
-            ));
-            return;
-        }
+        update_option('ddwpc_disable_comments', $new_value);
     }
 
-    $closed_now = 0;
-    if ($disabled) {
-        // Apply WordPress defaults to keep new posts in line with the operator's intent.
-        ddwpc_apply_disable_comments_defaults(true);
+    // Verify persisted state (update_option() may return false when the value is unchanged).
+    if (ddwpc_is_disable_comments_enabled() !== $disabled) {
+        wp_send_json_error(array(
+            'message' => esc_html__('Failed to update comment settings.', 'delete-disable-comments'),
+        ));
+        return;
+    }
 
-        // Close comments on existing posts in a single, side-effect-free SQL UPDATE.
-        // This intentionally does NOT use wp_update_post(): wp_update_post() would
-        // trigger save_post / transition_post_status / wp_after_insert_post hooks
-        // for every post, which has historically caused fatal errors in third-party
-        // plugins (e.g. WPML) when this code ran from the public init hook.
-        // See: https://github.com/ostheimer/delete-disable-wp-comments/issues/1
-        $closed_now = ddwpc_close_all_post_comments_in_db();
+    if ($disabled) {
+        // Fast path only: flip defaults so new content stays closed.
+        // Bulk-closing existing posts is intentionally deferred to the
+        // "Close all comments now" maintenance action so the AJAX request
+        // returns immediately and does not lock wp_posts on large sites.
+        ddwpc_apply_disable_comments_defaults(true);
     }
 
     $message = $disabled
-        ? sprintf(
-            /* translators: %d: number of posts whose comments were just closed */
-            esc_html(_n(
-                'Comments have been disabled site-wide. %d post was closed in the database.',
-                'Comments have been disabled site-wide. %d posts were closed in the database.',
-                $closed_now,
-                'delete-disable-comments'
-            )),
-            $closed_now
+        ? esc_html__(
+            'Comments have been disabled site-wide. Use "Close all comments now" below if existing posts still allow comments.',
+            'delete-disable-comments'
         )
         : esc_html__('Comments have been enabled site-wide.', 'delete-disable-comments');
 
     wp_send_json_success(array(
-        'message'    => $message,
-        'status'     => $disabled ? 'disabled' : 'enabled',
-        'closed_now' => $closed_now,
+        'message' => $message,
+        'status'  => $disabled ? 'disabled' : 'enabled',
     ));
 }
 
