@@ -16,6 +16,7 @@ Thumbs.db
 *.log
 *.tmp
 *.temp
+.playwright-mcp/
 
 # Docker
 docker-compose.yml

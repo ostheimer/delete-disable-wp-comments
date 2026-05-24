@@ -7,8 +7,8 @@ msgstr ""
 "POT-Creation-Date: 2026-05-21 12:00+0200\n"
 "PO-Revision-Date: 2026-05-21 12:00+0200\n"
 "Last-Translator: Andreas Ostheimer\n"
-"Language-Team: English (UK)\n"
-"Language: en_GB\n"
+"Language-Team: Greek\n"
+"Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,38 +19,38 @@ msgstr ""
 #: delete-disable-comments.php:93
 #: delete-disable-comments.php:94
 msgid "Delete & Disable Comments"
-msgstr "Delete & Disable Comments"
+msgstr "Διαγραφή και απενεργοποίηση σχολίων"
 
 #: admin/admin-page.php:15
 #: delete-disable-comments.php:79
 msgid "Delete Spam Comments"
-msgstr "Delete Spam Comments"
+msgstr "Διαγραφή ανεπιθύμητων σχολίων"
 
 #: admin/admin-page.php:16
 msgid "Remove all comments marked as spam from your database."
-msgstr "Remove all comments marked as spam from your database."
+msgstr "Αφαιρεί όλα τα σχόλια που έχουν επισημανθεί ως ανεπιθύμητα από τη βάση δεδομένων σας."
 
 #: admin/admin-page.php:23
 #: delete-disable-comments.php:80
 msgid "Delete All Comments"
-msgstr "Delete All Comments"
+msgstr "Διαγραφή όλων των σχολίων"
 
 #: admin/admin-page.php:24
 msgid "Remove all comments from your website. You can download a backup before deletion."
-msgstr "Remove all comments from your website. You can download a backup before deletion."
+msgstr "Αφαιρεί όλα τα σχόλια από τον ιστότοπό σας. Μπορείτε να κατεβάσετε ένα αντίγραφο ασφαλείας πριν από τη διαγραφή."
 
 #: admin/admin-page.php:29
 #: delete-disable-comments.php:81
 msgid "Download Backup"
-msgstr "Download Backup"
+msgstr "Λήψη αντιγράφου ασφαλείας"
 
 #: admin/admin-page.php:34
 msgid "Disable Comments"
-msgstr "Disable Comments"
+msgstr "Απενεργοποίηση σχολίων"
 
 #: admin/admin-page.php:35
 msgid "Toggle comments on or off for your entire website."
-msgstr "Toggle comments on or off for your entire website."
+msgstr "Ενεργοποιήστε ή απενεργοποιήστε τα σχόλια για ολόκληρο τον ιστότοπό σας."
 
 #: admin/admin-page.php:43
 #: admin/admin-page.php:44
@@ -59,7 +59,7 @@ msgstr "Toggle comments on or off for your entire website."
 #: includes/functions.php:400
 #: includes/functions.php:401
 msgid "Comments are currently disabled"
-msgstr "Comments are currently disabled"
+msgstr "Τα σχόλια είναι προς το παρόν απενεργοποιημένα"
 
 #: admin/admin-page.php:43
 #: admin/admin-page.php:44
@@ -68,114 +68,114 @@ msgstr "Comments are currently disabled"
 #: includes/functions.php:400
 #: includes/functions.php:401
 msgid "Comments are currently enabled"
-msgstr "Comments are currently enabled"
+msgstr "Τα σχόλια είναι προς το παρόν ενεργοποιημένα"
 
 #: admin/admin-page.php:64
 msgid "%d post in your database still has open comments or pings."
 msgid_plural "%d posts in your database still have open comments or pings."
-msgstr[0] "%d post in your database still has open comments or pings."
-msgstr[1] "%d posts in your database still have open comments or pings."
+msgstr[0] "%d άρθρο στη βάση δεδομένων σας εξακολουθεί να έχει ανοικτά σχόλια ή pings."
+msgstr[1] "%d άρθρα στη βάση δεδομένων σας εξακολουθούν να έχουν ανοικτά σχόλια ή pings."
 
 #: admin/admin-page.php:76
 msgid "Click the button below to close them in a single safe SQL update. This bypasses save_post hooks and is compatible with WPML, Yoast, and other plugins."
-msgstr "Click the button below to close them in a single safe SQL update. This bypasses save_post hooks and is compatible with WPML, Yoast, and other plugins."
+msgstr "Κάντε κλικ στο παρακάτω κουμπί για να τα κλείσετε με μία ασφαλή ενημέρωση SQL. Αυτό παρακάμπτει τα save_post hooks και είναι συμβατό με WPML, Yoast και άλλα πρόσθετα."
 
 #: admin/admin-page.php:79
 #: delete-disable-comments.php:82
 msgid "Close all comments now"
-msgstr "Close all comments now"
+msgstr "Κλείσιμο όλων των σχολίων τώρα"
 
 #: admin/admin-page.php:95
 msgid "Yes"
-msgstr "Yes"
+msgstr "Ναι"
 
 #: admin/admin-page.php:98
 msgid "No"
-msgstr "No"
+msgstr "Όχι"
 
 #: delete-disable-comments.php:61
 msgid "Error toggling comments."
-msgstr "Error toggling comments."
+msgstr "Σφάλμα κατά την εναλλαγή των σχολίων."
 
 #: delete-disable-comments.php:62
 msgid "Network error while updating comments."
-msgstr "Network error while updating comments."
+msgstr "Σφάλμα δικτύου κατά την ενημέρωση των σχολίων."
 
 #: delete-disable-comments.php:65
 msgid "Do you really want to delete all spam comments?"
-msgstr "Do you really want to delete all spam comments?"
+msgstr "Θέλετε πραγματικά να διαγράψετε όλα τα ανεπιθύμητα σχόλια;"
 
 #: delete-disable-comments.php:66
 msgid "Do you really want to delete ALL comments? This action cannot be undone!"
-msgstr "Do you really want to delete ALL comments? This action cannot be undone!"
+msgstr "Θέλετε πραγματικά να διαγράψετε ΟΛΑ τα σχόλια; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί!"
 
 #: delete-disable-comments.php:67
 msgid "Deleting..."
-msgstr "Deleting..."
+msgstr "Διαγραφή..."
 
 #: delete-disable-comments.php:68
 msgid "Updating..."
-msgstr "Updating..."
+msgstr "Ενημέρωση..."
 
 #: delete-disable-comments.php:69
 msgid "Creating backup..."
-msgstr "Creating backup..."
+msgstr "Δημιουργία αντιγράφου ασφαλείας..."
 
 #: delete-disable-comments.php:70
 msgid "Spam comments have been successfully deleted."
-msgstr "Spam comments have been successfully deleted."
+msgstr "Τα ανεπιθύμητα σχόλια διαγράφηκαν με επιτυχία."
 
 #: delete-disable-comments.php:71
 msgid "All comments have been successfully deleted."
-msgstr "All comments have been successfully deleted."
+msgstr "Όλα τα σχόλια διαγράφηκαν με επιτυχία."
 
 #: delete-disable-comments.php:72
 msgid "Backup has been successfully created."
-msgstr "Backup has been successfully created."
+msgstr "Το αντίγραφο ασφαλείας δημιουργήθηκε με επιτυχία."
 
 #: delete-disable-comments.php:73
 msgid "Error deleting spam comments."
-msgstr "Error deleting spam comments."
+msgstr "Σφάλμα κατά τη διαγραφή ανεπιθύμητων σχολίων."
 
 #: delete-disable-comments.php:74
 msgid "Error deleting all comments."
-msgstr "Error deleting all comments."
+msgstr "Σφάλμα κατά τη διαγραφή όλων των σχολίων."
 
 #: delete-disable-comments.php:75
 msgid "Error creating backup."
-msgstr "Error creating backup."
+msgstr "Σφάλμα κατά τη δημιουργία αντιγράφου ασφαλείας."
 
 #: delete-disable-comments.php:76
 msgid "Network error while deleting spam comments."
-msgstr "Network error while deleting spam comments."
+msgstr "Σφάλμα δικτύου κατά τη διαγραφή ανεπιθύμητων σχολίων."
 
 #: delete-disable-comments.php:77
 msgid "Network error while deleting all comments."
-msgstr "Network error while deleting all comments."
+msgstr "Σφάλμα δικτύου κατά τη διαγραφή όλων των σχολίων."
 
 #: delete-disable-comments.php:78
 msgid "Network error while creating backup."
-msgstr "Network error while creating backup."
+msgstr "Σφάλμα δικτύου κατά τη δημιουργία αντιγράφου ασφαλείας."
 
 #: delete-disable-comments.php:83
 msgid "Closing..."
-msgstr "Closing..."
+msgstr "Κλείσιμο..."
 
 #: delete-disable-comments.php:84
 msgid "Error closing comments."
-msgstr "Error closing comments."
+msgstr "Σφάλμα κατά το κλείσιμο των σχολίων."
 
 #: delete-disable-comments.php:85
 msgid "Network error while closing comments."
-msgstr "Network error while closing comments."
+msgstr "Σφάλμα δικτύου κατά το κλείσιμο των σχολίων."
 
 #: delete-disable-comments.php:86
 msgid "Error loading status."
-msgstr "Error loading status."
+msgstr "Σφάλμα κατά τη φόρτωση της κατάστασης."
 
 #: delete-disable-comments.php:325
 msgid "Comments are closed."
-msgstr "Comments are closed."
+msgstr "Τα σχόλια είναι κλειστά."
 
 #: includes/functions.php:26
 #: includes/functions.php:85
@@ -184,7 +184,7 @@ msgstr "Comments are closed."
 #: includes/functions.php:344
 #: includes/functions.php:381
 msgid "Security check failed."
-msgstr "Security check failed."
+msgstr "Ο έλεγχος ασφαλείας απέτυχε."
 
 #: includes/functions.php:33
 #: includes/functions.php:92
@@ -193,62 +193,62 @@ msgstr "Security check failed."
 #: includes/functions.php:351
 #: includes/functions.php:389
 msgid "Insufficient permissions."
-msgstr "Insufficient permissions."
+msgstr "Ανεπαρκή δικαιώματα."
 
 #: includes/functions.php:67
 msgid "Successfully deleted %d spam comments."
-msgstr "Successfully deleted %d spam comments."
+msgstr "Διαγράφηκαν με επιτυχία %d ανεπιθύμητα σχόλια."
 
 #: includes/functions.php:74
 msgid "No spam comments found."
-msgstr "No spam comments found."
+msgstr "Δεν βρέθηκαν ανεπιθύμητα σχόλια."
 
 #: includes/functions.php:123
 msgid "Successfully deleted all comments."
-msgstr "Successfully deleted all comments."
+msgstr "Όλα τα σχόλια διαγράφηκαν με επιτυχία."
 
 #: includes/functions.php:128
 msgid "No comments found."
-msgstr "No comments found."
+msgstr "Δεν βρέθηκαν σχόλια."
 
 #: includes/functions.php:190
 msgid "No comments found to backup."
-msgstr "No comments found to back up."
+msgstr "Δεν βρέθηκαν σχόλια για δημιουργία αντιγράφου ασφαλείας."
 
 #: includes/functions.php:214
 msgid "Could not initialize WP_Filesystem. Check file permissions or provide FTP credentials if required."
-msgstr "Could not initialise WP_Filesystem. Check file permissions or provide FTP credentials if required."
+msgstr "Δεν ήταν δυνατή η αρχικοποίηση του WP_Filesystem. Ελέγξτε τα δικαιώματα αρχείων ή δώστε στοιχεία FTP, αν απαιτείται."
 
 #: includes/functions.php:232
 msgid "Failed to create backup file."
-msgstr "Failed to create backup file."
+msgstr "Αποτυχία δημιουργίας αρχείου αντιγράφου ασφαλείας."
 
 #: includes/functions.php:249
 msgid "Backup created successfully."
-msgstr "Backup created successfully."
+msgstr "Το αντίγραφο ασφαλείας δημιουργήθηκε με επιτυχία."
 
 #: includes/functions.php:277
 msgid "Invalid input format."
-msgstr "Invalid input format."
+msgstr "Μη έγκυρη μορφή εισόδου."
 
 #: includes/functions.php:287
 msgid "Invalid boolean value."
-msgstr "Invalid boolean value."
+msgstr "Μη έγκυρη δυαδική τιμή."
 
 #: includes/functions.php:303
 msgid "Failed to update comment settings."
-msgstr "Failed to update comment settings."
+msgstr "Αποτυχία ενημέρωσης των ρυθμίσεων σχολίων."
 
 #: includes/functions.php:318
 msgid "Comments have been disabled site-wide. Use \"Close all comments now\" below if existing posts still allow comments."
-msgstr "Comments have been disabled site-wide. Use \"Close all comments now\" below if existing posts still allow comments."
+msgstr "Τα σχόλια έχουν απενεργοποιηθεί σε όλο τον ιστότοπο. Χρησιμοποιήστε το «Κλείσιμο όλων των σχολίων τώρα» παρακάτω αν υπάρχοντα άρθρα εξακολουθούν να επιτρέπουν σχόλια."
 
 #: includes/functions.php:321
 msgid "Comments have been enabled site-wide."
-msgstr "Comments have been enabled site-wide."
+msgstr "Τα σχόλια έχουν ενεργοποιηθεί σε όλο τον ιστότοπο."
 
 #: includes/functions.php:362
 msgid "%d post was closed."
 msgid_plural "%d posts were closed."
-msgstr[0] "%d post was closed."
-msgstr[1] "%d posts were closed."
+msgstr[0] "%d άρθρο έκλεισε."
+msgstr[1] "%d άρθρα έκλεισαν."

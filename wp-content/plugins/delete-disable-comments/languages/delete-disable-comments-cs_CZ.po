@@ -7,50 +7,50 @@ msgstr ""
 "POT-Creation-Date: 2026-05-21 12:00+0200\n"
 "PO-Revision-Date: 2026-05-21 12:00+0200\n"
 "Last-Translator: Andreas Ostheimer\n"
-"Language-Team: English (UK)\n"
-"Language: en_GB\n"
+"Language-Team: Czech\n"
+"Language: cs_CZ\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
 "X-Generator: Codex\n"
 
 #: admin/admin-page.php:10
 #: delete-disable-comments.php:93
 #: delete-disable-comments.php:94
 msgid "Delete & Disable Comments"
-msgstr "Delete & Disable Comments"
+msgstr "Smazat a zakázat komentáře"
 
 #: admin/admin-page.php:15
 #: delete-disable-comments.php:79
 msgid "Delete Spam Comments"
-msgstr "Delete Spam Comments"
+msgstr "Smazat spamové komentáře"
 
 #: admin/admin-page.php:16
 msgid "Remove all comments marked as spam from your database."
-msgstr "Remove all comments marked as spam from your database."
+msgstr "Odstraňte z databáze všechny komentáře označené jako spam."
 
 #: admin/admin-page.php:23
 #: delete-disable-comments.php:80
 msgid "Delete All Comments"
-msgstr "Delete All Comments"
+msgstr "Smazat všechny komentáře"
 
 #: admin/admin-page.php:24
 msgid "Remove all comments from your website. You can download a backup before deletion."
-msgstr "Remove all comments from your website. You can download a backup before deletion."
+msgstr "Odstraňte ze svého webu všechny komentáře. Před smazáním si můžete stáhnout zálohu."
 
 #: admin/admin-page.php:29
 #: delete-disable-comments.php:81
 msgid "Download Backup"
-msgstr "Download Backup"
+msgstr "Stáhnout zálohu"
 
 #: admin/admin-page.php:34
 msgid "Disable Comments"
-msgstr "Disable Comments"
+msgstr "Zakázat komentáře"
 
 #: admin/admin-page.php:35
 msgid "Toggle comments on or off for your entire website."
-msgstr "Toggle comments on or off for your entire website."
+msgstr "Zapněte nebo vypněte komentáře pro celý web."
 
 #: admin/admin-page.php:43
 #: admin/admin-page.php:44
@@ -59,7 +59,7 @@ msgstr "Toggle comments on or off for your entire website."
 #: includes/functions.php:400
 #: includes/functions.php:401
 msgid "Comments are currently disabled"
-msgstr "Comments are currently disabled"
+msgstr "Komentáře jsou aktuálně zakázané"
 
 #: admin/admin-page.php:43
 #: admin/admin-page.php:44
@@ -68,114 +68,115 @@ msgstr "Comments are currently disabled"
 #: includes/functions.php:400
 #: includes/functions.php:401
 msgid "Comments are currently enabled"
-msgstr "Comments are currently enabled"
+msgstr "Komentáře jsou aktuálně povolené"
 
 #: admin/admin-page.php:64
 msgid "%d post in your database still has open comments or pings."
 msgid_plural "%d posts in your database still have open comments or pings."
-msgstr[0] "%d post in your database still has open comments or pings."
-msgstr[1] "%d posts in your database still have open comments or pings."
+msgstr[0] "%d příspěvek v databázi má stále otevřené komentáře nebo pingy."
+msgstr[1] "%d příspěvky v databázi mají stále otevřené komentáře nebo pingy."
+msgstr[2] "%d příspěvků v databázi má stále otevřené komentáře nebo pingy."
 
 #: admin/admin-page.php:76
 msgid "Click the button below to close them in a single safe SQL update. This bypasses save_post hooks and is compatible with WPML, Yoast, and other plugins."
-msgstr "Click the button below to close them in a single safe SQL update. This bypasses save_post hooks and is compatible with WPML, Yoast, and other plugins."
+msgstr "Kliknutím na tlačítko níže je zavřete jednou bezpečnou SQL aktualizací. Tím se obejdou save_post hooks a zachová se kompatibilita s WPML, Yoastem a dalšími pluginy."
 
 #: admin/admin-page.php:79
 #: delete-disable-comments.php:82
 msgid "Close all comments now"
-msgstr "Close all comments now"
+msgstr "Zavřít všechny komentáře nyní"
 
 #: admin/admin-page.php:95
 msgid "Yes"
-msgstr "Yes"
+msgstr "Ano"
 
 #: admin/admin-page.php:98
 msgid "No"
-msgstr "No"
+msgstr "Ne"
 
 #: delete-disable-comments.php:61
 msgid "Error toggling comments."
-msgstr "Error toggling comments."
+msgstr "Chyba při přepínání komentářů."
 
 #: delete-disable-comments.php:62
 msgid "Network error while updating comments."
-msgstr "Network error while updating comments."
+msgstr "Chyba sítě při aktualizaci komentářů."
 
 #: delete-disable-comments.php:65
 msgid "Do you really want to delete all spam comments?"
-msgstr "Do you really want to delete all spam comments?"
+msgstr "Opravdu chcete smazat všechny spamové komentáře?"
 
 #: delete-disable-comments.php:66
 msgid "Do you really want to delete ALL comments? This action cannot be undone!"
-msgstr "Do you really want to delete ALL comments? This action cannot be undone!"
+msgstr "Opravdu chcete smazat VŠECHNY komentáře? Tuto akci nelze vrátit zpět!"
 
 #: delete-disable-comments.php:67
 msgid "Deleting..."
-msgstr "Deleting..."
+msgstr "Mazání..."
 
 #: delete-disable-comments.php:68
 msgid "Updating..."
-msgstr "Updating..."
+msgstr "Aktualizace..."
 
 #: delete-disable-comments.php:69
 msgid "Creating backup..."
-msgstr "Creating backup..."
+msgstr "Vytváření zálohy..."
 
 #: delete-disable-comments.php:70
 msgid "Spam comments have been successfully deleted."
-msgstr "Spam comments have been successfully deleted."
+msgstr "Spamové komentáře byly úspěšně smazány."
 
 #: delete-disable-comments.php:71
 msgid "All comments have been successfully deleted."
-msgstr "All comments have been successfully deleted."
+msgstr "Všechny komentáře byly úspěšně smazány."
 
 #: delete-disable-comments.php:72
 msgid "Backup has been successfully created."
-msgstr "Backup has been successfully created."
+msgstr "Záloha byla úspěšně vytvořena."
 
 #: delete-disable-comments.php:73
 msgid "Error deleting spam comments."
-msgstr "Error deleting spam comments."
+msgstr "Chyba při mazání spamových komentářů."
 
 #: delete-disable-comments.php:74
 msgid "Error deleting all comments."
-msgstr "Error deleting all comments."
+msgstr "Chyba při mazání všech komentářů."
 
 #: delete-disable-comments.php:75
 msgid "Error creating backup."
-msgstr "Error creating backup."
+msgstr "Chyba při vytváření zálohy."
 
 #: delete-disable-comments.php:76
 msgid "Network error while deleting spam comments."
-msgstr "Network error while deleting spam comments."
+msgstr "Chyba sítě při mazání spamových komentářů."
 
 #: delete-disable-comments.php:77
 msgid "Network error while deleting all comments."
-msgstr "Network error while deleting all comments."
+msgstr "Chyba sítě při mazání všech komentářů."
 
 #: delete-disable-comments.php:78
 msgid "Network error while creating backup."
-msgstr "Network error while creating backup."
+msgstr "Chyba sítě při vytváření zálohy."
 
 #: delete-disable-comments.php:83
 msgid "Closing..."
-msgstr "Closing..."
+msgstr "Zavírání..."
 
 #: delete-disable-comments.php:84
 msgid "Error closing comments."
-msgstr "Error closing comments."
+msgstr "Chyba při zavírání komentářů."
 
 #: delete-disable-comments.php:85
 msgid "Network error while closing comments."
-msgstr "Network error while closing comments."
+msgstr "Chyba sítě při zavírání komentářů."
 
 #: delete-disable-comments.php:86
 msgid "Error loading status."
-msgstr "Error loading status."
+msgstr "Chyba při načítání stavu."
 
 #: delete-disable-comments.php:325
 msgid "Comments are closed."
-msgstr "Comments are closed."
+msgstr "Komentáře jsou zavřené."
 
 #: includes/functions.php:26
 #: includes/functions.php:85
@@ -184,7 +185,7 @@ msgstr "Comments are closed."
 #: includes/functions.php:344
 #: includes/functions.php:381
 msgid "Security check failed."
-msgstr "Security check failed."
+msgstr "Kontrola zabezpečení selhala."
 
 #: includes/functions.php:33
 #: includes/functions.php:92
@@ -193,62 +194,63 @@ msgstr "Security check failed."
 #: includes/functions.php:351
 #: includes/functions.php:389
 msgid "Insufficient permissions."
-msgstr "Insufficient permissions."
+msgstr "Nedostatečná oprávnění."
 
 #: includes/functions.php:67
 msgid "Successfully deleted %d spam comments."
-msgstr "Successfully deleted %d spam comments."
+msgstr "Úspěšně smazáno %d spamových komentářů."
 
 #: includes/functions.php:74
 msgid "No spam comments found."
-msgstr "No spam comments found."
+msgstr "Nebyly nalezeny žádné spamové komentáře."
 
 #: includes/functions.php:123
 msgid "Successfully deleted all comments."
-msgstr "Successfully deleted all comments."
+msgstr "Všechny komentáře byly úspěšně smazány."
 
 #: includes/functions.php:128
 msgid "No comments found."
-msgstr "No comments found."
+msgstr "Nebyly nalezeny žádné komentáře."
 
 #: includes/functions.php:190
 msgid "No comments found to backup."
-msgstr "No comments found to back up."
+msgstr "Nebyly nalezeny žádné komentáře k zálohování."
 
 #: includes/functions.php:214
 msgid "Could not initialize WP_Filesystem. Check file permissions or provide FTP credentials if required."
-msgstr "Could not initialise WP_Filesystem. Check file permissions or provide FTP credentials if required."
+msgstr "Nelze inicializovat WP_Filesystem. Zkontrolujte oprávnění souborů nebo v případě potřeby zadejte FTP údaje."
 
 #: includes/functions.php:232
 msgid "Failed to create backup file."
-msgstr "Failed to create backup file."
+msgstr "Nepodařilo se vytvořit soubor zálohy."
 
 #: includes/functions.php:249
 msgid "Backup created successfully."
-msgstr "Backup created successfully."
+msgstr "Záloha byla úspěšně vytvořena."
 
 #: includes/functions.php:277
 msgid "Invalid input format."
-msgstr "Invalid input format."
+msgstr "Neplatný formát vstupu."
 
 #: includes/functions.php:287
 msgid "Invalid boolean value."
-msgstr "Invalid boolean value."
+msgstr "Neplatná logická hodnota."
 
 #: includes/functions.php:303
 msgid "Failed to update comment settings."
-msgstr "Failed to update comment settings."
+msgstr "Nepodařilo se aktualizovat nastavení komentářů."
 
 #: includes/functions.php:318
 msgid "Comments have been disabled site-wide. Use \"Close all comments now\" below if existing posts still allow comments."
-msgstr "Comments have been disabled site-wide. Use \"Close all comments now\" below if existing posts still allow comments."
+msgstr "Komentáře byly zakázány pro celý web. Pokud existující příspěvky stále povolují komentáře, použijte níže „Zavřít všechny komentáře nyní“."
 
 #: includes/functions.php:321
 msgid "Comments have been enabled site-wide."
-msgstr "Comments have been enabled site-wide."
+msgstr "Komentáře byly povoleny pro celý web."
 
 #: includes/functions.php:362
 msgid "%d post was closed."
 msgid_plural "%d posts were closed."
-msgstr[0] "%d post was closed."
-msgstr[1] "%d posts were closed."
+msgstr[0] "%d příspěvek byl zavřen."
+msgstr[1] "%d příspěvky byly zavřeny."
+msgstr[2] "%d příspěvků bylo zavřeno."

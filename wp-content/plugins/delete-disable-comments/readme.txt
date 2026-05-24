@@ -1,6 +1,6 @@
 === Delete & Disable Comments ===
 Contributors: helpstring
-Tags: comments, spam, delete, disable, backup
+Tags: comments, spam, disable comments, delete comments, backup
 Requires at least: 5.0
 Tested up to: 7.0
 Stable tag: 1.0.5
@@ -8,129 +8,141 @@ Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Clean spam, wipe all comments with CSV backup, or disable comments site-wide — fast, safe, and built for busy WordPress admins.
+Clean up spam, delete all comments with CSV backup, or disable comments site-wide from one admin screen.
 
 == Description ==
 
-**Delete & Disable Comments** gives site administrators a focused control panel under **Tools → Delete & Disable Comments** to regain control over comment clutter without touching the database manually.
+**Delete & Disable Comments** gives WordPress administrators a focused screen for comment cleanup and comment shutdown tasks. Open it under **Tools → Delete & Disable Comments**.
 
-Whether you are fighting years of Akismet spam, migrating a site that no longer needs discussions, or shutting down comments after an abuse wave — this plugin keeps the workflow simple, reversible where it matters, and compatible with popular plugins like WPML, Yoast SEO, and Polylang.
+Many older sites collect spam comments, unused discussion threads, or imported comment data that no longer belongs on the site. This plugin keeps those maintenance actions in one place without asking you to edit the database manually.
 
-= Why administrators choose this plugin =
+= Why use it? =
 
-* **One-click spam cleanup** — Remove every comment WordPress has marked as spam.
-* **Safe mass deletion** — Delete all comments only after an explicit confirmation, with an optional CSV backup download first.
-* **True site-wide disable** — Turn off new comments, hide comment UI on the front end, block REST comment endpoints, and remove Gutenberg comment blocks.
-* **Large-site friendly** — Bulk operations use efficient SQL updates without firing `save_post` on every post (no timeouts, no plugin conflicts).
-* **Maintenance tools** — See how many posts still allow comments and close them in one safe action when needed.
-* **Native WordPress admin UI** — Familiar cards, buttons, and notices; no bloated dashboard widgets.
+* Delete all comments marked as spam after confirmation.
+* Delete all comments after confirmation.
+* Download a CSV backup before deleting all comments.
+* Disable comments site-wide with a single toggle.
+* Close comments and pings on existing posts when disable mode is active.
+* Use a standard WordPress admin screen available only to administrators.
 
-= Perfect for =
+= Common use cases =
 
-* Blogs and business sites buried in spam comments
-* Brochure sites, portfolios, and landing pages that should never accept comments
-* Agencies cleaning up client sites before handover
-* Anyone who wants a backup before deleting comment data permanently
+* Remove accumulated spam comments from a site.
+* Prepare a site that no longer accepts discussion.
+* Clean comments before a redesign, migration, or client handover.
+* Download a CSV copy of comment data before permanent deletion.
+* Close open comment status on existing posts without triggering `save_post` hooks.
 
-= What happens when you disable comments? =
+= What Disable Comments does =
 
-The plugin closes comment and ping status for existing content, prevents new submissions, removes comment forms and widgets from the theme, unregisters comment-related blocks, and replaces the comments template with a blank file — while leaving your posts and pages untouched.
+The **Disable Comments** toggle changes the site's comment behavior. When enabled, it sets WordPress defaults for new content to closed, prevents new comment and ping submissions, hides front-end comment output, removes comment-related UI, blocks comment REST endpoints, unregisters comment-related blocks, and removes the recent comments widget.
+
+It does **not** delete existing comments. It also does not run a scheduled cleanup. If existing posts still have open comment or ping status, the admin screen shows a maintenance notice with a **Close all comments now** button. That button performs one direct SQL update to close those fields and avoids per-post `save_post` hooks, which is useful for sites using WPML, Yoast SEO, Polylang, or other plugins that listen to post updates.
 
 = Translations =
 
-English (source strings in code) and German (`de_AT`, `de_DE`) ship with the plugin. WordPress loads the matching `.mo` file automatically based on the site locale. Text domain: `delete-disable-comments`.
+The plugin ships with gettext translation files for broad EU language support, including German and additional EU locales. WordPress loads the matching `.mo` file automatically based on the site language. Text domain: `delete-disable-comments`.
 
 == Installation ==
 
 1. Upload the plugin folder to `/wp-content/plugins/delete-disable-comments`, or install the ZIP via **Plugins → Add New → Upload Plugin**.
 2. Activate the plugin through the **Plugins** screen in WordPress.
-3. Open **Tools → Delete & Disable Comments** to delete spam, remove all comments (with optional backup), or toggle comments site-wide.
+3. Open **Tools → Delete & Disable Comments** to delete spam comments, download a CSV backup, delete all comments, or disable comments site-wide.
 
 == Frequently Asked Questions ==
 
-= Can I recover deleted comments? =
+= Can I back up comments before deleting them? =
 
-Only if you downloaded a CSV backup before deletion. The plugin prompts you to back up before removing all comments. Spam deletion and “delete all” are permanent once confirmed.
+Yes. Use **Download Backup** before **Delete All Comments**. The backup is a CSV file generated from existing comments and offered as a browser download.
+
+= Can the plugin restore deleted comments from a CSV backup? =
+
+No. The CSV backup is for safekeeping or manual import workflows. The plugin does not include a restore tool.
 
 = Does disabling comments delete existing comments? =
 
-No. Disabling comments prevents new submissions and hides comment UI on the front end. Existing comment records stay in the database until you delete them explicitly.
+No. The disable toggle prevents and hides comment functionality, but existing comment records stay in the database until you explicitly delete them.
 
-= Will this break WPML, Yoast, or other plugins? =
+= What does “Close all comments now” do? =
 
-Version 1.0.2+ avoids calling `wp_update_post()` on every request. Bulk “close comments” uses a single hook-free SQL update so `save_post` listeners are not triggered unexpectedly.
+When disable mode is active, some existing posts may still have `comment_status` or `ping_status` set to open. The button closes those fields in one SQL update.
 
-= Why is there a “Close all comments now” button? =
+= Is the close action safe with WPML, Yoast SEO, or Polylang? =
 
-Some posts may still have `comment_status = open` in the database even after toggling disable. The maintenance button closes them in one efficient update — useful after imports or legacy data.
+The close action does not call `wp_update_post()` for every post and does not trigger `save_post` hooks. That keeps it suitable for sites using WPML, Yoast SEO, Polylang, and other plugins that react to post saves.
 
-= Where are CSV backups stored? =
+= Who can use the plugin screen? =
 
-Backups are written to `wp-content/uploads/delete-disable-comments/` and also offered as a direct browser download before deletion.
+Only users with the `manage_options` capability, usually administrators. AJAX actions are protected with WordPress nonces and capability checks.
 
-= Who can use this plugin? =
-
-Only users with the `manage_options` capability (typically administrators). All actions are protected with nonces.
-
-= Does it work on multisite? =
+= Does it support WordPress multisite? =
 
 No. This plugin is designed for single-site WordPress installations.
 
+= Does it run scheduled cleanup jobs? =
+
+No. Cleanup actions run only when an administrator clicks the relevant button.
+
+= Where are CSV backup files stored? =
+
+Backups are written under `wp-content/uploads/delete-disable-comments/` and are also offered as a direct browser download.
+
 == Screenshots ==
 
-1. Main control panel under Tools → Delete & Disable Comments
-2. Confirmation dialog before deleting spam comments
-3. Delete all comments with backup reminder and download option
-4. Disable-comments toggle with maintenance notice for open posts
+1. Main panel with three sections: spam, delete all plus backup, disable toggle
+2. Spam delete confirmation dialog with Yes and No
+3. Delete all warning plus backup reminder
+4. Disable toggle ON plus yellow maintenance notice plus Close all comments now button
 
 == Changelog ==
 
 = 1.0.5 =
-* Complete German translations (`de_AT`, `de_DE`) for all admin UI, AJAX messages, and maintenance notices.
-* Updated translation template (`.pot`); fixed hardcoded “Error loading status” in admin JavaScript.
+* Added complete EU locale translation files and compiled `.mo` files for the admin UI.
+* Kept complete German translations (`de_AT`, `de_DE`) for admin UI, AJAX messages, and maintenance notices.
+* Updated the translation template (`.pot`) and fixed the hardcoded “Error loading status” JavaScript message.
 
 = 1.0.4 =
 * Plugin Check compliance: `Tested up to` 7.0, sanitized toggle AJAX input, documented intentional bulk SQL queries.
-* Version bump (patch release) for WordPress.org submission readiness.
+* Version bump for WordPress.org submission readiness.
 
 = 1.0.3 =
-* **Fix:** “Disable comments site-wide” toggle no longer runs a synchronous bulk UPDATE on `wp_posts` during AJAX (prevents “Updating…” hang and table locks on large sites).
-* Bulk-closing existing posts is now only performed via **Close all comments now** (or on plugin activation), not when flipping the toggle.
+* Fixed the disable-comments toggle so it no longer runs a synchronous bulk update on `wp_posts` during AJAX.
+* Bulk-closing existing posts is now performed only through **Close all comments now** or on plugin activation when disable mode is already enabled.
 * Hardened toggle AJAX input handling and admin JavaScript error recovery.
 * Removed Cypress E2E tests from the repository; PHP smoke tests remain under `tests/php/`.
 
 = 1.0.2 =
-* **Critical fix:** `ddwpc_init()` no longer iterates over every post on every page request. The previous implementation called `wp_update_post()` for every post, causing severe performance issues and fatal errors with plugins that hook `save_post` (notably WPML). See [GitHub Issue #1](https://github.com/ostheimer/delete-disable-wp-comments/issues/1).
-* Bulk close-comments now runs only when the operator toggles disable or clicks **Close all comments now**.
-* Bulk operation uses a single safe `$wpdb` UPDATE without triggering `save_post`, `transition_post_status`, or `wp_after_insert_post`.
-* Settings screen shows count of posts with open comments/pings and a one-click close button.
-* New helpers: `ddwpc_is_disable_comments_enabled()`, `ddwpc_apply_disable_comments_defaults()`, `ddwpc_close_all_post_comments_in_db()`, `ddwpc_count_posts_with_open_comments()`.
+* Fixed `ddwpc_init()` so it no longer iterates over every post on every page request.
+* Bulk close-comments now runs only when the administrator clicks **Close all comments now**.
+* Bulk close operation uses a single `$wpdb` update without triggering `save_post`, `transition_post_status`, or `wp_after_insert_post`.
+* Settings screen shows the count of posts with open comments or pings and provides a one-click close button.
+* Added helpers: `ddwpc_is_disable_comments_enabled()`, `ddwpc_apply_disable_comments_defaults()`, `ddwpc_close_all_post_comments_in_db()`, and `ddwpc_count_posts_with_open_comments()`.
 
 = 1.0.1 =
-* Renamed plugin prefixes from `ddc_` to `ddwpc_` across PHP and JS.
-* Removed manual `load_plugin_textdomain()` call (auto-loaded by WordPress 4.6+).
-* Removed direct core file loads (e.g. `require_once wp-load.php`).
-* CSV backups stored under `wp-content/uploads/delete-disable-comments`.
+* Renamed plugin prefixes from `ddc_` to `ddwpc_` across PHP and JavaScript.
+* Removed the manual `load_plugin_textdomain()` call because WordPress 4.6+ auto-loads plugin translations.
+* Removed direct core file loads.
+* Moved CSV backups under `wp-content/uploads/delete-disable-comments/`.
 
 = 1.0.0 =
-* Initial release: spam deletion, delete all with backup, site-wide comment disable.
+* Initial release with spam deletion, delete-all with backup, and site-wide comment disable.
 
 == Upgrade Notice ==
 
 = 1.0.5 =
-Translation release: full German locale support for the admin interface. No functional changes.
+Translation release with broad EU locale support for the admin interface.
 
 = 1.0.4 =
-Maintenance release for Plugin Check and WordPress 7.0 compatibility header. No functional changes.
+Maintenance release for Plugin Check and WordPress 7.0 compatibility metadata.
 
 = 1.0.3 =
-Recommended if the disable-comments toggle stayed on “Updating…” or the site felt slow when toggling comments off.
+Recommended if the disable-comments toggle stayed on “Updating...” or large sites took too long while toggling comments off.
 
 = 1.0.2 =
-Critical fix for sites using WPML or any plugin hooking `save_post` while “Disable comments site-wide” was enabled. Upgrade strongly recommended.
+Recommended for sites using WPML, Yoast SEO, Polylang, or any plugin that hooks into post saves.
 
 = 1.0.1 =
-Prefix rename to `ddwpc_`, safer paths, backups moved to the uploads directory.
+Prefix rename to `ddwpc_`, safer paths, and backup files moved to the uploads directory.
 
 = 1.0.0 =
 Initial release.

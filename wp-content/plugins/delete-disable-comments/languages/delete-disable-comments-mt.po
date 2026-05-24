@@ -7,50 +7,50 @@ msgstr ""
 "POT-Creation-Date: 2026-05-21 12:00+0200\n"
 "PO-Revision-Date: 2026-05-21 12:00+0200\n"
 "Last-Translator: Andreas Ostheimer\n"
-"Language-Team: English (UK)\n"
-"Language: en_GB\n"
+"Language-Team: Maltese\n"
+"Language: mt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n==0 || (n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20) ? 2 : 3);\n"
 "X-Generator: Codex\n"
 
 #: admin/admin-page.php:10
 #: delete-disable-comments.php:93
 #: delete-disable-comments.php:94
 msgid "Delete & Disable Comments"
-msgstr "Delete & Disable Comments"
+msgstr "Ħassar u ddiżattiva l-kummenti"
 
 #: admin/admin-page.php:15
 #: delete-disable-comments.php:79
 msgid "Delete Spam Comments"
-msgstr "Delete Spam Comments"
+msgstr "Ħassar kummenti spam"
 
 #: admin/admin-page.php:16
 msgid "Remove all comments marked as spam from your database."
-msgstr "Remove all comments marked as spam from your database."
+msgstr "Neħħi mill-bażi tad-dejta tiegħek il-kummenti kollha mmarkati bħala spam."
 
 #: admin/admin-page.php:23
 #: delete-disable-comments.php:80
 msgid "Delete All Comments"
-msgstr "Delete All Comments"
+msgstr "Ħassar il-kummenti kollha"
 
 #: admin/admin-page.php:24
 msgid "Remove all comments from your website. You can download a backup before deletion."
-msgstr "Remove all comments from your website. You can download a backup before deletion."
+msgstr "Neħħi l-kummenti kollha mis-sit tiegħek. Tista’ tniżżel kopja ta’ riżerva qabel it-tħassir."
 
 #: admin/admin-page.php:29
 #: delete-disable-comments.php:81
 msgid "Download Backup"
-msgstr "Download Backup"
+msgstr "Niżżel kopja ta’ riżerva"
 
 #: admin/admin-page.php:34
 msgid "Disable Comments"
-msgstr "Disable Comments"
+msgstr "Diżattiva l-kummenti"
 
 #: admin/admin-page.php:35
 msgid "Toggle comments on or off for your entire website."
-msgstr "Toggle comments on or off for your entire website."
+msgstr "Ixgħel jew itfi l-kummenti għas-sit kollu tiegħek."
 
 #: admin/admin-page.php:43
 #: admin/admin-page.php:44
@@ -59,7 +59,7 @@ msgstr "Toggle comments on or off for your entire website."
 #: includes/functions.php:400
 #: includes/functions.php:401
 msgid "Comments are currently disabled"
-msgstr "Comments are currently disabled"
+msgstr "Il-kummenti bħalissa huma diżattivati"
 
 #: admin/admin-page.php:43
 #: admin/admin-page.php:44
@@ -68,114 +68,116 @@ msgstr "Comments are currently disabled"
 #: includes/functions.php:400
 #: includes/functions.php:401
 msgid "Comments are currently enabled"
-msgstr "Comments are currently enabled"
+msgstr "Il-kummenti bħalissa huma attivati"
 
 #: admin/admin-page.php:64
 msgid "%d post in your database still has open comments or pings."
 msgid_plural "%d posts in your database still have open comments or pings."
-msgstr[0] "%d post in your database still has open comments or pings."
-msgstr[1] "%d posts in your database still have open comments or pings."
+msgstr[0] "%d post fil-bażi tad-dejta tiegħek għad għandu kummenti jew pings miftuħa."
+msgstr[1] "%d posts fil-bażi tad-dejta tiegħek għad għandhom kummenti jew pings miftuħa."
+msgstr[2] "%d-il post fil-bażi tad-dejta tiegħek għad għandhom kummenti jew pings miftuħa."
+msgstr[3] "%d post fil-bażi tad-dejta tiegħek għad għandhom kummenti jew pings miftuħa."
 
 #: admin/admin-page.php:76
 msgid "Click the button below to close them in a single safe SQL update. This bypasses save_post hooks and is compatible with WPML, Yoast, and other plugins."
-msgstr "Click the button below to close them in a single safe SQL update. This bypasses save_post hooks and is compatible with WPML, Yoast, and other plugins."
+msgstr "Ikklikkja l-buttuna hawn taħt biex tagħlaqhom b’aġġornament SQL sikur wieħed. Dan jevita save_post hooks u huwa kompatibbli ma’ WPML, Yoast u plugins oħra."
 
 #: admin/admin-page.php:79
 #: delete-disable-comments.php:82
 msgid "Close all comments now"
-msgstr "Close all comments now"
+msgstr "Agħlaq il-kummenti kollha issa"
 
 #: admin/admin-page.php:95
 msgid "Yes"
-msgstr "Yes"
+msgstr "Iva"
 
 #: admin/admin-page.php:98
 msgid "No"
-msgstr "No"
+msgstr "Le"
 
 #: delete-disable-comments.php:61
 msgid "Error toggling comments."
-msgstr "Error toggling comments."
+msgstr "Żball waqt il-bidla tal-kummenti."
 
 #: delete-disable-comments.php:62
 msgid "Network error while updating comments."
-msgstr "Network error while updating comments."
+msgstr "Żball tan-netwerk waqt l-aġġornament tal-kummenti."
 
 #: delete-disable-comments.php:65
 msgid "Do you really want to delete all spam comments?"
-msgstr "Do you really want to delete all spam comments?"
+msgstr "Tassew trid tħassar il-kummenti spam kollha?"
 
 #: delete-disable-comments.php:66
 msgid "Do you really want to delete ALL comments? This action cannot be undone!"
-msgstr "Do you really want to delete ALL comments? This action cannot be undone!"
+msgstr "Tassew trid tħassar il-kummenti KOLLHA? Din l-azzjoni ma tistax titreġġa’ lura!"
 
 #: delete-disable-comments.php:67
 msgid "Deleting..."
-msgstr "Deleting..."
+msgstr "Qed jitħassar..."
 
 #: delete-disable-comments.php:68
 msgid "Updating..."
-msgstr "Updating..."
+msgstr "Qed jiġi aġġornat..."
 
 #: delete-disable-comments.php:69
 msgid "Creating backup..."
-msgstr "Creating backup..."
+msgstr "Qed tinħoloq kopja ta’ riżerva..."
 
 #: delete-disable-comments.php:70
 msgid "Spam comments have been successfully deleted."
-msgstr "Spam comments have been successfully deleted."
+msgstr "Il-kummenti spam tħassru b’suċċess."
 
 #: delete-disable-comments.php:71
 msgid "All comments have been successfully deleted."
-msgstr "All comments have been successfully deleted."
+msgstr "Il-kummenti kollha tħassru b’suċċess."
 
 #: delete-disable-comments.php:72
 msgid "Backup has been successfully created."
-msgstr "Backup has been successfully created."
+msgstr "Il-kopja ta’ riżerva nħolqot b’suċċess."
 
 #: delete-disable-comments.php:73
 msgid "Error deleting spam comments."
-msgstr "Error deleting spam comments."
+msgstr "Żball waqt it-tħassir tal-kummenti spam."
 
 #: delete-disable-comments.php:74
 msgid "Error deleting all comments."
-msgstr "Error deleting all comments."
+msgstr "Żball waqt it-tħassir tal-kummenti kollha."
 
 #: delete-disable-comments.php:75
 msgid "Error creating backup."
-msgstr "Error creating backup."
+msgstr "Żball waqt il-ħolqien tal-kopja ta’ riżerva."
 
 #: delete-disable-comments.php:76
 msgid "Network error while deleting spam comments."
-msgstr "Network error while deleting spam comments."
+msgstr "Żball tan-netwerk waqt it-tħassir tal-kummenti spam."
 
 #: delete-disable-comments.php:77
 msgid "Network error while deleting all comments."
-msgstr "Network error while deleting all comments."
+msgstr "Żball tan-netwerk waqt it-tħassir tal-kummenti kollha."
 
 #: delete-disable-comments.php:78
 msgid "Network error while creating backup."
-msgstr "Network error while creating backup."
+msgstr "Żball tan-netwerk waqt il-ħolqien tal-kopja ta’ riżerva."
 
 #: delete-disable-comments.php:83
 msgid "Closing..."
-msgstr "Closing..."
+msgstr "Qed jingħalaq..."
 
 #: delete-disable-comments.php:84
 msgid "Error closing comments."
-msgstr "Error closing comments."
+msgstr "Żball waqt l-għeluq tal-kummenti."
 
 #: delete-disable-comments.php:85
 msgid "Network error while closing comments."
-msgstr "Network error while closing comments."
+msgstr "Żball tan-netwerk waqt l-għeluq tal-kummenti."
 
 #: delete-disable-comments.php:86
 msgid "Error loading status."
-msgstr "Error loading status."
+msgstr "Żball waqt it-tagħbija tal-istatus."
 
 #: delete-disable-comments.php:325
 msgid "Comments are closed."
-msgstr "Comments are closed."
+msgstr "Il-kummenti huma magħluqa."
 
 #: includes/functions.php:26
 #: includes/functions.php:85
@@ -184,7 +186,7 @@ msgstr "Comments are closed."
 #: includes/functions.php:344
 #: includes/functions.php:381
 msgid "Security check failed."
-msgstr "Security check failed."
+msgstr "Il-kontroll tas-sigurtà falla."
 
 #: includes/functions.php:33
 #: includes/functions.php:92
@@ -193,62 +195,64 @@ msgstr "Security check failed."
 #: includes/functions.php:351
 #: includes/functions.php:389
 msgid "Insufficient permissions."
-msgstr "Insufficient permissions."
+msgstr "Permessi insuffiċjenti."
 
 #: includes/functions.php:67
 msgid "Successfully deleted %d spam comments."
-msgstr "Successfully deleted %d spam comments."
+msgstr "Tħassru b’suċċess %d kummenti spam."
 
 #: includes/functions.php:74
 msgid "No spam comments found."
-msgstr "No spam comments found."
+msgstr "Ma nstabu l-ebda kummenti spam."
 
 #: includes/functions.php:123
 msgid "Successfully deleted all comments."
-msgstr "Successfully deleted all comments."
+msgstr "Il-kummenti kollha tħassru b’suċċess."
 
 #: includes/functions.php:128
 msgid "No comments found."
-msgstr "No comments found."
+msgstr "Ma nstabu l-ebda kummenti."
 
 #: includes/functions.php:190
 msgid "No comments found to backup."
-msgstr "No comments found to back up."
+msgstr "Ma nstabu l-ebda kummenti għal kopja ta’ riżerva."
 
 #: includes/functions.php:214
 msgid "Could not initialize WP_Filesystem. Check file permissions or provide FTP credentials if required."
-msgstr "Could not initialise WP_Filesystem. Check file permissions or provide FTP credentials if required."
+msgstr "Ma setax jinbeda WP_Filesystem. Iċċekkja l-permessi tal-fajls jew ipprovdi kredenzjali FTP jekk meħtieġ."
 
 #: includes/functions.php:232
 msgid "Failed to create backup file."
-msgstr "Failed to create backup file."
+msgstr "Il-ħolqien tal-fajl tal-kopja ta’ riżerva falla."
 
 #: includes/functions.php:249
 msgid "Backup created successfully."
-msgstr "Backup created successfully."
+msgstr "Il-kopja ta’ riżerva nħolqot b’suċċess."
 
 #: includes/functions.php:277
 msgid "Invalid input format."
-msgstr "Invalid input format."
+msgstr "Format tal-input mhux validu."
 
 #: includes/functions.php:287
 msgid "Invalid boolean value."
-msgstr "Invalid boolean value."
+msgstr "Valur Boolean mhux validu."
 
 #: includes/functions.php:303
 msgid "Failed to update comment settings."
-msgstr "Failed to update comment settings."
+msgstr "L-aġġornament tas-settings tal-kummenti falla."
 
 #: includes/functions.php:318
 msgid "Comments have been disabled site-wide. Use \"Close all comments now\" below if existing posts still allow comments."
-msgstr "Comments have been disabled site-wide. Use \"Close all comments now\" below if existing posts still allow comments."
+msgstr "Il-kummenti ġew diżattivati fis-sit kollu. Uża „Agħlaq il-kummenti kollha issa“ hawn taħt jekk posts eżistenti għadhom jippermettu kummenti."
 
 #: includes/functions.php:321
 msgid "Comments have been enabled site-wide."
-msgstr "Comments have been enabled site-wide."
+msgstr "Il-kummenti ġew attivati fis-sit kollu."
 
 #: includes/functions.php:362
 msgid "%d post was closed."
 msgid_plural "%d posts were closed."
-msgstr[0] "%d post was closed."
-msgstr[1] "%d posts were closed."
+msgstr[0] "%d post ingħalaq."
+msgstr[1] "%d posts ingħalqu."
+msgstr[2] "%d-il post ingħalqu."
+msgstr[3] "%d post ingħalqu."

@@ -7,8 +7,8 @@ msgstr ""
 "POT-Creation-Date: 2026-05-21 12:00+0200\n"
 "PO-Revision-Date: 2026-05-21 12:00+0200\n"
 "Last-Translator: Andreas Ostheimer\n"
-"Language-Team: English (UK)\n"
-"Language: en_GB\n"
+"Language-Team: Swedish\n"
+"Language: sv_SE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,38 +19,38 @@ msgstr ""
 #: delete-disable-comments.php:93
 #: delete-disable-comments.php:94
 msgid "Delete & Disable Comments"
-msgstr "Delete & Disable Comments"
+msgstr "Ta bort och inaktivera kommentarer"
 
 #: admin/admin-page.php:15
 #: delete-disable-comments.php:79
 msgid "Delete Spam Comments"
-msgstr "Delete Spam Comments"
+msgstr "Ta bort skräpkommentarer"
 
 #: admin/admin-page.php:16
 msgid "Remove all comments marked as spam from your database."
-msgstr "Remove all comments marked as spam from your database."
+msgstr "Ta bort alla kommentarer markerade som skräp från databasen."
 
 #: admin/admin-page.php:23
 #: delete-disable-comments.php:80
 msgid "Delete All Comments"
-msgstr "Delete All Comments"
+msgstr "Ta bort alla kommentarer"
 
 #: admin/admin-page.php:24
 msgid "Remove all comments from your website. You can download a backup before deletion."
-msgstr "Remove all comments from your website. You can download a backup before deletion."
+msgstr "Ta bort alla kommentarer från din webbplats. Du kan ladda ner en säkerhetskopia före borttagning."
 
 #: admin/admin-page.php:29
 #: delete-disable-comments.php:81
 msgid "Download Backup"
-msgstr "Download Backup"
+msgstr "Ladda ner säkerhetskopia"
 
 #: admin/admin-page.php:34
 msgid "Disable Comments"
-msgstr "Disable Comments"
+msgstr "Inaktivera kommentarer"
 
 #: admin/admin-page.php:35
 msgid "Toggle comments on or off for your entire website."
-msgstr "Toggle comments on or off for your entire website."
+msgstr "Aktivera eller inaktivera kommentarer för hela webbplatsen."
 
 #: admin/admin-page.php:43
 #: admin/admin-page.php:44
@@ -59,7 +59,7 @@ msgstr "Toggle comments on or off for your entire website."
 #: includes/functions.php:400
 #: includes/functions.php:401
 msgid "Comments are currently disabled"
-msgstr "Comments are currently disabled"
+msgstr "Kommentarer är för närvarande inaktiverade"
 
 #: admin/admin-page.php:43
 #: admin/admin-page.php:44
@@ -68,114 +68,114 @@ msgstr "Comments are currently disabled"
 #: includes/functions.php:400
 #: includes/functions.php:401
 msgid "Comments are currently enabled"
-msgstr "Comments are currently enabled"
+msgstr "Kommentarer är för närvarande aktiverade"
 
 #: admin/admin-page.php:64
 msgid "%d post in your database still has open comments or pings."
 msgid_plural "%d posts in your database still have open comments or pings."
-msgstr[0] "%d post in your database still has open comments or pings."
-msgstr[1] "%d posts in your database still have open comments or pings."
+msgstr[0] "%d inlägg i databasen har fortfarande öppna kommentarer eller pingar."
+msgstr[1] "%d inlägg i databasen har fortfarande öppna kommentarer eller pingar."
 
 #: admin/admin-page.php:76
 msgid "Click the button below to close them in a single safe SQL update. This bypasses save_post hooks and is compatible with WPML, Yoast, and other plugins."
-msgstr "Click the button below to close them in a single safe SQL update. This bypasses save_post hooks and is compatible with WPML, Yoast, and other plugins."
+msgstr "Klicka på knappen nedan för att stänga dem med en enda säker SQL-uppdatering. Detta kringgår save_post hooks och är kompatibelt med WPML, Yoast och andra tillägg."
 
 #: admin/admin-page.php:79
 #: delete-disable-comments.php:82
 msgid "Close all comments now"
-msgstr "Close all comments now"
+msgstr "Stäng alla kommentarer nu"
 
 #: admin/admin-page.php:95
 msgid "Yes"
-msgstr "Yes"
+msgstr "Ja"
 
 #: admin/admin-page.php:98
 msgid "No"
-msgstr "No"
+msgstr "Nej"
 
 #: delete-disable-comments.php:61
 msgid "Error toggling comments."
-msgstr "Error toggling comments."
+msgstr "Fel vid växling av kommentarer."
 
 #: delete-disable-comments.php:62
 msgid "Network error while updating comments."
-msgstr "Network error while updating comments."
+msgstr "Nätverksfel vid uppdatering av kommentarer."
 
 #: delete-disable-comments.php:65
 msgid "Do you really want to delete all spam comments?"
-msgstr "Do you really want to delete all spam comments?"
+msgstr "Vill du verkligen ta bort alla skräpkommentarer?"
 
 #: delete-disable-comments.php:66
 msgid "Do you really want to delete ALL comments? This action cannot be undone!"
-msgstr "Do you really want to delete ALL comments? This action cannot be undone!"
+msgstr "Vill du verkligen ta bort ALLA kommentarer? Den här åtgärden kan inte ångras!"
 
 #: delete-disable-comments.php:67
 msgid "Deleting..."
-msgstr "Deleting..."
+msgstr "Raderar..."
 
 #: delete-disable-comments.php:68
 msgid "Updating..."
-msgstr "Updating..."
+msgstr "Uppdaterar..."
 
 #: delete-disable-comments.php:69
 msgid "Creating backup..."
-msgstr "Creating backup..."
+msgstr "Skapar säkerhetskopia..."
 
 #: delete-disable-comments.php:70
 msgid "Spam comments have been successfully deleted."
-msgstr "Spam comments have been successfully deleted."
+msgstr "Skräpkommentarer har tagits bort."
 
 #: delete-disable-comments.php:71
 msgid "All comments have been successfully deleted."
-msgstr "All comments have been successfully deleted."
+msgstr "Alla kommentarer har tagits bort."
 
 #: delete-disable-comments.php:72
 msgid "Backup has been successfully created."
-msgstr "Backup has been successfully created."
+msgstr "Säkerhetskopian har skapats."
 
 #: delete-disable-comments.php:73
 msgid "Error deleting spam comments."
-msgstr "Error deleting spam comments."
+msgstr "Fel vid borttagning av skräpkommentarer."
 
 #: delete-disable-comments.php:74
 msgid "Error deleting all comments."
-msgstr "Error deleting all comments."
+msgstr "Fel vid borttagning av alla kommentarer."
 
 #: delete-disable-comments.php:75
 msgid "Error creating backup."
-msgstr "Error creating backup."
+msgstr "Fel vid skapande av säkerhetskopia."
 
 #: delete-disable-comments.php:76
 msgid "Network error while deleting spam comments."
-msgstr "Network error while deleting spam comments."
+msgstr "Nätverksfel vid borttagning av skräpkommentarer."
 
 #: delete-disable-comments.php:77
 msgid "Network error while deleting all comments."
-msgstr "Network error while deleting all comments."
+msgstr "Nätverksfel vid borttagning av alla kommentarer."
 
 #: delete-disable-comments.php:78
 msgid "Network error while creating backup."
-msgstr "Network error while creating backup."
+msgstr "Nätverksfel vid skapande av säkerhetskopia."
 
 #: delete-disable-comments.php:83
 msgid "Closing..."
-msgstr "Closing..."
+msgstr "Stänger..."
 
 #: delete-disable-comments.php:84
 msgid "Error closing comments."
-msgstr "Error closing comments."
+msgstr "Fel vid stängning av kommentarer."
 
 #: delete-disable-comments.php:85
 msgid "Network error while closing comments."
-msgstr "Network error while closing comments."
+msgstr "Nätverksfel vid stängning av kommentarer."
 
 #: delete-disable-comments.php:86
 msgid "Error loading status."
-msgstr "Error loading status."
+msgstr "Fel vid inläsning av status."
 
 #: delete-disable-comments.php:325
 msgid "Comments are closed."
-msgstr "Comments are closed."
+msgstr "Kommentarer är stängda."
 
 #: includes/functions.php:26
 #: includes/functions.php:85
@@ -184,7 +184,7 @@ msgstr "Comments are closed."
 #: includes/functions.php:344
 #: includes/functions.php:381
 msgid "Security check failed."
-msgstr "Security check failed."
+msgstr "Säkerhetskontrollen misslyckades."
 
 #: includes/functions.php:33
 #: includes/functions.php:92
@@ -193,62 +193,62 @@ msgstr "Security check failed."
 #: includes/functions.php:351
 #: includes/functions.php:389
 msgid "Insufficient permissions."
-msgstr "Insufficient permissions."
+msgstr "Otillräckliga behörigheter."
 
 #: includes/functions.php:67
 msgid "Successfully deleted %d spam comments."
-msgstr "Successfully deleted %d spam comments."
+msgstr "%d skräpkommentarer har tagits bort."
 
 #: includes/functions.php:74
 msgid "No spam comments found."
-msgstr "No spam comments found."
+msgstr "Inga skräpkommentarer hittades."
 
 #: includes/functions.php:123
 msgid "Successfully deleted all comments."
-msgstr "Successfully deleted all comments."
+msgstr "Alla kommentarer har tagits bort."
 
 #: includes/functions.php:128
 msgid "No comments found."
-msgstr "No comments found."
+msgstr "Inga kommentarer hittades."
 
 #: includes/functions.php:190
 msgid "No comments found to backup."
-msgstr "No comments found to back up."
+msgstr "Inga kommentarer hittades att säkerhetskopiera."
 
 #: includes/functions.php:214
 msgid "Could not initialize WP_Filesystem. Check file permissions or provide FTP credentials if required."
-msgstr "Could not initialise WP_Filesystem. Check file permissions or provide FTP credentials if required."
+msgstr "Kunde inte initiera WP_Filesystem. Kontrollera filbehörigheter eller ange FTP-uppgifter om det krävs."
 
 #: includes/functions.php:232
 msgid "Failed to create backup file."
-msgstr "Failed to create backup file."
+msgstr "Kunde inte skapa säkerhetskopiefil."
 
 #: includes/functions.php:249
 msgid "Backup created successfully."
-msgstr "Backup created successfully."
+msgstr "Säkerhetskopia skapad."
 
 #: includes/functions.php:277
 msgid "Invalid input format."
-msgstr "Invalid input format."
+msgstr "Ogiltigt inmatningsformat."
 
 #: includes/functions.php:287
 msgid "Invalid boolean value."
-msgstr "Invalid boolean value."
+msgstr "Ogiltigt booleskt värde."
 
 #: includes/functions.php:303
 msgid "Failed to update comment settings."
-msgstr "Failed to update comment settings."
+msgstr "Kunde inte uppdatera kommentarinställningar."
 
 #: includes/functions.php:318
 msgid "Comments have been disabled site-wide. Use \"Close all comments now\" below if existing posts still allow comments."
-msgstr "Comments have been disabled site-wide. Use \"Close all comments now\" below if existing posts still allow comments."
+msgstr "Kommentarer har inaktiverats på hela webbplatsen. Använd „Stäng alla kommentarer nu“ nedan om befintliga inlägg fortfarande tillåter kommentarer."
 
 #: includes/functions.php:321
 msgid "Comments have been enabled site-wide."
-msgstr "Comments have been enabled site-wide."
+msgstr "Kommentarer har aktiverats på hela webbplatsen."
 
 #: includes/functions.php:362
 msgid "%d post was closed."
 msgid_plural "%d posts were closed."
-msgstr[0] "%d post was closed."
-msgstr[1] "%d posts were closed."
+msgstr[0] "%d inlägg stängdes."
+msgstr[1] "%d inlägg stängdes."

@@ -29,7 +29,8 @@ Stand: 2026-05-21 (v1.0.5, i18n-Release)
 |--------|-----------|--------------|
 | SVN-Release 1.0.5 auf WordPress.org | Hoch | `trunk` + Tag `1.0.5` + `/assets` hochladen (siehe `wordpress-org/README.md`) |
 | Plugin Check jobspot.at erneut prüfen | Hoch | Nach Deploy v1.0.5 im WP-Admin → Werkzeuge → Plugin Check |
-| GlotPress de_DE readme-Übersetzung | Mittel | Plugin-Beschreibung auf wordpress.org via translate.wordpress.org |
+| EU-Locale-Übersetzungen (22 Sprachen) | Hoch | Via Codex-Prompt (Inhalt im Chat/Archiv), dann msgfmt + .mo kompilieren |
+| GlotPress de_DE readme-Übersetzung | Mittel | Plugin-Beschreibung auf wordpress.org via translate.wordpress.org (Task 4 im Codex-Prompt) |
 | PHPUnit / wp-env | Mittel | Smoke-Tests in offizielle WP-Testumgebung portieren |
 | Playwright E2E (optional) | Niedrig | Ersetzt Cypress, falls wieder Browser-Tests gewünscht |
 | `uninstall.php` | Niedrig | Optionen beim Deinstallieren aufräumen |

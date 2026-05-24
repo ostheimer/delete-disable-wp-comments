@@ -63,27 +63,28 @@ Für Releases können SVN-Benutzername und -Passwort **nur lokal** in `.local/wo
 ## Hinweise
 
 - Screenshots und Banner nutzen englische UI-Texte (breitere Reichweite im Verzeichnis).
-- Das Plugin selbst ist mehrsprachig (DE/EN); siehe `languages/` und Abschnitt **Mehrsprachigkeit** unten.
+- Das Plugin selbst ist mehrsprachig mit breiter EU-Locale-Unterstützung; siehe `languages/` und Abschnitt **Mehrsprachigkeit** unten.
 - Review-Feedback von WordPress.org ist im Repo unter `documentation/archive/wordpress-org-review-feedback.md` archiviert.
 
-## Mehrsprachigkeit (DE/EN)
+## Mehrsprachigkeit (EU)
 
 ### Plugin-Oberfläche (Admin-UI)
 
 | Aspekt | Strategie |
 |--------|-----------|
 | Quellsprache im Code | Englisch (`msgid` in PHP/JS) — WordPress-i18n-Standard |
-| Mitgelieferte Locales | `de_AT`, `de_DE` (`.po` + kompilierte `.mo` im Ordner `languages/`) |
+| Mitgelieferte Locales | `de_AT`, `de_DE` sowie weitere EU-Locale-Dateien (`.po` + kompilierte `.mo` im Ordner `languages/`) |
 | Automatisches Laden | Seit WordPress 4.6 lädt Core die passende `.mo`-Datei anhand der Site-Locale (`WPLANG` / Benutzersprache) |
 | Englische Sites | Keine `.mo` nötig — Quellstrings werden direkt angezeigt |
-| Deutsche Sites | Vollständig übersetzte Admin-Oberfläche inkl. AJAX-Meldungen und Bestätigungsdialoge |
+| EU-Sprachen | Vollständig übersetzte Admin-Oberfläche inkl. AJAX-Meldungen und Bestätigungsdialoge, sofern die passende Locale-Datei vorhanden ist |
 
 **Übersetzungen kompilieren** (nach Änderungen an `.po`-Dateien):
 
 ```bash
 cd wp-content/plugins/delete-disable-comments/languages
-msgfmt -o delete-disable-comments-de_AT.mo delete-disable-comments-de_AT.po
-msgfmt -o delete-disable-comments-de_DE.mo delete-disable-comments-de_DE.po
+for po in delete-disable-comments-*.po; do
+  msgfmt -c -o "${po%.po}.mo" "$po"
+done
 ```
 
 Alternativ: `wp i18n make-mo languages/` (WP-CLI, falls installiert).
@@ -101,9 +102,9 @@ wp i18n make-pot wp-content/plugins/delete-disable-comments \
 | Bereich | DE/EN möglich? | Hinweis |
 |---------|----------------|---------|
 | `readme.txt` im SVN-`trunk/` | **Primär Englisch (Pflicht)** | WordPress.org erwartet englische Plugin-Beschreibung, FAQ, Changelog |
-| Deutsche Plugin-Seite auf wordpress.org | **Ja, über GlotPress** | Autor und Community können unter [translate.wordpress.org – delete-disable-comments](https://translate.wordpress.org/projects/wp-plugins/delete-disable-comments) die `readme`-Strings ins Deutsche übersetzen; nach Freigabe erscheint die deutsche Beschreibung für Besucher mit DE-Locale |
+| Deutsche Plugin-Seite auf wordpress.org | **Ja, über GlotPress** | Autor und Community können unter [translate.wordpress.org – delete-disable-comments](https://translate.wordpress.org/projects/wp-plugins/delete-disable-comments) die `readme`-Strings ins Deutsche übersetzen; eine lokale GlotPress-Vorlage liegt in `wordpress-org/readme-de_DE.txt` |
 | Plugin-Name im Verzeichnis | Englisch (offizieller Name) | Lokalisierter Anzeigename nur über GlotPress, falls vorhanden |
 | Banner, Icon, Screenshots | Englisch (aktuell) | Englische UI in Screenshots reicht für globale Reichweite; **optionale DE-Screenshots** können ergänzt werden, sind aber nicht zwingend |
 | Plugin-ZIP (Release-Tag) | Enthält `.mo`-Dateien | Endnutzer mit deutscher WordPress-Installation sehen die übersetzte Admin-UI automatisch |
 
-**Kurzantwort:** Plugin-UI kann vollständig DE/EN sein (über `.po`/`.mo`). Die wordpress.org-**Listing**-Beschreibung bleibt primär Englisch; die deutsche Variante entsteht über translate.wordpress.org, nicht über eine zweite `readme.txt`.
+**Kurzantwort:** Die Plugin-UI kann über `.po`/`.mo` in mehreren EU-Sprachen ausgeliefert werden. Die wordpress.org-**Listing**-Beschreibung bleibt primär Englisch; lokalisierte Varianten entstehen über translate.wordpress.org, nicht über eine zweite `readme.txt` im Plugin-Tag.
