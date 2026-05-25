@@ -16,6 +16,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "wordpress-org" / "assets"
 GPT_SOURCE = ROOT / "wordpress-org" / "source" / "gpt-image-concept.png"
+RETRO_SOURCE = ROOT / "wordpress-org" / "source" / "gpt-image-retro-pixel-icon.png"
 
 WP_BLUE = "#2271b1"
 WP_BLUE_DARK = "#135e96"
@@ -101,6 +102,92 @@ def centered_text(
 ) -> None:
     tw, th = text_size(draw, text, face)
     draw.text((box[0] + (box[2] - box[0] - tw) // 2, box[1] + (box[3] - box[1] - th) // 2 - 1), text, font=face, fill=fill)
+
+
+PIXEL_FONT = {
+    "A": ("01110", "10001", "10001", "11111", "10001", "10001", "10001"),
+    "B": ("11110", "10001", "10001", "11110", "10001", "10001", "11110"),
+    "C": ("01111", "10000", "10000", "10000", "10000", "10000", "01111"),
+    "D": ("11110", "10001", "10001", "10001", "10001", "10001", "11110"),
+    "E": ("11111", "10000", "10000", "11110", "10000", "10000", "11111"),
+    "F": ("11111", "10000", "10000", "11110", "10000", "10000", "10000"),
+    "G": ("01111", "10000", "10000", "10111", "10001", "10001", "01111"),
+    "H": ("10001", "10001", "10001", "11111", "10001", "10001", "10001"),
+    "I": ("11111", "00100", "00100", "00100", "00100", "00100", "11111"),
+    "J": ("00111", "00010", "00010", "00010", "10010", "10010", "01100"),
+    "K": ("10001", "10010", "10100", "11000", "10100", "10010", "10001"),
+    "L": ("10000", "10000", "10000", "10000", "10000", "10000", "11111"),
+    "M": ("10001", "11011", "10101", "10101", "10001", "10001", "10001"),
+    "N": ("10001", "11001", "10101", "10011", "10001", "10001", "10001"),
+    "O": ("01110", "10001", "10001", "10001", "10001", "10001", "01110"),
+    "P": ("11110", "10001", "10001", "11110", "10000", "10000", "10000"),
+    "Q": ("01110", "10001", "10001", "10001", "10101", "10010", "01101"),
+    "R": ("11110", "10001", "10001", "11110", "10100", "10010", "10001"),
+    "S": ("01111", "10000", "10000", "01110", "00001", "00001", "11110"),
+    "T": ("11111", "00100", "00100", "00100", "00100", "00100", "00100"),
+    "U": ("10001", "10001", "10001", "10001", "10001", "10001", "01110"),
+    "V": ("10001", "10001", "10001", "10001", "10001", "01010", "00100"),
+    "W": ("10001", "10001", "10001", "10101", "10101", "11011", "10001"),
+    "X": ("10001", "10001", "01010", "00100", "01010", "10001", "10001"),
+    "Y": ("10001", "10001", "01010", "00100", "00100", "00100", "00100"),
+    "Z": ("11111", "00001", "00010", "00100", "01000", "10000", "11111"),
+    "&": ("01100", "10010", "10100", "01000", "10101", "10010", "01101"),
+    "/": ("00001", "00001", "00010", "00100", "01000", "10000", "10000"),
+    "-": ("00000", "00000", "00000", "11111", "00000", "00000", "00000"),
+    " ": ("00000", "00000", "00000", "00000", "00000", "00000", "00000"),
+}
+
+
+def draw_bitmap_text(
+    img: Image.Image,
+    xy: tuple[int, int],
+    text: str,
+    block: int,
+    fill: str,
+    accent: str | None = None,
+    shadow: str = "#050816",
+    tracking: int | None = None,
+) -> tuple[int, int]:
+    tracking = block if tracking is None else tracking
+    text = text.upper()
+    glyph_w = 5
+    glyph_h = 7
+    width = 0
+    for char in text:
+        width += glyph_w * block + tracking
+    width = max(0, width - tracking)
+    height = glyph_h * block
+
+    layer = Image.new("RGBA", (width + block * 4, height + block * 4), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(layer)
+
+    def paint(offset_x: int, offset_y: int, color: str | tuple[int, int, int, int]) -> None:
+        x = block * 2 + offset_x
+        for char in text:
+            pattern = PIXEL_FONT.get(char, PIXEL_FONT[" "])
+            for row, bits in enumerate(pattern):
+                for col, bit in enumerate(bits):
+                    if bit == "1":
+                        draw.rectangle(
+                            (
+                                x + col * block,
+                                block * 2 + offset_y + row * block,
+                                x + (col + 1) * block - 1,
+                                block * 2 + offset_y + (row + 1) * block - 1,
+                            ),
+                            fill=color,
+                        )
+            x += glyph_w * block + tracking
+
+    if accent:
+        paint(block, block, rgba(accent, 190))
+    paint(-max(1, block // 3), 0, rgba(shadow, 230))
+    paint(max(1, block // 3), 0, rgba(shadow, 230))
+    paint(0, -max(1, block // 3), rgba(shadow, 230))
+    paint(0, max(1, block // 3), rgba(shadow, 230))
+    paint(0, 0, fill)
+    img.alpha_composite(layer, xy)
+    return (width + block * 4, height + block * 4)
 
 
 def wrapped_text(
@@ -295,22 +382,195 @@ def create_icon(size: int) -> Image.Image:
 
 
 def create_gpt_brand_assets() -> bool:
-    if not GPT_SOURCE.exists():
+    source = RETRO_SOURCE if RETRO_SOURCE.exists() else GPT_SOURCE
+    if not source.exists():
         return False
 
-    src = Image.open(GPT_SOURCE).convert("RGB")
-    w, h = src.size
+    src = Image.open(source).convert("RGBA")
+    icon = crop_square(src)
+    if source == RETRO_SOURCE:
+        icon_256 = create_retro_icon(icon, 256)
+        icon_256.save(OUT / "icon-256x256.png", optimize=True)
+        icon_256.resize((128, 128), Image.Resampling.LANCZOS).save(OUT / "icon-128x128.png", optimize=True)
 
-    banner_crop = src.crop((0, int(h * 0.098), w, int(h * 0.908)))
+        banner = create_retro_banner(icon, 1544, 500)
+        banner.save(OUT / "banner-1544x500.png", optimize=True)
+        banner.resize((772, 250), Image.Resampling.LANCZOS).save(OUT / "banner-772x250.png", optimize=True)
+        return True
+
+    w, h = src.size
+    banner_crop = src.crop((0, int(h * 0.098), w, int(h * 0.908))).convert("RGB")
     banner_crop.resize((1544, 500), Image.Resampling.LANCZOS).save(OUT / "banner-1544x500.png", optimize=True)
     banner_crop.resize((772, 250), Image.Resampling.LANCZOS).save(OUT / "banner-772x250.png", optimize=True)
 
-    icon_crop = src.crop((int(w * 0.018), int(h * 0.208), int(w * 0.235), int(h * 0.750)))
+    icon_crop = src.crop((int(w * 0.018), int(h * 0.208), int(w * 0.235), int(h * 0.750))).convert("RGB")
     padded = Image.new("RGB", (icon_crop.width + 40, icon_crop.height + 40), WP_WHITE)
     padded.paste(icon_crop, (20, 20))
     padded.resize((256, 256), Image.Resampling.LANCZOS).save(OUT / "icon-256x256.png", optimize=True)
     padded.resize((128, 128), Image.Resampling.LANCZOS).save(OUT / "icon-128x128.png", optimize=True)
     return True
+
+
+def crop_square(src: Image.Image) -> Image.Image:
+    w, h = src.size
+    side = min(w, h)
+    left = (w - side) // 2
+    top = (h - side) // 2
+    return src.crop((left, top, left + side, top + side)).convert("RGBA")
+
+
+def create_retro_icon(icon: Image.Image, size: int) -> Image.Image:
+    canvas = Image.new("RGBA", (size, size), rgba("#0c1228"))
+    draw = ImageDraw.Draw(canvas)
+    block = max(4, size // 32)
+
+    for y in range(0, size, block):
+        for x in range(0, size, block):
+            if ((x // block) + (y // block)) % 7 == 0:
+                draw.rectangle((x, y, x + block - 1, y + block - 1), fill=rgba("#151d3f", 180))
+
+    for i in range(0, size, max(18, size // 9)):
+        draw.line((0, i, size, i), fill=rgba("#1d3f6f", 85), width=1)
+        draw.line((i, 0, i, size), fill=rgba("#1d3f6f", 70), width=1)
+
+    margin = max(8, size // 18)
+    emblem = icon.resize((size - margin * 2, size - margin * 2), Image.Resampling.LANCZOS)
+    canvas.alpha_composite(emblem, (margin, margin))
+    draw.rectangle((0, 0, size - 1, size - 1), outline=rgba("#25d0ff", 210), width=max(2, size // 80))
+    return canvas.convert("RGB")
+
+
+def create_retro_emblem_cutout(icon: Image.Image) -> Image.Image:
+    src = icon.convert("RGBA")
+    w, h = src.size
+    pixels = src.load()
+    xs: list[int] = []
+    ys: list[int] = []
+
+    for y in range(h):
+        for x in range(w):
+            r, g, b, _ = pixels[x, y]
+            bright = max(r, g, b)
+            if bright > 110 or (r > 105 and r > g * 1.45 and r > b * 1.18) or (b > 105 and b > r * 1.18):
+                xs.append(x)
+                ys.append(y)
+
+    if not xs:
+        return src
+
+    pad = int(min(w, h) * 0.055)
+    left = max(0, min(xs) - pad)
+    top = max(0, min(ys) - pad)
+    right = min(w, max(xs) + pad)
+    bottom = min(h, max(ys) + pad)
+    crop = src.crop((left, top, right, bottom))
+
+    out = Image.new("RGBA", crop.size, (0, 0, 0, 0))
+    out_pixels = []
+    crop_data = crop.get_flattened_data() if hasattr(crop, "get_flattened_data") else crop.getdata()
+    for r, g, b, _ in crop_data:
+        bright = max(r, g, b)
+        red = r > 80 and r > g * 1.35 and r > b * 1.05
+        blue = b > 80 and b > r * 1.08
+        white = min(r, g, b) > 145
+        glow = bright > 90 and (r > 80 or b > 80)
+        if red or blue or white or glow:
+            alpha = 255 if bright > 135 or red or blue or white else max(0, min(190, (bright - 70) * 4))
+            out_pixels.append((r, g, b, alpha))
+        else:
+            out_pixels.append((r, g, b, 0))
+    out.putdata(out_pixels)
+    return out
+
+
+def create_retro_banner(icon: Image.Image, width: int, height: int) -> Image.Image:
+    img = Image.new("RGBA", (width, height), rgba("#080d1f"))
+    draw = ImageDraw.Draw(img)
+
+    # Pixel/synthwave background.
+    for y in range(height):
+        ratio = y / max(1, height - 1)
+        r = int(8 + 17 * ratio)
+        g = int(13 + 11 * ratio)
+        b = int(31 + 35 * ratio)
+        draw.line((0, y, width, y), fill=(r, g, b, 255))
+
+    block = max(8, width // 120)
+    for y in range(0, height, block):
+        for x in range(0, width, block):
+            if ((x // block) * 3 + (y // block) * 5) % 29 == 0:
+                draw.rectangle((x, y, x + block - 1, y + block - 1), fill=rgba("#1c2b5c", 95))
+
+    horizon = int(height * 0.58)
+    draw.rectangle((0, horizon, width, height), fill=rgba("#0f1634", 255))
+    for i in range(13):
+        y = horizon + int((height - horizon) * (i / 12) ** 1.75)
+        draw.line((0, y, width, y), fill=rgba("#25d0ff", 95), width=max(1, height // 210))
+    center = width // 2
+    for i in range(-14, 15):
+        x = center + i * int(width * 0.038)
+        draw.line((center, horizon, x, height), fill=rgba("#ff3fc8", 76), width=max(1, height // 250))
+
+    # Retro skyline blocks.
+    skyline_y = horizon - int(height * 0.14)
+    for i, x in enumerate(range(0, width, int(width * 0.045))):
+        building_h = int(height * (0.07 + ((i * 11) % 9) / 90))
+        draw.rectangle((x, skyline_y + int(height * 0.11) - building_h, x + int(width * 0.03), skyline_y + int(height * 0.11)), fill=rgba("#101a3f", 210))
+
+    emblem = create_retro_emblem_cutout(icon)
+    icon_size = int(height * 0.76)
+    icon_img = emblem.resize(
+        (icon_size, max(1, round(icon_size * emblem.height / emblem.width))),
+        Image.Resampling.LANCZOS,
+    )
+    icon_x = int(width * 0.075)
+    icon_y = (height - icon_img.height) // 2
+    glow = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    glow_draw = ImageDraw.Draw(glow)
+    glow_draw.ellipse(
+        (
+            icon_x + int(icon_img.width * 0.05),
+            icon_y + int(icon_img.height * 0.05),
+            icon_x + int(icon_img.width * 0.95),
+            icon_y + int(icon_img.height * 0.95),
+        ),
+        fill=rgba("#ff3b4f", 42),
+    )
+    img.alpha_composite(glow.filter(ImageFilter.GaussianBlur(int(height * 0.045))))
+    img.alpha_composite(icon_img, (icon_x, icon_y))
+
+    title_x = int(width * 0.36)
+    title_y = int(height * 0.13)
+    title_block = max(5, int(height * 0.017))
+    line_block = max(3, int(height * 0.009))
+    small_font = font(int(height * 0.042), True)
+
+    draw = ImageDraw.Draw(img)
+    first = draw_bitmap_text(img, (title_x, title_y), "DELETE & DISABLE", title_block, WP_WHITE, "#ff3fc8")
+    draw_bitmap_text(img, (title_x, title_y + first[1] + int(height * 0.02)), "COMMENTS", title_block, WP_WHITE, "#25d0ff")
+
+    draw_bitmap_text(
+        img,
+        (title_x, int(height * 0.61)),
+        "SPAM CLEANUP / CSV BACKUP / DISABLE",
+        line_block,
+        "#7fe8ff",
+        "#ff3fc8",
+        tracking=max(2, line_block // 2),
+    )
+
+    chips = [("SPAM", "#ff405a"), ("BACKUP", "#25d0ff"), ("DISABLE", "#ffcc33")]
+    chip_x = title_x
+    chip_y = int(height * 0.760)
+    for label, color in chips:
+        tw, th = text_size(draw, label, small_font)
+        pad_x = int(height * 0.034)
+        box = (chip_x, chip_y, chip_x + tw + pad_x * 2, chip_y + int(height * 0.075))
+        draw.rectangle(box, fill=rgba("#111a3c", 230), outline=color, width=max(2, height // 150))
+        centered_text(draw, box, label, small_font, color)
+        chip_x = box[2] + int(height * 0.035)
+
+    return img.convert("RGB")
 
 
 def admin_chrome(img: Image.Image, title: str) -> tuple[ImageDraw.ImageDraw, tuple[int, int, int, int]]:
