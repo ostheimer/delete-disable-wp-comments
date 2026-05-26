@@ -28,9 +28,14 @@ Once comments are deleted, they cannot be recovered unless you have created a ba
 
 ## Changelog
 
+### 1.0.6
+
+* CSV-Backups werden nicht mehr als öffentliche Dateien unter `wp-content/uploads/` abgelegt, sondern als geschützter Administrator-Download gestreamt.
+* Backup-Caching entfernt, damit CSV-Downloads den aktuellen Stand der Kommentartabelle abbilden.
+
 ### 1.0.5
 
-* Vollständige deutsche Übersetzungen (`de_AT`, `de_DE`) für Admin-Oberfläche, AJAX-Meldungen und Wartungshinweise (52 Strings).
+* Vollständige EU-Locale-Übersetzungen für Admin-Oberfläche, AJAX-Meldungen und Wartungshinweise.
 * Übersetzungsvorlage (`.pot`) aktualisiert; hardcodierter JS-String „Error loading status“ durch lokalisierte Zeichenkette ersetzt.
 
 ### 1.0.4
@@ -81,7 +86,7 @@ This plugin is licensed under the GPL v2 or later.
 
 ## Stable tag
 
-* 1.0.5
+* 1.0.6
 
 ## Übersetzungen (DE/EN)
 
@@ -202,7 +207,7 @@ Lokales Installationspaket für Tests:
 npm run build
 ```
 
-Ergebnis: `dist/delete-disable-comments.zip` (Version **1.0.5**, enthält `readme.txt` und Plugin-Quellcode).
+Ergebnis: `dist/delete-disable-comments.zip` (Version **1.0.6**, enthält `readme.txt` und Plugin-Quellcode).
 
 Installation: **Plugins → Installieren → Plugin hochladen** und ZIP auswählen.
 

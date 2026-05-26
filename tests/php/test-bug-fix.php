@@ -91,10 +91,13 @@ function wp_enqueue_style($h, $src, $deps = [], $ver = false) { /* no-op */ }
 function wp_enqueue_script($h, $src, $deps = [], $ver = false, $in_footer = false) { /* no-op */ }
 function wp_localize_script($h, $obj, $data) { /* no-op */ }
 function wp_create_nonce($action) { return 'nonce'; }
+function wp_nonce_url($url, $action = -1, $name = '_wpnonce') { return $url . '&' . $name . '=nonce'; }
+function wp_verify_nonce($nonce, $action = -1) { return $nonce === 'nonce'; }
 function admin_url($path = '') { return 'http://example.test/wp-admin/' . $path; }
 function esc_html__($s, $domain = null) { return $s; }
 function esc_html_e($s, $domain = null) { echo $s; }
 function esc_html($s) { return $s; }
+function esc_url($s) { return $s; }
 function esc_attr($s) { return $s; }
 function __($s, $domain = null) { return $s; }
 function _e($s, $domain = null) { echo $s; }
@@ -141,6 +144,7 @@ function wp_delete_file($f) { return true; }
 function trailingslashit($s) { return rtrim($s, '/') . '/'; }
 function sanitize_text_field($s) { return $s; }
 function wp_unslash($s) { return $s; }
+function nocache_headers() { /* no-op */ }
 
 // ---------------------------------------------------------------------------
 // Load the plugin under test
@@ -235,13 +239,17 @@ DDWPC_Test_State::$sql_queries     = [];
 require_once __DIR__ . '/../../wp-content/plugins/delete-disable-comments/admin/admin-page.php';
 ob_start();
 ddwpc_admin_page();
-ob_end_clean();
+$admin_html = ob_get_clean();
 $count_queries = array_filter(
     DDWPC_Test_State::$sql_queries,
     static fn(string $q): bool => str_contains($q, 'COUNT(*)')
 );
 assert_eq(0, count($count_queries),
     'no COUNT(*) query is fired when the disable-comments toggle is off');
+assert_eq(true, str_contains($admin_html, 'admin-post.php?action=ddwpc_backup_comments'),
+    'backup button points to protected admin-post download');
+assert_eq(false, str_contains($admin_html, '/uploads/delete-disable-comments/'),
+    'backup button does not expose a public uploads URL');
 
 DDWPC_Test_State::$options['ddwpc_disable_comments'] = '1';
 DDWPC_Test_State::$sql_query_count = 0;

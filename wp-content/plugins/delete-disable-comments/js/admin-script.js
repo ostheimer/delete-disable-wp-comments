@@ -72,26 +72,13 @@ jQuery(document).ready(function($) {
         });
     });
 
-    // Handle Download Backup
+    // Handle Download Backup. The link itself points to a protected admin-post download.
     $('#download-backup').on('click', function() {
         var $button = $(this);
-        $button.text(ddwpcAjax.creating_backup).prop('disabled', true); // Use prefixed JS object
-        $.post(ddwpcAjax.ajaxurl, { // Use prefixed JS object
-            action: 'ddwpc_backup_comments', // Prefixed action
-            nonce: ddwpcAjax.nonce // Use prefixed JS object
-        }, function(response) {
-            $button.text(ddwpcAjax.backup_button).prop('disabled', false); // Use prefixed JS object
-            if (response.success) {
-                showMessage(response.data.message, 'success');
-                // Trigger file download
-                window.location.href = response.data.file_url;
-            } else {
-                showMessage(response.data.message || ddwpcAjax.error_backup, 'error'); // Use prefixed JS object
-            }
-        }).fail(function() {
-            $button.text(ddwpcAjax.backup_button).prop('disabled', false); // Use prefixed JS object
-            showMessage(ddwpcAjax.network_error_backup, 'error'); // Use prefixed JS object
-        });
+        $button.text(ddwpcAjax.creating_backup).attr('aria-disabled', 'true');
+        setTimeout(function() {
+            $button.text(ddwpcAjax.backup_button).removeAttr('aria-disabled');
+        }, 2000);
     });
 
     // Handle Toggle Comments
@@ -195,4 +182,4 @@ jQuery(document).ready(function($) {
     }
     */
 
-}); 
+});

@@ -32,9 +32,9 @@ function ddwpc_admin_page() {
                 <button class="button button-primary ddwpc-button-danger" data-cy="delete-all-btn" id="delete-all-comments">
                     <?php esc_html_e('Delete All Comments', 'delete-disable-comments'); ?>
                 </button>
-                <button class="button" data-cy="backup-btn" id="download-backup">
+                <a class="button" data-cy="backup-btn" id="download-backup" href="<?php echo esc_url(ddwpc_get_backup_download_url()); ?>">
                     <?php esc_html_e('Download Backup', 'delete-disable-comments'); ?>
-                </button>
+                </a>
             </div>
             
             <div class="card ddwpc-card ddwpc-card-disable">

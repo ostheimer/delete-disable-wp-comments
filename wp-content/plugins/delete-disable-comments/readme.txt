@@ -3,7 +3,7 @@ Contributors: helpstring
 Tags: comments, spam, disable comments, delete comments, backup
 Requires at least: 5.0
 Tested up to: 7.0
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -53,7 +53,7 @@ The plugin ships with gettext translation files for broad EU language support, i
 
 = Can I back up comments before deleting them? =
 
-Yes. Use **Download Backup** before **Delete All Comments**. The backup is a CSV file generated from existing comments and offered as a browser download.
+Yes. Use **Download Backup** before **Delete All Comments**. The backup is generated on demand and streamed as a protected administrator download.
 
 = Can the plugin restore deleted comments from a CSV backup? =
 
@@ -85,7 +85,7 @@ No. Cleanup actions run only when an administrator clicks the relevant button.
 
 = Where are CSV backup files stored? =
 
-Backups are written under `wp-content/uploads/delete-disable-comments/` and are also offered as a direct browser download.
+Backups are streamed through a protected administrator download. The plugin no longer leaves CSV files in the public uploads directory.
 
 == Screenshots ==
 
@@ -95,6 +95,10 @@ Backups are written under `wp-content/uploads/delete-disable-comments/` and are 
 4. Disable toggle ON plus yellow maintenance notice plus Close all comments now button
 
 == Changelog ==
+
+= 1.0.6 =
+* Changed CSV backups to stream through an authenticated administrator download instead of writing public files under `wp-content/uploads/`.
+* Removed stale backup object caching so downloads reflect the current comments table.
 
 = 1.0.5 =
 * Added complete EU locale translation files and compiled `.mo` files for the admin UI.
@@ -128,6 +132,9 @@ Backups are written under `wp-content/uploads/delete-disable-comments/` and are 
 * Initial release with spam deletion, delete-all with backup, and site-wide comment disable.
 
 == Upgrade Notice ==
+
+= 1.0.6 =
+Privacy hardening for CSV backups. Backup files are now streamed to administrators and are not left in public uploads.
 
 = 1.0.5 =
 Translation release with broad EU locale support for the admin interface.

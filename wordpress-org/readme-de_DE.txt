@@ -42,7 +42,7 @@ FAQ:
 
 Kann ich Kommentare vor dem Löschen sichern?
 
-Ja. Nutzen Sie „Backup herunterladen“, bevor Sie „Alle Kommentare löschen“ verwenden. Das Backup ist eine CSV-Datei aus den vorhandenen Kommentaren und wird als Browser-Download angeboten.
+Ja. Nutzen Sie „Backup herunterladen“, bevor Sie „Alle Kommentare löschen“ verwenden. Das Backup wird bei Bedarf erzeugt und als geschützter Administrator-Download ausgeliefert.
 
 Kann das Plugin gelöschte Kommentare aus einem CSV-Backup wiederherstellen?
 
@@ -74,7 +74,7 @@ Nein. Bereinigungsaktionen laufen nur, wenn ein Administrator den entsprechenden
 
 Wo werden CSV-Backup-Dateien gespeichert?
 
-Backups werden unter wp-content/uploads/delete-disable-comments/ gespeichert und zusätzlich als direkter Browser-Download angeboten.
+Backups werden über einen geschützten Administrator-Download gestreamt. Das Plugin legt keine CSV-Dateien mehr im öffentlichen Uploads-Verzeichnis ab.
 
 Screenshot-Beschriftungen:
 1. Hauptbereich mit drei Abschnitten: Spam, alle Kommentare löschen plus Backup, Deaktivierungs-Schalter
@@ -83,6 +83,9 @@ Screenshot-Beschriftungen:
 4. Deaktivierungs-Schalter EIN plus gelber Wartungshinweis und Button „Alle Kommentare jetzt schließen“
 
 Upgrade Notices:
+
+1.0.6:
+Datenschutz-Härtung für CSV-Backups. Backup-Dateien werden jetzt an Administratoren gestreamt und nicht mehr in öffentlichen Uploads abgelegt.
 
 1.0.5:
 Übersetzungsrelease mit breiter EU-Sprachunterstützung für die Admin-Oberfläche.

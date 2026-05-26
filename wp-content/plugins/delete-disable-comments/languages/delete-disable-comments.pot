@@ -2,91 +2,112 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Delete & Disable Comments 1.0.5\n"
+"Project-Id-Version: Delete & Disable Comments 1.0.6\n"
 "Report-Msgid-Bugs-To: https://github.com/ostheimer/delete-disable-wp-comments/issues\n"
-"POT-Creation-Date: 2026-05-21 12:00+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-05-26T07:46:50+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: WP-CLI 2.11.0\n"
+"X-Domain: delete-disable-comments\n"
 
+#. Plugin Name of the plugin
+#: delete-disable-comments.php
 #: admin/admin-page.php:10
-#: delete-disable-comments.php:93
-#: delete-disable-comments.php:94
+#: delete-disable-comments.php:91
+#: delete-disable-comments.php:92
 msgid "Delete & Disable Comments"
 msgstr ""
 
-#: admin/admin-page.php:15
-#: delete-disable-comments.php:79
+#. Plugin URI of the plugin
+#: delete-disable-comments.php
+msgid "https://github.com/ostheimer/delete-disable-wp-comments"
+msgstr ""
+
+#. Description of the plugin
+#: delete-disable-comments.php
+msgid "A WordPress plugin that helps site administrators manage comments by deleting spam comments, removing all comments with backup, or disabling comments site-wide."
+msgstr ""
+
+#. Author of the plugin
+#: delete-disable-comments.php
+msgid "Andreas Ostheimer"
+msgstr ""
+
+#. Author URI of the plugin
+#: delete-disable-comments.php
+msgid "https://github.com/ostheimer"
+msgstr ""
+
+#: admin/admin-page.php:19
+#: admin/admin-page.php:22
+#: delete-disable-comments.php:76
 msgid "Delete Spam Comments"
 msgstr ""
 
-#: admin/admin-page.php:16
+#: admin/admin-page.php:20
 msgid "Remove all comments marked as spam from your database."
 msgstr ""
 
-#: admin/admin-page.php:23
-#: delete-disable-comments.php:80
+#: admin/admin-page.php:30
+#: admin/admin-page.php:33
+#: delete-disable-comments.php:77
 msgid "Delete All Comments"
 msgstr ""
 
-#: admin/admin-page.php:24
+#: admin/admin-page.php:31
 msgid "Remove all comments from your website. You can download a backup before deletion."
 msgstr ""
 
-#: admin/admin-page.php:29
-#: delete-disable-comments.php:81
+#: admin/admin-page.php:36
+#: delete-disable-comments.php:78
 msgid "Download Backup"
 msgstr ""
 
-#: admin/admin-page.php:34
+#: admin/admin-page.php:44
 msgid "Disable Comments"
 msgstr ""
 
-#: admin/admin-page.php:35
+#: admin/admin-page.php:45
 msgid "Toggle comments on or off for your entire website."
 msgstr ""
 
-#: admin/admin-page.php:43
-#: admin/admin-page.php:44
+#: admin/admin-page.php:53
 #: delete-disable-comments.php:63
-#: delete-disable-comments.php:64
 #: includes/functions.php:400
-#: includes/functions.php:401
 msgid "Comments are currently disabled"
 msgstr ""
 
-#: admin/admin-page.php:43
-#: admin/admin-page.php:44
-#: delete-disable-comments.php:63
+#: admin/admin-page.php:54
 #: delete-disable-comments.php:64
-#: includes/functions.php:400
 #: includes/functions.php:401
 msgid "Comments are currently enabled"
 msgstr ""
 
-#: admin/admin-page.php:64
+#. translators: %d: number of posts with open comments
+#: admin/admin-page.php:74
 msgid "%d post in your database still has open comments or pings."
 msgid_plural "%d posts in your database still have open comments or pings."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/admin-page.php:76
+#: admin/admin-page.php:86
 msgid "Click the button below to close them in a single safe SQL update. This bypasses save_post hooks and is compatible with WPML, Yoast, and other plugins."
 msgstr ""
 
-#: admin/admin-page.php:79
-#: delete-disable-comments.php:82
+#: admin/admin-page.php:89
+#: delete-disable-comments.php:79
 msgid "Close all comments now"
 msgstr ""
 
-#: admin/admin-page.php:95
+#: admin/admin-page.php:106
 msgid "Yes"
 msgstr ""
 
-#: admin/admin-page.php:98
+#: admin/admin-page.php:109
 msgid "No"
 msgstr ""
 
@@ -127,56 +148,44 @@ msgid "All comments have been successfully deleted."
 msgstr ""
 
 #: delete-disable-comments.php:72
-msgid "Backup has been successfully created."
-msgstr ""
-
-#: delete-disable-comments.php:73
 msgid "Error deleting spam comments."
 msgstr ""
 
-#: delete-disable-comments.php:74
+#: delete-disable-comments.php:73
 msgid "Error deleting all comments."
 msgstr ""
 
-#: delete-disable-comments.php:75
-msgid "Error creating backup."
-msgstr ""
-
-#: delete-disable-comments.php:76
+#: delete-disable-comments.php:74
 msgid "Network error while deleting spam comments."
 msgstr ""
 
-#: delete-disable-comments.php:77
+#: delete-disable-comments.php:75
 msgid "Network error while deleting all comments."
 msgstr ""
 
-#: delete-disable-comments.php:78
-msgid "Network error while creating backup."
-msgstr ""
-
-#: delete-disable-comments.php:83
+#: delete-disable-comments.php:80
 msgid "Closing..."
 msgstr ""
 
-#: delete-disable-comments.php:84
+#: delete-disable-comments.php:81
 msgid "Error closing comments."
 msgstr ""
 
-#: delete-disable-comments.php:85
+#: delete-disable-comments.php:82
 msgid "Network error while closing comments."
 msgstr ""
 
-#: delete-disable-comments.php:86
+#: delete-disable-comments.php:83
 msgid "Error loading status."
 msgstr ""
 
-#: delete-disable-comments.php:325
+#: delete-disable-comments.php:323
 msgid "Comments are closed."
 msgstr ""
 
 #: includes/functions.php:26
 #: includes/functions.php:85
-#: includes/functions.php:139
+#: includes/functions.php:158
 #: includes/functions.php:261
 #: includes/functions.php:344
 #: includes/functions.php:381
@@ -185,13 +194,14 @@ msgstr ""
 
 #: includes/functions.php:33
 #: includes/functions.php:92
-#: includes/functions.php:146
+#: includes/functions.php:162
 #: includes/functions.php:269
 #: includes/functions.php:351
 #: includes/functions.php:389
 msgid "Insufficient permissions."
 msgstr ""
 
+#. translators: %d: number of deleted comments
 #: includes/functions.php:67
 msgid "Successfully deleted %d spam comments."
 msgstr ""
@@ -208,20 +218,8 @@ msgstr ""
 msgid "No comments found."
 msgstr ""
 
-#: includes/functions.php:190
-msgid "No comments found to backup."
-msgstr ""
-
-#: includes/functions.php:214
-msgid "Could not initialize WP_Filesystem. Check file permissions or provide FTP credentials if required."
-msgstr ""
-
-#: includes/functions.php:232
+#: includes/functions.php:175
 msgid "Failed to create backup file."
-msgstr ""
-
-#: includes/functions.php:249
-msgid "Backup created successfully."
 msgstr ""
 
 #: includes/functions.php:277
@@ -236,7 +234,7 @@ msgstr ""
 msgid "Failed to update comment settings."
 msgstr ""
 
-#: includes/functions.php:318
+#: includes/functions.php:317
 msgid "Comments have been disabled site-wide. Use \"Close all comments now\" below if existing posts still allow comments."
 msgstr ""
 
@@ -244,7 +242,8 @@ msgstr ""
 msgid "Comments have been enabled site-wide."
 msgstr ""
 
-#: includes/functions.php:362
+#. translators: %d: number of posts whose comments were just closed
+#: includes/functions.php:361
 msgid "%d post was closed."
 msgid_plural "%d posts were closed."
 msgstr[0] ""

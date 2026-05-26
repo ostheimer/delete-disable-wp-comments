@@ -130,125 +130,125 @@ function ddwpc_delete_all_comments() {
 }
 
 /**
- * Create and download a backup of all comments
+ * Build the authenticated backup download URL for administrators.
+ *
+ * @return string
+ */
+function ddwpc_get_backup_download_url() {
+    return wp_nonce_url(
+        admin_url('admin-post.php?action=ddwpc_backup_comments'),
+        'ddwpc_backup_comments',
+        'nonce'
+    );
+}
+
+/**
+ * Create and stream a CSV backup of all comments.
+ *
+ * The backup contains personal data from the comments table, so it is served
+ * through an authenticated admin-post request instead of writing a public file
+ * under uploads.
+ *
+ * @return void
  */
 function ddwpc_backup_comments() {
-    // Verify nonce
-    if (!check_ajax_referer('ddwpc_nonce', 'nonce', false)) {
-        wp_send_json_error(array(
-            'message' => esc_html__('Security check failed.', 'delete-disable-comments')
-        ));
+    $nonce = isset($_GET['nonce']) ? sanitize_text_field(wp_unslash($_GET['nonce'])) : '';
+
+    if (!wp_verify_nonce($nonce, 'ddwpc_backup_comments')) {
+        wp_die(esc_html__('Security check failed.', 'delete-disable-comments'), '', array('response' => 403));
     }
 
-    // Check user capabilities
     if (!current_user_can('manage_options')) {
-        wp_send_json_error(array(
-            'message' => esc_html__('Insufficient permissions.', 'delete-disable-comments')
-        ));
+        wp_die(esc_html__('Insufficient permissions.', 'delete-disable-comments'), '', array('response' => 403));
     }
 
-    // Get comments from database with caching
-    $cache_key = 'ddwpc_all_comments_backup';
-    $comments = wp_cache_get($cache_key, 'delete-disable-comments');
-    if (false === $comments) {
-        $comments = get_comments(array(
-            'status' => 'all',
-            'type' => 'comment',
-            'number' => 0, // Get all comments
-            'orderby' => 'comment_ID',
-            'order' => 'ASC'
-        ));
-        
-        // Convert comments to array format
-        $comments_array = array();
-        foreach ($comments as $comment) {
-            $comments_array[] = array(
-                'comment_ID' => $comment->comment_ID,
-                'comment_post_ID' => $comment->comment_post_ID,
-                'comment_author' => $comment->comment_author,
-                'comment_author_email' => $comment->comment_author_email,
-                'comment_author_url' => $comment->comment_author_url,
-                'comment_author_IP' => $comment->comment_author_IP,
-                'comment_date' => $comment->comment_date,
-                'comment_date_gmt' => $comment->comment_date_gmt,
-                'comment_content' => $comment->comment_content,
-                'comment_karma' => $comment->comment_karma,
-                'comment_approved' => $comment->comment_approved,
-                'comment_agent' => $comment->comment_agent,
-                'comment_type' => $comment->comment_type,
-                'comment_parent' => $comment->comment_parent,
-                'user_id' => $comment->user_id
-            );
-        }
-        
-        wp_cache_set($cache_key, $comments_array, 'delete-disable-comments', HOUR_IN_SECONDS);
-        $comments = $comments_array;
-    }
-    
-    if (empty($comments)) {
-        wp_send_json_error(array(
-            'message' => esc_html__('No comments found to backup.', 'delete-disable-comments')
-        ));
-    }
-    
-    // Prepare backup directory under the uploads directory
-    $upload_dir = wp_upload_dir(); // Get upload directory paths and URLs
-    $backup_dir = trailingslashit( $upload_dir['basedir'] ) . 'delete-disable-comments'; // Plugin-specific folder
-    if ( ! file_exists( $backup_dir ) ) {
-        wp_mkdir_p( $backup_dir );
-    }
     $filename = 'ddwpc-comments-backup-' . gmdate('Y-m-d-H-i-s') . '.csv';
-    $backup_file = rtrim( $backup_dir, '/' ) . '/' . $filename;
-    
-    // Initialize WP_Filesystem
-    global $wp_filesystem;
-    if (empty($wp_filesystem)) {
-        if (!function_exists('WP_Filesystem')) {
-            require_once(ABSPATH . '/wp-admin/includes/file.php');
-        }
-        // Attempt to initialize WP_Filesystem
-        if (!WP_Filesystem()) {
-            // Send JSON error if filesystem init fails
-             wp_send_json_error(array(
-                 'success' => false,
-                 'message' => esc_html__('Could not initialize WP_Filesystem. Check file permissions or provide FTP credentials if required.', 'delete-disable-comments')
-             ));
-             // No need to return here, wp_send_json_error includes die()
-        }
+    $headers  = ddwpc_get_comment_backup_headers();
+
+    nocache_headers();
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('X-Content-Type-Options: nosniff');
+
+    $output = fopen('php://output', 'w');
+    if (false === $output) {
+        wp_die(esc_html__('Failed to create backup file.', 'delete-disable-comments'), '', array('response' => 500));
     }
-    
-    // Prepare CSV content
-    $csv_content = '';
-    $headers = array_keys($comments[0]);
-    $csv_content .= implode(',', $headers) . "\n";
-    
-    foreach ($comments as $comment) {
-        $csv_content .= implode(',', array_map('wp_json_encode', $comment)) . "\n";
-    }
-    
-    // Write file using WP_Filesystem
-    if (!$wp_filesystem->put_contents($backup_file, $csv_content)) {
-        wp_send_json_error(array(
-            'message' => esc_html__('Failed to create backup file.', 'delete-disable-comments')
+
+    fputcsv($output, $headers);
+
+    $offset = 0;
+    $number = 500;
+
+    do {
+        $comments = get_comments(array(
+            'status'  => 'all',
+            'number'  => $number,
+            'offset'  => $offset,
+            'orderby' => 'comment_ID',
+            'order'   => 'ASC',
         ));
-    }
-    
-    // Clean up old backup files
-    $backup_files = glob( rtrim( $backup_dir, '/' ) . '/ddwpc-comments-backup-*.csv' );
-    if ($backup_files) {
-        foreach ($backup_files as $file) {
-            if ($file !== $backup_file && (time() - filemtime($file)) > DAY_IN_SECONDS) {
-                wp_delete_file($file);
-            }
+
+        foreach ($comments as $comment) {
+            fputcsv($output, ddwpc_format_comment_for_backup($comment));
         }
-    }
-    
-    // Return download URL
-    $file_url = trailingslashit( $upload_dir['baseurl'] ) . 'delete-disable-comments/' . $filename;
-    wp_send_json_success( array(
-        'message'  => esc_html__( 'Backup created successfully.', 'delete-disable-comments' ),
-        'file_url' => $file_url,
-    ) );
+
+        $offset += $number;
+    } while (count($comments) === $number);
+
+    fclose($output);
+    exit;
+}
+
+/**
+ * CSV headers used for comment backups.
+ *
+ * @return string[]
+ */
+function ddwpc_get_comment_backup_headers() {
+    return array(
+        'comment_ID',
+        'comment_post_ID',
+        'comment_author',
+        'comment_author_email',
+        'comment_author_url',
+        'comment_author_IP',
+        'comment_date',
+        'comment_date_gmt',
+        'comment_content',
+        'comment_karma',
+        'comment_approved',
+        'comment_agent',
+        'comment_type',
+        'comment_parent',
+        'user_id',
+    );
+}
+
+/**
+ * Convert a WP_Comment object into a stable CSV row.
+ *
+ * @param WP_Comment $comment Comment object.
+ * @return array
+ */
+function ddwpc_format_comment_for_backup($comment) {
+    return array(
+        $comment->comment_ID,
+        $comment->comment_post_ID,
+        $comment->comment_author,
+        $comment->comment_author_email,
+        $comment->comment_author_url,
+        $comment->comment_author_IP,
+        $comment->comment_date,
+        $comment->comment_date_gmt,
+        $comment->comment_content,
+        $comment->comment_karma,
+        $comment->comment_approved,
+        $comment->comment_agent,
+        $comment->comment_type,
+        $comment->comment_parent,
+        $comment->user_id,
+    );
 }
 
 /**
@@ -409,8 +409,8 @@ function ddwpc_get_status() {
 function ddwpc_register_ajax_handlers() {
     add_action('wp_ajax_ddwpc_delete_spam', 'ddwpc_delete_spam_comments');
     add_action('wp_ajax_ddwpc_delete_all', 'ddwpc_delete_all_comments');
-    add_action('wp_ajax_ddwpc_backup_comments', 'ddwpc_backup_comments');
     add_action('wp_ajax_ddwpc_toggle_comments', 'ddwpc_toggle_comments');
     add_action('wp_ajax_ddwpc_get_status', 'ddwpc_get_status');
     add_action('wp_ajax_ddwpc_close_all_now', 'ddwpc_close_all_now');
+    add_action('admin_post_ddwpc_backup_comments', 'ddwpc_backup_comments');
 }

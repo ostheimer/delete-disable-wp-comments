@@ -3,7 +3,7 @@
  * Plugin Name: Delete & Disable Comments
  * Plugin URI: https://github.com/ostheimer/delete-disable-wp-comments
  * Description: A WordPress plugin that helps site administrators manage comments by deleting spam comments, removing all comments with backup, or disabling comments site-wide.
- * Version: 1.0.5
+ * Version: 1.0.6
  * Author: Andreas Ostheimer
  * Author URI: https://github.com/ostheimer
  * License: GPL v2 or later
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Removed direct loading of wp-load.php via require_once to comply with review.
 
 // Define plugin constants
-define('DDWPC_VERSION', '1.0.5');
+define('DDWPC_VERSION', '1.0.6');
 define('DDWPC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('DDWPC_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -69,13 +69,10 @@ function ddwpc_admin_enqueue_scripts($hook) {
             'creating_backup' => esc_html__('Creating backup...', 'delete-disable-comments'),
             'success_delete_spam' => esc_html__('Spam comments have been successfully deleted.', 'delete-disable-comments'),
             'success_delete_all' => esc_html__('All comments have been successfully deleted.', 'delete-disable-comments'),
-            'success_backup' => esc_html__('Backup has been successfully created.', 'delete-disable-comments'),
             'error_delete_spam' => esc_html__('Error deleting spam comments.', 'delete-disable-comments'),
             'error_delete_all' => esc_html__('Error deleting all comments.', 'delete-disable-comments'),
-            'error_backup' => esc_html__('Error creating backup.', 'delete-disable-comments'),
             'network_error_spam' => esc_html__('Network error while deleting spam comments.', 'delete-disable-comments'),
             'network_error_all' => esc_html__('Network error while deleting all comments.', 'delete-disable-comments'),
-            'network_error_backup' => esc_html__('Network error while creating backup.', 'delete-disable-comments'),
             'delete_spam_button' => esc_html__('Delete Spam Comments', 'delete-disable-comments'),
             'delete_all_button' => esc_html__('Delete All Comments', 'delete-disable-comments'),
             'backup_button' => esc_html__('Download Backup', 'delete-disable-comments'),
