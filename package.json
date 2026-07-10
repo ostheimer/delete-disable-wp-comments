@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "test": "php tests/php/test-bug-fix.php",
-    "build": "mkdir -p dist && rm -f dist/delete-disable-comments.zip && cd wp-content/plugins && zip -r ../../dist/delete-disable-comments.zip delete-disable-comments/ -x '*/.*' -x '*/__MACOSX/*'"
+    "build": "bash scripts/build-release.sh",
+    "verify:release": "bash scripts/verify-release.sh"
   },
   "repository": {
     "type": "git",

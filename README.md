@@ -199,17 +199,33 @@ main              # Production-ready code
 └── release/*     # Release preparation
 ```
 
-## Build (Test-ZIP)
+## Build und Release
 
-Lokales Installationspaket für Tests:
+Das Installationspaket wird aus den versionierten Plugin-Dateien mit stabiler
+Dateireihenfolge, festen Zeitstempeln und ohne ZIP-Zusatzmetadaten gebaut:
 
 ```bash
-npm run build
+npm run verify:release
 ```
 
-Ergebnis: `dist/delete-disable-comments.zip` (Version **1.0.6**, enthält `readme.txt` und Plugin-Quellcode).
+Ergebnis:
+
+- `dist/delete-disable-comments.zip`
+- `dist/delete-disable-comments.zip.sha256`
+
+Der Verify-Schritt gleicht `package.json`, Plugin-Header und `Stable tag` ab,
+baut das Archiv zweimal und verlangt identische SHA-256-Hashes.
 
 Installation: **Plugins → Installieren → Plugin hochladen** und ZIP auswählen.
+
+### GitHub Actions
+
+- `CI` prüft PHP-Syntax, die Regressionstests, ShellCheck und den
+  reproduzierbaren Release-Build bei jedem Pull Request und Push auf `main`.
+- Ein Tag im Format `vMAJOR.MINOR.PATCH` startet den Release-Workflow. Erst nach
+  grünen Tests wird der GitHub-Release mit ZIP und SHA-256-Datei veröffentlicht.
+- Das Veröffentlichen eines GitHub-Releases deployt nichts auf eine
+  WordPress-Installation.
 
 ## WordPress.org Verzeichnis
 
