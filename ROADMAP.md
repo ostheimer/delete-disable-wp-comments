@@ -1,6 +1,6 @@
 # ROADMAP – Delete & Disable Comments
 
-Stand: 2026-05-21 (v1.0.5, i18n-Release)
+Stand: 2026-07-10 (v1.0.6, GitHub CI und reproduzierbarer Release)
 
 ## Erledigt
 
@@ -16,7 +16,10 @@ Stand: 2026-05-21 (v1.0.5, i18n-Release)
 | i18n DE/EN | ✅ | v1.0.5 – vollständige Übersetzungen `de_AT` + `de_DE` (52 Strings), `.pot` aktualisiert |
 | EN/DE-Strategie dokumentiert | ✅ | `wordpress-org/README.md`, Kurzverweis in `README.md` |
 | Plugin Check (PHPCS/WPCS) | ✅ | v1.0.4 – Tested up to 7.0, Sanitize, phpcs:ignore für Bulk-SQL |
-| Build-ZIP lokal (`npm run build`) | ✅ | Ausgabe: `dist/delete-disable-comments.zip` (v1.0.5) |
+| Reproduzierbares Release-ZIP (`npm run verify:release`) | ✅ | ZIP + SHA-256, Versionsabgleich und identischer Doppel-Build |
+| GitHub Actions CI | ✅ | PHP-Lint, Regressionstests, ShellCheck und Release-Verifikation |
+| GitHub Release Automation | ✅ | Tags `v*` veröffentlichen ZIP + SHA-256 erst nach grünen Tests |
+| GitHub Release v1.0.6 | ✅ | Release-Artefakt aus dem getaggten, geprüften Commit |
 | Deploy jobspot.at (SSH) | ✅ | 2026-05-21 – v1.0.3 → v1.0.4, `Tested up to: 7.0` |
 | WordPress.org `readme.txt` überarbeitet | ✅ | Kurzbeschreibung, FAQ, Changelog 1.0.2/1.0.3, Tools-Menüpfad |
 | WordPress.org Assets (Banner, Icon, Screenshots) | ✅ | `wordpress-org/assets/`, Generator: `scripts/generate-wordpress-org-assets.py` |
@@ -27,8 +30,7 @@ Stand: 2026-05-21 (v1.0.5, i18n-Release)
 
 | Bereich | Priorität | Beschreibung |
 |--------|-----------|--------------|
-| SVN-Release 1.0.5 auf WordPress.org | Hoch | `trunk` + Tag `1.0.5` + `/assets` hochladen (siehe `wordpress-org/README.md`) |
-| Plugin Check jobspot.at erneut prüfen | Hoch | Nach Deploy v1.0.5 im WP-Admin → Werkzeuge → Plugin Check |
+| Plugin Check bei künftigen WordPress-Versionen erneut prüfen | Mittel | Vor dem nächsten WordPress.org-Release lokal oder auf einer Testinstanz ausführen |
 | EU-Locale-Übersetzungen (22 Sprachen) | Hoch | Via Codex-Prompt (Inhalt im Chat/Archiv), dann msgfmt + .mo kompilieren |
 | GlotPress de_DE readme-Übersetzung | Mittel | Plugin-Beschreibung auf wordpress.org via translate.wordpress.org (Task 4 im Codex-Prompt) |
 | PHPUnit / wp-env | Mittel | Smoke-Tests in offizielle WP-Testumgebung portieren |
@@ -50,5 +52,8 @@ Stand: 2026-05-21 (v1.0.5, i18n-Release)
 npm test
 # oder
 php tests/php/test-bug-fix.php
-npm run build   # ZIP nach dist/
+npm run verify:release   # reproduzierbares ZIP + SHA-256 nach dist/
 ```
+
+> Die CI-/Release-Umstellung vom 2026-07-10 hat keine WordPress-Installation
+> verändert und keinen Production-Deploy ausgelöst.
