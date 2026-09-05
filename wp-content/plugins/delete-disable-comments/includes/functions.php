@@ -93,40 +93,75 @@ function ddwpc_delete_all_comments() {
         ));
     }
 
-    // Get total comments count from cache
-    $cache_key = 'ddwpc_total_comments_count';
-    $total_count = wp_cache_get($cache_key, 'delete-disable-comments');
-    if (false === $total_count) {
-        $args = array(
-            'count' => true
-        );
-        $total_count = get_comments($args);
-        wp_cache_set($cache_key, $total_count, 'delete-disable-comments', HOUR_IN_SECONDS);
+    $deleted = 0;
+    $last_id = 0;
+    try {
+        do {
+            $comments = ddwpc_get_comment_batch($last_id);
+            foreach ($comments as $comment) {
+                $last_id = (int) $comment->comment_ID;
+                // Use the core API to remove metadata, update counts and fire hooks.
+                if (wp_delete_comment($last_id, true)) {
+                    $deleted++;
+                }
+            }
+        } while (count($comments) === 500);
+
+        // A failed deletion or concurrent insertion must not look like full success.
+        $remaining = ddwpc_get_comment_batch(0, 1);
+    } catch (RuntimeException $error) {
+        $remaining = null;
     }
 
-    if ($total_count > 0) {
-        // Get all comments
-        $comments = get_comments(array(
-            'fields' => 'ids',
-            'number' => 0 // Get all comments
+    wp_cache_delete('ddwpc_total_comments_count', 'delete-disable-comments');
+    wp_cache_delete('ddwpc_spam_comments_count', 'delete-disable-comments');
+
+    if (null === $remaining || !empty($remaining)) {
+        wp_send_json_error(array(
+            'message' => sprintf(
+                /* translators: %d: number of comments actually deleted */
+                esc_html__('Deleted %d comments, but could not verify that all comments were removed. Please try again.', 'delete-disable-comments'),
+                $deleted
+            ),
+            'deleted' => $deleted,
         ));
-        
-        // Delete all comments and their meta
-        foreach ($comments as $comment_id) {
-            wp_delete_comment($comment_id, true);
-        }
-        
-        // Clear cache
-        wp_cache_delete($cache_key, 'delete-disable-comments');
-        
-        wp_send_json_success(array(
-            'message' => esc_html__('Successfully deleted all comments.', 'delete-disable-comments')
-        ));
+        return;
     }
-    
+
     wp_send_json_success(array(
-        'message' => esc_html__('No comments found.', 'delete-disable-comments')
+        'message' => sprintf(
+            /* translators: %d: number of comments actually deleted */
+            esc_html__('Successfully deleted %d comments. No comments remain.', 'delete-disable-comments'),
+            $deleted
+        ),
+        'deleted' => $deleted,
     ));
+}
+
+/**
+ * Read every comment status using a bounded primary-key cursor.
+ *
+ * WP_Comment_Query's "all" excludes spam/trash. Reading the table directly also
+ * includes custom statuses and avoids third-party query filters hiding records.
+ * No offset: removing earlier rows cannot cause later rows to be skipped.
+ *
+ * @param int $after_id Last processed comment ID.
+ * @param int $limit Maximum rows to read.
+ * @return object[] Comment table rows.
+ * @throws RuntimeException When the database read fails.
+ */
+function ddwpc_get_comment_batch($after_id, $limit = 500) {
+    global $wpdb;
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Fresh complete table traversal is required for backup/deletion verification.
+    $comments = $wpdb->get_results($wpdb->prepare(
+        "SELECT * FROM {$wpdb->comments} WHERE comment_ID > %d ORDER BY comment_ID ASC LIMIT %d",
+        max(0, (int) $after_id),
+        max(1, min(500, (int) $limit))
+    ));
+    if (null === $comments || $wpdb->last_error) {
+        throw new RuntimeException('Could not read comments.');
+    }
+    return $comments;
 }
 
 /**
@@ -162,42 +197,56 @@ function ddwpc_backup_comments() {
         wp_die(esc_html__('Insufficient permissions.', 'delete-disable-comments'), '', array('response' => 403));
     }
 
-    $filename = 'ddwpc-comments-backup-' . gmdate('Y-m-d-H-i-s') . '.csv';
-    $headers  = ddwpc_get_comment_backup_headers();
+    // Finish the export in a private temporary stream before sending download
+    // headers, so database/write failures cannot produce a successful partial CSV.
+    $output = fopen('php://temp/maxmemory:5242880', 'w+');
+    if (false === $output) {
+        wp_die(esc_html__('Failed to create backup file.', 'delete-disable-comments'), '', array('response' => 500));
+    }
+    try {
+        $exported = ddwpc_write_comment_backup($output);
+    } catch (RuntimeException $error) {
+        fclose($output);
+        wp_die(esc_html__('Failed to create backup file.', 'delete-disable-comments'), '', array('response' => 500));
+        return;
+    }
 
+    $filename = 'ddwpc-comments-backup-' . gmdate('Y-m-d-H-i-s') . '-' . $exported . '-comments.csv';
+    rewind($output);
     nocache_headers();
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="' . $filename . '"');
     header('X-Content-Type-Options: nosniff');
-
-    $output = fopen('php://output', 'w');
-    if (false === $output) {
-        wp_die(esc_html__('Failed to create backup file.', 'delete-disable-comments'), '', array('response' => 500));
-    }
-
-    fputcsv($output, $headers);
-
-    $offset = 0;
-    $number = 500;
-
-    do {
-        $comments = get_comments(array(
-            'status'  => 'all',
-            'number'  => $number,
-            'offset'  => $offset,
-            'orderby' => 'comment_ID',
-            'order'   => 'ASC',
-        ));
-
-        foreach ($comments as $comment) {
-            fputcsv($output, ddwpc_format_comment_for_backup($comment));
-        }
-
-        $offset += $number;
-    } while (count($comments) === $number);
-
+    header('X-DDWPC-Exported-Comments: ' . $exported);
+    fpassthru($output);
     fclose($output);
     exit;
+}
+
+/**
+ * Write the CSV to a stream and return the actual number of exported comments.
+ *
+ * @param resource $output Writable stream.
+ * @return int Exported row count, excluding the header.
+ * @throws RuntimeException When reading or writing fails.
+ */
+function ddwpc_write_comment_backup($output) {
+    if (false === fputcsv($output, ddwpc_get_comment_backup_headers(), ',', '"', '')) {
+        throw new RuntimeException('Could not write CSV header.');
+    }
+    $last_id = 0;
+    $exported = 0;
+    do {
+        $comments = ddwpc_get_comment_batch($last_id);
+        foreach ($comments as $comment) {
+            if (false === fputcsv($output, ddwpc_format_comment_for_backup($comment), ',', '"', '')) {
+                throw new RuntimeException('Could not write CSV row.');
+            }
+            $last_id = (int) $comment->comment_ID;
+            $exported++;
+        }
+    } while (count($comments) === 500);
+    return $exported;
 }
 
 /**
