@@ -119,9 +119,8 @@ register_activation_hook(__FILE__, 'ddwpc_activate');
 // Deactivation Hook
 function ddwpc_deactivate() {
     // Note: We intentionally keep the user's `ddwpc_disable_comments` setting in place,
-    // so that re-activating the plugin restores the previous behaviour. WordPress core
-    // deletes plugin data only via uninstall.php, which we leave to a future iteration.
-    delete_option('ddwpc_disable_comments');
+    // so that re-activating the plugin restores the previous behaviour.
+    // No uninstall cleanup is provided; defaults and post statuses are preserved too.
 }
 register_deactivation_hook(__FILE__, 'ddwpc_deactivate');
 

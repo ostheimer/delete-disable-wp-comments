@@ -245,3 +245,11 @@ Historisches Review-Feedback: [documentation/archive/wordpress-org-review-feedba
 ## Roadmap
 
 Siehe [ROADMAP.md](ROADMAP.md) für aktuellen Projektstand.
+
+### Backup, deletion and reactivation
+
+Backup and Delete All include approved, pending, spam, trash and custom comment statuses. Both traverse comment IDs in ascending batches of 500. The CSV retains `comment_approved`; the download filename and `X-DDWPC-Exported-Comments` response header report the actual exported row count. The export is prepared in a private temporary stream before download, so a failed database read does not send a partial CSV as a successful backup.
+
+Delete All uses the WordPress deletion API (including comment metadata cleanup), reports the actual number deleted, and checks for remaining comments before confirming success. Concurrent edits are not a transactional snapshot; if comments remain after deletion, the action reports an error and can be retried.
+
+Deactivating and reactivating the plugin preserves the disable-comments setting, including an explicitly disabled toggle. Deactivation does not reset WordPress defaults or post statuses. There is currently no uninstall cleanup routine.
