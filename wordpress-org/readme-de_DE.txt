@@ -11,6 +11,7 @@ Warum verwenden?
 * Löschen Sie alle als Spam markierten Kommentare nach Bestätigung.
 * Löschen Sie alle Kommentare nach Bestätigung.
 * Laden Sie vor dem Löschen aller Kommentare ein CSV-Backup herunter.
+* Öffnen Sie CSV-Backups in Tabellenkalkulationen, ohne formelartige Kommentarwerte auszuführen.
 * Deaktivieren Sie Kommentare websiteweit mit einem Schalter.
 * Schließen Sie Kommentare und Pings für bestehende Beiträge, wenn der Deaktivierungsmodus aktiv ist.
 * Nutzen Sie eine standardmäßige WordPress-Admin-Ansicht, die nur Administratoren zur Verfügung steht.
@@ -48,6 +49,10 @@ Kann das Plugin gelöschte Kommentare aus einem CSV-Backup wiederherstellen?
 
 Nein. Das CSV-Backup dient der Aufbewahrung oder manuellen Import-Workflows. Das Plugin enthält kein Wiederherstellungswerkzeug.
 
+Warum beginnen manche exportierten Werte mit einem Apostroph?
+
+Kommentarfelder, die wie Tabellenformeln aussehen, erhalten im CSV ein vorangestelltes Apostroph. Dadurch bleibt nicht vertrauenswürdiger Kommentartext sichtbar, ohne dass gängige Tabellenkalkulationen ihn als Formel ausführen. Entfernen Sie dieses Schutzzeichen nur in einem vertrauenswürdigen Import-Workflow.
+
 Löscht das Deaktivieren von Kommentaren bestehende Kommentare?
 
 Nein. Der Deaktivierungs-Schalter verhindert und blendet Kommentarfunktionen aus. Bestehende Kommentardatensätze bleiben in der Datenbank, bis Sie sie ausdrücklich löschen.
@@ -83,6 +88,9 @@ Screenshot-Beschriftungen:
 4. Deaktivierungs-Schalter EIN plus gelber Wartungshinweis und Button „Alle Kommentare jetzt schließen“
 
 Upgrade Notices:
+
+1.0.7:
+Vollständige Kommentarbereinigung und sicherere CSV-Backups. Empfohlen für Websites, die Spam löschen oder Backups in Tabellenkalkulationen öffnen.
 
 1.0.6:
 Datenschutz-Härtung für CSV-Backups. Backup-Dateien werden jetzt an Administratoren gestreamt und nicht mehr in öffentlichen Uploads abgelegt.
