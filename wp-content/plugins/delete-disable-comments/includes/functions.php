@@ -206,7 +206,7 @@ function ddwpc_backup_comments() {
     try {
         $exported = ddwpc_write_comment_backup($output);
     } catch (RuntimeException $error) {
-        fclose($output);
+        // PHP closes the request-local temporary stream when wp_die() terminates.
         wp_die(esc_html__('Failed to create backup file.', 'delete-disable-comments'), '', array('response' => 500));
         return;
     }
@@ -219,7 +219,7 @@ function ddwpc_backup_comments() {
     header('X-Content-Type-Options: nosniff');
     header('X-DDWPC-Exported-Comments: ' . $exported);
     fpassthru($output);
-    fclose($output);
+    // PHP closes the request-local temporary stream on exit.
     exit;
 }
 
@@ -275,13 +275,35 @@ function ddwpc_get_comment_backup_headers() {
 }
 
 /**
+ * Prevent a spreadsheet from interpreting an untrusted CSV value as a formula.
+ *
+ * Comment fields may be supplied by unauthenticated visitors. Prefixing risky
+ * values with an apostrophe keeps the value visible while making common
+ * spreadsheet applications treat it as text.
+ *
+ * @param mixed $value CSV cell value.
+ * @return mixed Neutralized string or the original non-string value.
+ */
+function ddwpc_neutralize_csv_formula($value) {
+    if (!is_string($value) || '' === $value) {
+        return $value;
+    }
+
+    if (preg_match('/^[\x09\x0D\x0A]|^\s*[=+\-@]/u', $value)) {
+        return "'" . $value;
+    }
+
+    return $value;
+}
+
+/**
  * Convert a WP_Comment object into a stable CSV row.
  *
  * @param WP_Comment $comment Comment object.
  * @return array
  */
 function ddwpc_format_comment_for_backup($comment) {
-    return array(
+    $row = array(
         $comment->comment_ID,
         $comment->comment_post_ID,
         $comment->comment_author,
@@ -298,6 +320,8 @@ function ddwpc_format_comment_for_backup($comment) {
         $comment->comment_parent,
         $comment->user_id,
     );
+
+    return array_map('ddwpc_neutralize_csv_formula', $row);
 }
 
 /**

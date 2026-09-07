@@ -3,7 +3,7 @@
  * Plugin Name: Delete & Disable Comments
  * Plugin URI: https://github.com/ostheimer/delete-disable-wp-comments
  * Description: A WordPress plugin that helps site administrators manage comments by deleting spam comments, removing all comments with backup, or disabling comments site-wide.
- * Version: 1.0.6
+ * Version: 1.0.7
  * Author: Andreas Ostheimer
  * Author URI: https://github.com/ostheimer
  * License: GPL v2 or later
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Removed direct loading of wp-load.php via require_once to comply with review.
 
 // Define plugin constants
-define('DDWPC_VERSION', '1.0.6');
+define('DDWPC_VERSION', '1.0.7');
 define('DDWPC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('DDWPC_PLUGIN_URL', plugin_dir_url(__FILE__));
 
