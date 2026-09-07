@@ -374,6 +374,26 @@ foreach ([0, 5, 1003] as $count) {
     assert_eq([], $GLOBALS['commentmeta'], "metadata removed through WordPress API ($count)");
     assert_eq($count, $GLOBALS['json_data']['deleted'] ?? null, "actual deletion count ($count)");
 }
+
+$formula_comment = (object) array_fill_keys(ddwpc_get_comment_backup_headers(), 'safe');
+$formula_comment->comment_ID = '1';
+$formula_comment->comment_post_ID = '1';
+$formula_comment->comment_author = '=1+1';
+$formula_comment->comment_author_email = '+cmd@example.test';
+$formula_comment->comment_author_url = '-HYPERLINK("https://example.test")';
+$formula_comment->comment_author_IP = '@SUM(1+1)';
+$formula_comment->comment_content = "\t=1+1";
+$formula_comment->comment_agent = "\r@SUM(1+1)";
+$formula_comment->comment_type = " \n+1+1";
+$formula_row = ddwpc_format_comment_for_backup($formula_comment);
+foreach ([2, 3, 4, 5, 8, 11, 12] as $column) {
+    assert_eq("'", substr($formula_row[$column], 0, 1), "formula-like CSV column $column is neutralized");
+}
+assert_eq('safe', ddwpc_neutralize_csv_formula('safe'), 'ordinary CSV value is unchanged');
+assert_eq("'=1+1", ddwpc_neutralize_csv_formula('=1+1'), 'equals-prefixed CSV value is neutralized');
+assert_eq("'  @SUM(1+1)", ddwpc_neutralize_csv_formula('  @SUM(1+1)'), 'formula after spaces is neutralized');
+assert_eq("'\nplain text", ddwpc_neutralize_csv_formula("\nplain text"), 'line-break-prefixed CSV value is neutralized');
+
 seed_comments(5);
 $GLOBALS['blocked_id'] = 3;
 try { ddwpc_delete_all_comments(); } catch (RuntimeException $e) {

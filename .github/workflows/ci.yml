@@ -29,6 +29,11 @@ jobs:
       - name: Verify reproducible release artifact
         run: npm run verify:release
 
+      - name: Run WordPress Plugin Check
+        uses: WordPress/plugin-check-action@10857da14b6c2246d15402b3e69f777edcf8c12e # v1.1.9
+        with:
+          build-dir: ./wp-content/plugins/delete-disable-comments
+
       - name: Upload verified plugin ZIP
         uses: actions/upload-artifact@v7
         with:

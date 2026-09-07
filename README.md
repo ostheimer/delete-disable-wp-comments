@@ -7,6 +7,7 @@ A WordPress plugin that helps site administrators manage comments by deleting sp
 This plugin provides a simple way to:
 - Delete all spam comments
 - Create a backup of existing comments
+- Neutralize formula-like comment values in spreadsheet CSV exports
 - Delete all comments
 - Disable comments site-wide
 
@@ -27,6 +28,14 @@ Once comments are deleted, they cannot be recovered unless you have created a ba
 1. The main plugin interface under Tools->Delete & Disable Comments
 
 ## Changelog
+
+### 1.0.7
+
+* Exporte und Gesamtlöschung umfassen jetzt auch Spam, Papierkorb und benutzerdefinierte Kommentarstatus.
+* Unvollständige Löschungen werden erkannt und mit der tatsächlichen Anzahl gemeldet.
+* Die Einstellung zur siteweiten Kommentardeaktivierung bleibt bei Deaktivierung und Reaktivierung des Plugins erhalten.
+* Formelartige Kommentarwerte werden im CSV-Backup für Tabellenkalkulationen neutralisiert.
+* WordPress-7.1-Kompatibilität und Plugin Check in CI ergänzt.
 
 ### 1.0.6
 
@@ -82,11 +91,11 @@ This plugin is licensed under the GPL v2 or later.
 
 ## Tested up to
 
-* WordPress 7.0
+* WordPress 7.1
 
 ## Stable tag
 
-* 1.0.6
+* 1.0.7
 
 ## Übersetzungen (DE/EN)
 

@@ -2,8 +2,8 @@
 Contributors: helpstring
 Tags: comments, spam, disable comments, delete comments, backup
 Requires at least: 5.0
-Tested up to: 7.0
-Stable tag: 1.0.6
+Tested up to: 7.1
+Stable tag: 1.0.7
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -21,6 +21,7 @@ Many older sites collect spam comments, unused discussion threads, or imported c
 * Delete all comments marked as spam after confirmation.
 * Delete all comments after confirmation.
 * Download a CSV backup before deleting all comments.
+* Open CSV backups in spreadsheet applications without executing formula-like comment values.
 * Disable comments site-wide with a single toggle.
 * Close comments and pings on existing posts when disable mode is active.
 * Use a standard WordPress admin screen available only to administrators.
@@ -59,6 +60,10 @@ Yes. Use **Download Backup** before **Delete All Comments**. The backup is gener
 
 No. The CSV backup is for safekeeping or manual import workflows. The plugin does not include a restore tool.
 
+= Why can some exported values start with an apostrophe? =
+
+Comment fields that look like spreadsheet formulas are prefixed with an apostrophe in the CSV. This keeps untrusted comment text visible while preventing common spreadsheet applications from evaluating it as a formula. Remove that protective prefix only in a trusted import workflow.
+
 = Does disabling comments delete existing comments? =
 
 No. The disable toggle prevents and hides comment functionality, but existing comment records stay in the database until you explicitly delete them.
@@ -96,6 +101,13 @@ Backups are streamed through a protected administrator download. The plugin no l
 
 == Changelog ==
 
+= 1.0.7 =
+* Export and delete comments with every status, including spam, trash, and custom statuses.
+* Verify complete deletion and report the number of comments actually removed.
+* Preserve the site-wide disable setting across plugin deactivation and reactivation.
+* Neutralize formula-like values in CSV backups before they reach spreadsheet applications.
+* Verify compatibility with WordPress 7.1 and add Plugin Check to continuous integration.
+
 = 1.0.6 =
 * Changed CSV backups to stream through an authenticated administrator download instead of writing public files under `wp-content/uploads/`.
 * Removed stale backup object caching so downloads reflect the current comments table.
@@ -132,6 +144,9 @@ Backups are streamed through a protected administrator download. The plugin no l
 * Initial release with spam deletion, delete-all with backup, and site-wide comment disable.
 
 == Upgrade Notice ==
+
+= 1.0.7 =
+Complete comment cleanup and safer CSV backups. Recommended for sites that delete spam or open backups in spreadsheet applications.
 
 = 1.0.6 =
 Privacy hardening for CSV backups. Backup files are now streamed to administrators and are not left in public uploads.
