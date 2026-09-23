@@ -39,13 +39,14 @@ Für Releases können SVN-Benutzername und -Passwort **nur lokal** in `.local/wo
    cd delete-disable-comments
    ```
 
-2. **Plugin-Release (Tag)** – z. B. Version 1.0.3:
+2. **Plugin-Release (Tag)** – z. B. Version 1.1.0: zuerst den geprüften Quellcode nach `trunk/` synchronisieren und committen, dann exakt diesen Stand taggen.
 
    ```bash
-   svn cp trunk tags/1.0.3
    # Dateien aus dem Repo in trunk/ synchronisieren (rsync oder manuell)
    svn add --force trunk/*
-   svn commit -m "Release 1.0.3"
+   svn commit -m "Release 1.1.0 trunk"
+   svn cp trunk tags/1.1.0
+   svn commit -m "Tag 1.1.0"
    ```
 
 3. **Assets** (Banner, Icon, Screenshots) – Ordner `/assets` auf SVN-Root-Ebene, **nicht** im Plugin-Ordner:
@@ -56,14 +57,14 @@ Für Releases können SVN-Benutzername und -Passwort **nur lokal** in `.local/wo
    svn commit -m "Update plugin directory assets"
    ```
 
-4. **Stable Tag** in `trunk/readme.txt` muss mit dem veröffentlichten Tag übereinstimmen (`Stable tag: 1.0.3`).
+4. **Stable Tag** in `trunk/readme.txt` muss mit dem veröffentlichten Tag übereinstimmen (`Stable tag: 1.1.0`).
 
 5. Nach dem Commit erscheinen Banner und Screenshots auf der Plugin-Seite nach Cache-Aktualisierung (oft innerhalb weniger Minuten, gelegentlich länger).
 
 ## Hinweise
 
 - Screenshots und Banner nutzen englische UI-Texte (breitere Reichweite im Verzeichnis).
-- Das Plugin selbst ist mehrsprachig mit breiter EU-Locale-Unterstützung; siehe `languages/` und Abschnitt **Mehrsprachigkeit** unten.
+- Die aktuelle Admin-Oberfläche ist auf Deutsch vollständig übersetzt. Andere mitgelieferte Locales können bei neuen Meldungen auf Englisch zurückfallen.
 - Review-Feedback von WordPress.org ist im Repo unter `documentation/archive/wordpress-org-review-feedback.md` archiviert.
 
 ## Mehrsprachigkeit (EU)
@@ -76,7 +77,7 @@ Für Releases können SVN-Benutzername und -Passwort **nur lokal** in `.local/wo
 | Mitgelieferte Locales | `de_AT`, `de_DE` sowie weitere EU-Locale-Dateien (`.po` + kompilierte `.mo` im Ordner `languages/`) |
 | Automatisches Laden | Seit WordPress 4.6 lädt Core die passende `.mo`-Datei anhand der Site-Locale (`WPLANG` / Benutzersprache) |
 | Englische Sites | Keine `.mo` nötig — Quellstrings werden direkt angezeigt |
-| EU-Sprachen | Vollständig übersetzte Admin-Oberfläche inkl. AJAX-Meldungen und Bestätigungsdialoge, sofern die passende Locale-Datei vorhanden ist |
+| Weitere EU-Sprachen | Ältere Übersetzungen sind mitgeliefert; neue Meldungen fallen bis zur Aktualisierung gegebenenfalls auf Englisch zurück |
 
 **Übersetzungen kompilieren** (nach Änderungen an `.po`-Dateien):
 

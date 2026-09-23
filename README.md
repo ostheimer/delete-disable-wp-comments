@@ -1,14 +1,14 @@
 # Delete & Disable Comments
 
-A WordPress plugin that helps site administrators manage comments by deleting spam comments, removing all comments with backup, or disabling comments site-wide.
+A WordPress plugin for reviewing comment counts, deleting selected types in resumable batches, exporting CSV, and disabling public comments while preserving editor Notes.
 
 ## Description
 
 This plugin provides a simple way to:
 - Delete all spam comments
-- Create a backup of existing comments
+- Export existing comments to CSV for inspection (not a restorable backup)
 - Neutralize formula-like comment values in spreadsheet CSV exports
-- Delete all comments
+- Delete selected comment types; Notes, reviews and custom types are protected by default
 - Disable comments site-wide
 
 ## Installation
@@ -21,13 +21,24 @@ This plugin provides a simple way to:
 
 ### Is this action reversible?
 
-Once comments are deleted, they cannot be recovered unless you have created a backup first.
+Deletion is permanent. The CSV export omits comment metadata and cannot be restored by this plugin. Make a full database backup through the host before deletion.
 
 ## Screenshots
 
-1. The main plugin interface under Tools->Delete & Disable Comments
+1. Comment counts, type selection, CSV export and disable toggle
+2. Confirmation before deleting public spam
+3. Confirmation before deleting selected types
+4. Separate maintenance action for existing posts
 
 ## Changelog
+
+### 1.1.0
+
+* Standardmäßige Bereinigung schützt Editor-Notizen, Produktbewertungen und benutzerdefinierte Kommentartypen.
+* Ausgewählte Kommentare werden in fortsetzbaren Schritten mit Fortschrittsanzeige gelöscht.
+* Der CSV-Download ist korrekt als Export gekennzeichnet; er ist kein wiederherstellbares Backup.
+* Der Schalter stellt gespeicherte WordPress-Standardwerte wieder her. Dauerhaft geschlossene Beiträge bleiben geschlossen.
+* Editor-Notizen bleiben bei deaktivierten öffentlichen Kommentaren über die REST-API erreichbar.
 
 ### 1.0.7
 
@@ -95,7 +106,7 @@ This plugin is licensed under the GPL v2 or later.
 
 ## Stable tag
 
-* 1.0.7
+* 1.1.0
 
 ## Übersetzungen (DE/EN)
 
@@ -255,10 +266,10 @@ Historisches Review-Feedback: [documentation/archive/wordpress-org-review-feedba
 
 Siehe [ROADMAP.md](ROADMAP.md) für aktuellen Projektstand.
 
-### Backup, deletion and reactivation
+### CSV export, deletion and reactivation
 
-Backup and Delete All include approved, pending, spam, trash and custom comment statuses. Both traverse comment IDs in ascending batches of 500. The CSV retains `comment_approved`; the download filename and `X-DDWPC-Exported-Comments` response header report the actual exported row count. The export is prepared in a private temporary stream before download, so a failed database read does not send a partial CSV as a successful backup.
+The CSV export includes all comment statuses and types, but omits comment metadata and has no restore operation. It traverses comment IDs in ascending batches of 500. The CSV retains `comment_approved`; the download filename and `X-DDWPC-Exported-Comments` response header report the actual exported row count. The export is prepared in a private temporary stream before download, so a failed database read does not send a partial CSV as a successful export.
 
-Delete All uses the WordPress deletion API (including comment metadata cleanup), reports the actual number deleted, and checks for remaining comments before confirming success. Concurrent edits are not a transactional snapshot; if comments remain after deletion, the action reports an error and can be retried.
+Selected deletion uses the WordPress deletion API (including comment metadata cleanup) in batches of 100 scanned records per request. It reports actual deletions and checks for remaining selected records before confirming success. Concurrent edits are not a transactional snapshot; if selected comments remain, the action reports an error and can be retried.
 
 Deactivating and reactivating the plugin preserves the disable-comments setting, including an explicitly disabled toggle. Deactivation does not reset WordPress defaults or post statuses. There is currently no uninstall cleanup routine.

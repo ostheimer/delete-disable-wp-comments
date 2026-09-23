@@ -1,5 +1,5 @@
 Kurzbeschreibung:
-Spam bereinigen, alle Kommentare mit CSV-Backup löschen oder Kommentare websiteweit deaktivieren.
+Kommentarzahlen prüfen, ausgewählte Typen in fortsetzbaren Schritten löschen, CSV exportieren oder öffentliche Kommentare deaktivieren.
 
 Beschreibung:
 Delete & Disable Comments bietet WordPress-Administratoren eine fokussierte Ansicht für Kommentarbereinigung und das Abschalten von Kommentarfunktionen. Öffnen Sie das Plugin unter Werkzeuge → Kommentare löschen & deaktivieren (Tools → Delete & Disable Comments).
@@ -8,12 +8,13 @@ Viele ältere Websites sammeln Spam-Kommentare, nicht mehr benötigte Diskussion
 
 Warum verwenden?
 
-* Löschen Sie alle als Spam markierten Kommentare nach Bestätigung.
-* Löschen Sie alle Kommentare nach Bestätigung.
-* Laden Sie vor dem Löschen aller Kommentare ein CSV-Backup herunter.
-* Öffnen Sie CSV-Backups in Tabellenkalkulationen, ohne formelartige Kommentarwerte auszuführen.
+* Prüfen Sie vor dem Löschen Anzahl und Typen der betroffenen Kommentare.
+* Löschen Sie gewöhnlichen Spam oder ausgewählte Kommentare in kleinen, fortsetzbaren Schritten.
+* Editor-Notizen, Produktbewertungen und benutzerdefinierte Kommentartypen bleiben standardmäßig erhalten.
+* Exportieren Sie alle Kommentarzeilen als CSV. Der Export enthält keine Kommentar-Metadaten und ist kein wiederherstellbares Datenbank-Backup.
+* Öffnen Sie CSV-Exporte in Tabellenkalkulationen, ohne formelartige Kommentarwerte auszuführen.
 * Deaktivieren Sie Kommentare websiteweit mit einem Schalter.
-* Schließen Sie Kommentare und Pings für bestehende Beiträge, wenn der Deaktivierungsmodus aktiv ist.
+* Stellen Sie beim erneuten Einschalten zuvor gespeicherte WordPress-Standardwerte wieder her. Dauerhaft geschlossene Beiträge bleiben geschlossen.
 * Nutzen Sie eine standardmäßige WordPress-Admin-Ansicht, die nur Administratoren zur Verfügung steht.
 
 Typische Anwendungsfälle:
@@ -21,45 +22,51 @@ Typische Anwendungsfälle:
 * Angesammelte Spam-Kommentare von einer Website entfernen.
 * Eine Website vorbereiten, die keine Diskussionen mehr akzeptieren soll.
 * Kommentare vor einem Redesign, einer Migration oder einer Kundenübergabe bereinigen.
-* Vor dem dauerhaften Löschen eine CSV-Kopie der Kommentardaten herunterladen.
+* Vor dem dauerhaften Löschen eine CSV-Kopie exportieren und beim Hoster ein vollständiges Datenbank-Backup erstellen.
 * Offene Kommentarstatus bestehender Beiträge schließen, ohne save_post-Hooks auszulösen.
 
 Was „Kommentare deaktivieren“ bewirkt:
 
-Der Schalter „Kommentare deaktivieren“ ändert das Kommentarverhalten der Website. Wenn er aktiv ist, setzt das Plugin die WordPress-Standardwerte für neue Inhalte auf geschlossen, verhindert neue Kommentar- und Ping-Einreichungen, blendet die Kommentar-Ausgabe im Frontend aus, entfernt kommentarbezogene UI, blockiert Kommentar-REST-Endpunkte, entfernt kommentarbezogene Blöcke und deaktiviert das Widget für neue Kommentare.
+Der Schalter „Kommentare deaktivieren“ ändert das Kommentarverhalten der Website. Wenn er aktiv ist, setzt das Plugin die WordPress-Standardwerte für neue Inhalte auf geschlossen, verhindert öffentliche Kommentar- und Ping-Einreichungen, blendet die Kommentar-Ausgabe im Frontend aus und entfernt kommentarbezogene Elemente. Produktbewertungen werden ebenfalls geschlossen. Die REST-Route für Kommentare bleibt für interne Editor-Notizen verfügbar.
 
-Es löscht keine bestehenden Kommentare. Es führt auch keine geplante Bereinigung aus. Wenn bestehende Beiträge weiterhin offene Kommentare oder Pings haben, zeigt die Admin-Ansicht einen Wartungshinweis mit dem Button „Alle Kommentare jetzt schließen“. Dieser Button führt ein direktes SQL-Update aus und vermeidet save_post-Hooks pro Beitrag. Das ist nützlich für Websites mit WPML, Yoast SEO, Polylang oder anderen Plugins, die auf Beitragsspeicherungen reagieren.
+Es löscht keine bestehenden Kommentare und führt keine geplante Bereinigung aus. Wenn bestehende Beiträge weiterhin offene Kommentare oder Pings haben, zeigt die Admin-Ansicht den separaten Button „Alle Kommentare jetzt schließen“. Diese bestätigte Aktion ändert die Statuswerte dauerhaft und vermeidet save_post-Hooks pro Beitrag. Das Ausschalten des Schalters öffnet die Beiträge nicht erneut. Bei Websites, die bereits mit einer älteren Plugin-Version deaktiviert wurden, sind die früheren Diskussionseinstellungen nicht gespeichert und können nicht automatisch wiederhergestellt werden.
+
+Vor dem Löschen:
+
+Die Standardauswahl umfasst gewöhnliche Kommentare, Pingbacks und Trackbacks außerhalb von Produktseiten, unabhängig vom Status. Produktbewertungen, Editor-Notizen und andere benutzerdefinierte Typen müssen ausdrücklich ausgewählt werden. Der Spam-Button löscht nur gewöhnlichen öffentlichen Spam. Der CSV-Export enthält alle Kommentartypen und personenbezogene Daten; bewahren Sie ihn geschützt auf. Erstellen Sie für eine Wiederherstellung zuvor ein vollständiges Datenbank-Backup beim Hoster.
+
+Anleitung und Unterstützung bei komplexen Bereinigungen oder Migrationen: https://www.ostheimer.at/leistungen/wordpress-plugins/delete-disable-comments
 
 Übersetzungen:
 
-Das Plugin enthält gettext-Übersetzungsdateien für breite EU-Sprachunterstützung, einschließlich Deutsch und weiterer EU-Sprachen. WordPress lädt die passende .mo-Datei automatisch anhand der Website-Sprache. Textdomain: delete-disable-comments.
+Die aktuelle Admin-Oberfläche ist vollständig ins Deutsche übersetzt. Weitere Sprachdateien sind enthalten; bei neuen Meldungen erscheint dort bis zur Aktualisierung der Übersetzung gegebenenfalls Englisch. WordPress lädt die passende .mo-Datei anhand der Website-Sprache. Textdomain: delete-disable-comments.
 
 Installation:
 1. Laden Sie den Plugin-Ordner nach /wp-content/plugins/delete-disable-comments hoch oder installieren Sie die ZIP-Datei über Plugins → Neues Plugin hinzufügen → Plugin hochladen.
 2. Aktivieren Sie das Plugin in WordPress über die Ansicht Plugins.
-3. Öffnen Sie Werkzeuge → Kommentare löschen & deaktivieren (Tools → Delete & Disable Comments), um Spam-Kommentare zu löschen, ein CSV-Backup herunterzuladen, alle Kommentare zu löschen oder Kommentare websiteweit zu deaktivieren.
+3. Öffnen Sie Werkzeuge → Kommentare löschen & deaktivieren (Tools → Delete & Disable Comments), um Zahlen zu prüfen, CSV zu exportieren, ausgewählte Kommentare zu löschen oder Kommentare websiteweit zu deaktivieren.
 
 FAQ:
 
-Kann ich Kommentare vor dem Löschen sichern?
+Ist der CSV-Export ein Backup?
 
-Ja. Nutzen Sie „Backup herunterladen“, bevor Sie „Alle Kommentare löschen“ verwenden. Das Backup wird bei Bedarf erzeugt und als geschützter Administrator-Download ausgeliefert.
+Nein. „Alle Kommentare als CSV exportieren“ liefert die Kommentartabelle als geschützten Administrator-Download. Kommentar-Metadaten fehlen; das Plugin kann die Datei nicht wiederherstellen. Erstellen Sie vor dem Löschen ein vollständiges Datenbank-Backup.
 
-Kann das Plugin gelöschte Kommentare aus einem CSV-Backup wiederherstellen?
+Kann das Plugin gelöschte Kommentare aus CSV wiederherstellen?
 
-Nein. Das CSV-Backup dient der Aufbewahrung oder manuellen Import-Workflows. Das Plugin enthält kein Wiederherstellungswerkzeug.
+Nein. CSV dient der Prüfung oder einem manuellen Import. Verwenden Sie für eine Wiederherstellung das Datenbank-Backup.
 
 Warum beginnen manche exportierten Werte mit einem Apostroph?
 
 Kommentarfelder, die wie Tabellenformeln aussehen, erhalten im CSV ein vorangestelltes Apostroph. Dadurch bleibt nicht vertrauenswürdiger Kommentartext sichtbar, ohne dass gängige Tabellenkalkulationen ihn als Formel ausführen. Entfernen Sie dieses Schutzzeichen nur in einem vertrauenswürdigen Import-Workflow.
 
-Löscht das Deaktivieren von Kommentaren bestehende Kommentare?
+Löscht das Deaktivieren bestehende Kommentare oder Editor-Notizen?
 
-Nein. Der Deaktivierungs-Schalter verhindert und blendet Kommentarfunktionen aus. Bestehende Kommentardatensätze bleiben in der Datenbank, bis Sie sie ausdrücklich löschen.
+Nein. Bestehende Kommentardatensätze bleiben erhalten, bis Sie sie ausdrücklich löschen. Editor-Notizen bleiben im Block-Editor nutzbar. Produktbewertungen werden durch den websiteweiten Schalter geschlossen.
 
 Was macht „Alle Kommentare jetzt schließen“?
 
-Wenn der Deaktivierungsmodus aktiv ist, können einige bestehende Beiträge weiterhin comment_status oder ping_status auf open gesetzt haben. Der Button schließt diese Felder mit einem SQL-Update.
+Wenn der Deaktivierungsmodus aktiv ist, können einige bestehende Beiträge weiterhin comment_status oder ping_status auf open gesetzt haben. Der Button schließt diese Felder dauerhaft mit einem SQL-Update. Das Ausschalten des Schalters öffnet sie nicht erneut.
 
 Ist das Schließen mit WPML, Yoast SEO oder Polylang sicher?
 
@@ -77,17 +84,20 @@ Führt das Plugin geplante Bereinigungsaufgaben aus?
 
 Nein. Bereinigungsaktionen laufen nur, wenn ein Administrator den entsprechenden Button anklickt.
 
-Wo werden CSV-Backup-Dateien gespeichert?
+Wo werden CSV-Exporte gespeichert?
 
-Backups werden über einen geschützten Administrator-Download gestreamt. Das Plugin legt keine CSV-Dateien mehr im öffentlichen Uploads-Verzeichnis ab.
+CSV-Exporte werden als geschützter Administrator-Download gestreamt. Das Plugin legt keine CSV-Dateien im öffentlichen Uploads-Verzeichnis ab.
 
 Screenshot-Beschriftungen:
-1. Hauptbereich mit drei Abschnitten: Spam, alle Kommentare löschen plus Backup, Deaktivierungs-Schalter
+1. Hauptbereich mit Kommentarzahlen, Typauswahl, CSV-Export und Deaktivierungs-Schalter
 2. Bestätigungsdialog zum Löschen von Spam mit Ja und Nein
-3. Warnung zum Löschen aller Kommentare plus Backup-Erinnerung
+3. Bestätigung zum Löschen ausgewählter Kommentare mit Anzahl
 4. Deaktivierungs-Schalter EIN plus gelber Wartungshinweis und Button „Alle Kommentare jetzt schließen“
 
 Upgrade Notices:
+
+1.1.0:
+Die Bereinigung schützt Notizen und Bewertungen standardmäßig. Prüfen Sie die ausgewählten Typen vor dem Löschen. CSV-Exporte sind keine wiederherstellbaren Backups.
 
 1.0.7:
 Vollständige Kommentarbereinigung und sicherere CSV-Backups. Empfohlen für Websites, die Spam löschen oder Backups in Tabellenkalkulationen öffnen.

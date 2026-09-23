@@ -2,7 +2,7 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Delete & Disable Comments 1.0.0\n"
+"Project-Id-Version: Delete & Disable Comments 1.1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/ostheimer/delete-disable-wp-comments/issues\n"
 "POT-Creation-Date: 2024-03-23 09:07+0100\n"
 "PO-Revision-Date: 2024-03-23 09:28+0100\n"
@@ -14,64 +14,358 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: includes/functions.php:63
-msgid "%d spam comment has been deleted."
-msgid_plural "%d spam comments have been deleted."
-msgstr[0] "%d Spam-Kommentar wurde gelöscht."
-msgstr[1] "%d Spam-Kommentare wurden gelöscht."
-
-#: includes/functions.php:181
-msgid "%d comment has been deleted."
-msgid_plural "%d comments have been deleted."
-msgstr[0] "%d Kommentar wurde gelöscht."
-msgstr[1] "%d Kommentare wurden gelöscht."
-
-#: includes/functions.php:247
-msgid "Comments have been disabled site-wide."
-msgstr "Kommentare wurden für die gesamte Website deaktiviert."
-
-#: includes/functions.php:248
-msgid "Comments have been enabled site-wide."
-msgstr "Kommentare wurden für die gesamte Website aktiviert."
-
-#: includes/functions.php:273
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:63
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:508
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:84
 msgid "Comments are currently disabled"
 msgstr "Kommentare sind derzeit deaktiviert"
 
-#: includes/functions.php:274
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:64
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:509
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:85
 msgid "Comments are currently enabled"
 msgstr "Kommentare sind derzeit aktiviert"
 
-#: delete-disable-comments.php:4
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:96
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:97
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:15
 msgid "Delete & Disable Comments"
 msgstr "Kommentare löschen & deaktivieren"
 
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:81
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:27
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:31
 msgid "Delete Spam Comments"
 msgstr "Spam-Kommentare löschen"
 
-msgid "Remove all comments marked as spam from your database."
-msgstr "Entfernen Sie alle als Spam markierten Kommentare aus Ihrer Datenbank."
-
-msgid "Delete All Comments"
-msgstr "Alle Kommentare löschen"
-
-msgid "Remove all comments from your website. You can download a backup before deletion."
-msgstr "Entfernen Sie alle Kommentare von Ihrer Website. Sie können vor dem Löschen ein Backup herunterladen."
-
-msgid "Download Backup"
-msgstr "Backup herunterladen"
-
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:71
 msgid "Disable Comments"
 msgstr "Kommentare deaktivieren"
 
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:72
 msgid "Toggle comments on or off for your entire website."
 msgstr "Aktivieren oder deaktivieren Sie Kommentare für Ihre gesamte Website."
 
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:61
 msgid "Error toggling comments."
 msgstr "Fehler beim Umschalten der Kommentare."
 
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:341
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:362
 msgid "Comments are closed."
 msgstr "Kommentare sind geschlossen."
 
-msgid "Comments are disabled."
-msgstr "Kommentare sind deaktiviert." 
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:73
+msgid "Choose at least one comment type."
+msgstr "Wählen Sie mindestens einen Kommentartyp aus."
+
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:62
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:69
+msgid "Choose at least one valid comment type."
+msgstr "Wählen Sie mindestens einen gültigen Kommentartyp aus."
+
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:40
+msgid ""
+"Choose what to remove. Editor Notes, product reviews and extension data are "
+"protected by default."
+msgstr ""
+"Wählen Sie aus, was gelöscht werden soll. Editor-Notizen, Produktbewertungen"
+" und Daten von Erweiterungen bleiben standardmäßig erhalten."
+
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:186
+msgid "Cleanup continues in the next batch."
+msgstr "Die Bereinigung wird im nächsten Schritt fortgesetzt."
+
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:178
+msgid ""
+"Cleanup stopped before completion. Some comments may already be deleted; "
+"check the counts and try again."
+msgstr ""
+"Die Bereinigung wurde vorzeitig gestoppt. Einige Kommentare wurden "
+"möglicherweise bereits gelöscht. Prüfen Sie die Zahlen und versuchen Sie es "
+"erneut."
+
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:42
+msgid "Comment types to delete"
+msgstr "Zu löschende Kommentartypen"
+
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:522
+msgid "Could not read comment counts."
+msgstr "Die Kommentarzahlen konnten nicht gelesen werden."
+
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:19
+msgid ""
+"Could not read comment counts. Cleanup is unavailable until the database can"
+" be read."
+msgstr ""
+"Die Kommentarzahlen konnten nicht gelesen werden. Die Bereinigung ist erst "
+"wieder verfügbar, wenn die Datenbank gelesen werden kann."
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:71
+msgid "Creating CSV export..."
+msgstr "CSV-Export wird erstellt ..."
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:82
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:39
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:58
+msgid "Delete Selected Comments"
+msgstr "Ausgewählte Kommentare löschen"
+
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:73
+msgid ""
+"Disabling also closes product reviews. Switching back restores saved site "
+"defaults when available, but does not reopen posts closed with the separate "
+"maintenance button."
+msgstr ""
+"Beim Deaktivieren werden auch Produktbewertungen geschlossen. Beim erneuten "
+"Aktivieren werden gespeicherte Website-Standardwerte wiederhergestellt, "
+"sofern vorhanden. Beiträge, die mit dem separaten Wartungsbutton geschlossen"
+" wurden, bleiben geschlossen."
+
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:47
+msgid "Editor Notes"
+msgstr "Editor-Notizen"
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:83
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:61
+msgid "Export all comments as CSV"
+msgstr "Alle Kommentare als CSV exportieren"
+
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:149
+msgid "Invalid cleanup cursor."
+msgstr "Ungültige Position für die Bereinigung."
+
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:150
+msgid "Need help with a complex cleanup or migration?"
+msgstr "Benötigen Sie Hilfe bei einer komplexen Bereinigung oder Migration?"
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:74
+msgid "No comments match the selected types."
+msgstr "Keine Kommentare entsprechen den ausgewählten Typen."
+
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:48
+msgid "Other custom comment types"
+msgstr "Andere benutzerdefinierte Kommentartypen"
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:68
+msgid ""
+"Permanently close comments and pings on existing posts? The toggle cannot "
+"undo this change."
+msgstr ""
+"Kommentare und Pings bestehender Beiträge dauerhaft schließen? Dieser "
+"Vorgang kann mit dem Schalter nicht rückgängig gemacht werden."
+
+#. translators: %d is the number of comments selected for deletion.
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:67
+msgid ""
+"Permanently delete %d selected comments? Exporting CSV does not create a "
+"restorable backup."
+msgstr ""
+"%d ausgewählte Kommentare dauerhaft löschen? Ein CSV-Export ist kein "
+"wiederherstellbares Backup."
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:65
+msgid "Permanently delete spam from public comments?"
+msgstr "Spam unter öffentlichen Kommentaren dauerhaft löschen?"
+
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:46
+msgid "Product reviews"
+msgstr "Produktbewertungen"
+
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:45
+msgid "Public comments and pingbacks"
+msgstr "Öffentliche Kommentare und Pingbacks"
+
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:28
+msgid ""
+"Remove spam from ordinary public comments. Product reviews, editor Notes and"
+" custom types stay untouched."
+msgstr ""
+"Entfernen Sie Spam aus gewöhnlichen öffentlichen Kommentaren. "
+"Produktbewertungen, Editor-Notizen und benutzerdefinierte Typen bleiben "
+"erhalten."
+
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:187
+msgid "Selected comments were deleted."
+msgstr "Die ausgewählten Kommentare wurden gelöscht."
+
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:63
+msgid ""
+"The CSV includes personal data and all comment types. It is not a restorable"
+" backup. Make a database backup before deletion."
+msgstr ""
+"Die CSV-Datei enthält personenbezogene Daten und alle Kommentartypen. Sie "
+"ist kein wiederherstellbares Backup. Erstellen Sie vor dem Löschen ein "
+"Datenbank-Backup."
+
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:424
+msgid ""
+"The plugin is no longer blocking comments. Check Discussion defaults and any"
+" posts closed by the separate maintenance action."
+msgstr ""
+"Das Plugin blockiert Kommentare nicht mehr. Prüfen Sie die "
+"Diskussionseinstellungen und Beiträge, die mit der separaten Wartungsaktion "
+"geschlossen wurden."
+
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:117
+msgid ""
+"This permanently changes the comment and ping status of existing posts. "
+"Switching the toggle off will not reopen them."
+msgstr ""
+"Dadurch werden die Kommentar- und Ping-Status bestehender Beiträge dauerhaft"
+" geändert. Das Ausschalten des Schalters öffnet sie nicht erneut."
+
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:75
+msgid ""
+"This site was disabled before its previous Discussion defaults were "
+"recorded. Check Settings → Discussion after switching back on."
+msgstr ""
+"Diese Website wurde deaktiviert, bevor ihre früheren "
+"Diskussionseinstellungen gespeichert wurden. Prüfen Sie nach dem erneuten "
+"Aktivieren Einstellungen → Diskussion."
+
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:150
+msgid "WordPress plugin support"
+msgstr "Hilfe zu WordPress-Plugins"
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:72
+msgid "comments deleted so far."
+msgstr "Kommentare bisher gelöscht."
+
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:29
+msgid "matching spam comments"
+msgstr "passende Spam-Kommentare"
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:62
+msgid "Network error while updating comments."
+msgstr "Netzwerkfehler beim Aktualisieren der Kommentare."
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:69
+msgid "Deleting..."
+msgstr "Wird gelöscht..."
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:70
+msgid "Updating..."
+msgstr "Wird aktualisiert..."
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:75
+msgid "Spam comments have been successfully deleted."
+msgstr "Spam-Kommentare wurden erfolgreich gelöscht."
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:76
+msgid "All comments have been successfully deleted."
+msgstr "Alle Kommentare wurden erfolgreich gelöscht."
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:77
+msgid "Error deleting spam comments."
+msgstr "Fehler beim Löschen der Spam-Kommentare."
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:78
+msgid "Error deleting all comments."
+msgstr "Fehler beim Löschen aller Kommentare."
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:79
+msgid "Network error while deleting spam comments."
+msgstr "Netzwerkfehler beim Löschen der Spam-Kommentare."
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:80
+msgid "Network error while deleting all comments."
+msgstr "Netzwerkfehler beim Löschen aller Kommentare."
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:84
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:120
+msgid "Close all comments now"
+msgstr "Alle Kommentare jetzt schließen"
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:85
+msgid "Closing..."
+msgstr "Wird geschlossen..."
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:86
+msgid "Error closing comments."
+msgstr "Fehler beim Schließen der Kommentare."
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:87
+msgid "Network error while closing comments."
+msgstr "Netzwerkfehler beim Schließen der Kommentare."
+
+#: wp-content/plugins/delete-disable-comments/delete-disable-comments.php:88
+msgid "Error loading status."
+msgstr "Fehler beim Laden des Status."
+
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:26
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:47
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:221
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:362
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:447
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:489
+msgid "Security check failed."
+msgstr "Sicherheitsüberprüfung fehlgeschlagen."
+
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:33
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:54
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:225
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:370
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:454
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:497
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:516
+msgid "Insufficient permissions."
+msgstr "Unzureichende Berechtigungen."
+
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:232
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:238
+msgid "Failed to create CSV export."
+msgstr "CSV-Export konnte nicht erstellt werden."
+
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:378
+msgid "Invalid input format."
+msgstr "Ungültiges Eingabeformat."
+
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:388
+msgid "Invalid boolean value."
+msgstr "Ungültiger boolescher Wert."
+
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:404
+msgid "Failed to update comment settings."
+msgstr "Fehler beim Aktualisieren der Kommentareinstellungen."
+
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:421
+msgid ""
+"Comments have been disabled site-wide. Use \"Close all comments now\" below "
+"if existing posts still allow comments."
+msgstr ""
+"Kommentare wurden für die gesamte Website deaktiviert. Nutzen Sie unten "
+"„Alle Kommentare jetzt schließen“, falls bestehende Beiträge noch Kommentare"
+" zulassen."
+
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:462
+msgid "Could not close post comments. No success was reported."
+msgstr ""
+"Beitragskommentare konnten nicht geschlossen werden. Es wurde kein Erfolg "
+"gemeldet."
+
+#: wp-content/plugins/delete-disable-comments/includes/functions.php:470
+msgid "%d post was closed."
+msgid_plural "%d posts were closed."
+msgstr[0] "%d Beitrag wurde geschlossen."
+msgstr[1] "%d Beiträge wurden geschlossen."
+
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:106
+msgid "%d post in your database still has open comments or pings."
+msgid_plural "%d posts in your database still have open comments or pings."
+msgstr[0] ""
+"%d Beitrag in Ihrer Datenbank hat noch offene Kommentare oder Pings."
+msgstr[1] ""
+"%d Beiträge in Ihrer Datenbank haben noch offene Kommentare oder Pings."
+
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:134
+msgid "Confirm permanent change"
+msgstr "Dauerhafte Änderung bestätigen"
+
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:138
+msgid "Yes"
+msgstr "Ja"
+
+#: wp-content/plugins/delete-disable-comments/admin/admin-page.php:141
+msgid "No"
+msgstr "Nein"

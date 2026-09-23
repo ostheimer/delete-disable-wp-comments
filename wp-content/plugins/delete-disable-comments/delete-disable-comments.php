@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Delete & Disable Comments
- * Plugin URI: https://github.com/ostheimer/delete-disable-wp-comments
- * Description: A WordPress plugin that helps site administrators manage comments by deleting spam comments, removing all comments with backup, or disabling comments site-wide.
- * Version: 1.0.7
+ * Plugin URI: https://www.ostheimer.at/leistungen/wordpress-plugins/delete-disable-comments
+ * Description: Review comment counts, clean up selected types, export CSV, and disable public comments without losing editor Notes.
+ * Version: 1.1.0
  * Author: Andreas Ostheimer
- * Author URI: https://github.com/ostheimer
+ * Author URI: https://www.ostheimer.at/
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: delete-disable-comments
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Removed direct loading of wp-load.php via require_once to comply with review.
 
 // Define plugin constants
-define('DDWPC_VERSION', '1.0.7');
+define('DDWPC_VERSION', '1.1.0');
 define('DDWPC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('DDWPC_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -62,11 +62,16 @@ function ddwpc_admin_enqueue_scripts($hook) {
             'network_error' => esc_html__('Network error while updating comments.', 'delete-disable-comments'),
             'comments_disabled' => esc_html__('Comments are currently disabled', 'delete-disable-comments'),
             'comments_enabled' => esc_html__('Comments are currently enabled', 'delete-disable-comments'),
-            'confirm_delete_spam' => esc_html__('Do you really want to delete all spam comments?', 'delete-disable-comments'),
-            'confirm_delete_all' => esc_html__('Do you really want to delete ALL comments? This action cannot be undone!', 'delete-disable-comments'),
+            'confirm_delete_spam' => esc_html__('Permanently delete spam from public comments?', 'delete-disable-comments'),
+            // translators: %d is the number of comments selected for deletion.
+            'confirm_delete_selected' => esc_html__('Permanently delete %d selected comments? Exporting CSV does not create a restorable backup.', 'delete-disable-comments'),
+            'confirm_close_posts' => esc_html__('Permanently close comments and pings on existing posts? The toggle cannot undo this change.', 'delete-disable-comments'),
             'deleting' => esc_html__('Deleting...', 'delete-disable-comments'),
             'updating' => esc_html__('Updating...', 'delete-disable-comments'),
-            'creating_backup' => esc_html__('Creating backup...', 'delete-disable-comments'),
+            'creating_export' => esc_html__('Creating CSV export...', 'delete-disable-comments'),
+            'deleted_so_far' => esc_html__('comments deleted so far.', 'delete-disable-comments'),
+            'choose_scope' => esc_html__('Choose at least one comment type.', 'delete-disable-comments'),
+            'no_matching_comments' => esc_html__('No comments match the selected types.', 'delete-disable-comments'),
             'success_delete_spam' => esc_html__('Spam comments have been successfully deleted.', 'delete-disable-comments'),
             'success_delete_all' => esc_html__('All comments have been successfully deleted.', 'delete-disable-comments'),
             'error_delete_spam' => esc_html__('Error deleting spam comments.', 'delete-disable-comments'),
@@ -74,8 +79,8 @@ function ddwpc_admin_enqueue_scripts($hook) {
             'network_error_spam' => esc_html__('Network error while deleting spam comments.', 'delete-disable-comments'),
             'network_error_all' => esc_html__('Network error while deleting all comments.', 'delete-disable-comments'),
             'delete_spam_button' => esc_html__('Delete Spam Comments', 'delete-disable-comments'),
-            'delete_all_button' => esc_html__('Delete All Comments', 'delete-disable-comments'),
-            'backup_button' => esc_html__('Download Backup', 'delete-disable-comments'),
+            'delete_all_button' => esc_html__('Delete Selected Comments', 'delete-disable-comments'),
+            'backup_button' => esc_html__('Export all comments as CSV', 'delete-disable-comments'),
             'close_all_now_button' => esc_html__('Close all comments now', 'delete-disable-comments'),
             'closing_now' => esc_html__('Closing...', 'delete-disable-comments'),
             'error_close_all_now' => esc_html__('Error closing comments.', 'delete-disable-comments'),
@@ -106,13 +111,7 @@ add_action('admin_menu', 'ddwpc_admin_menu');
 function ddwpc_activate() {
     // Seed default option only on first activation; do not overwrite existing user choice on reactivation.
     add_option('ddwpc_disable_comments', '0');
-
-    // If the operator already had the "disable comments" toggle on (e.g. plugin was reinstalled),
-    // make sure the WordPress defaults reflect that and that all posts in the DB are actually closed.
-    if (ddwpc_is_disable_comments_enabled()) {
-        ddwpc_apply_disable_comments_defaults();
-        ddwpc_close_all_post_comments_in_db();
-    }
+    // Activation never rewrites post rows. The runtime filters take effect on init.
 }
 register_activation_hook(__FILE__, 'ddwpc_activate');
 
@@ -150,13 +149,33 @@ function ddwpc_is_disable_comments_enabled() {
  */
 function ddwpc_apply_disable_comments_defaults($disabled = true) {
     if ($disabled) {
+        if (false === get_option('ddwpc_previous_defaults', false)) {
+            add_option('ddwpc_previous_defaults', array(
+                'default_comment_status' => get_option('default_comment_status', 'open'),
+                'default_ping_status' => get_option('default_ping_status', 'open'),
+            ), '', false);
+        }
         if (get_option('default_comment_status') !== 'closed') {
             update_option('default_comment_status', 'closed');
         }
         if (get_option('default_ping_status') !== 'closed') {
             update_option('default_ping_status', 'closed');
         }
+        return;
     }
+
+    $previous = get_option('ddwpc_previous_defaults', false);
+    if (!is_array($previous)) {
+        // An older release did not record the values. Never guess what they were.
+        return;
+    }
+    foreach (array('default_comment_status', 'default_ping_status') as $key) {
+        if (isset($previous[$key]) && in_array($previous[$key], array('open', 'closed'), true)
+            && get_option($key) === 'closed' && $previous[$key] !== 'closed') {
+            update_option($key, $previous[$key]);
+        }
+    }
+    delete_option('ddwpc_previous_defaults');
 }
 
 /**
@@ -170,7 +189,7 @@ function ddwpc_apply_disable_comments_defaults($disabled = true) {
  * Idempotent: the WHERE clause skips posts that are already closed.
  *
  * @since 1.0.2
- * @return int Number of posts whose comment_status / ping_status was changed.
+ * @return int|false Number of changed posts, or false on database failure.
  */
 function ddwpc_close_all_post_comments_in_db() {
     global $wpdb;
@@ -183,7 +202,7 @@ function ddwpc_close_all_post_comments_in_db() {
     );
 
     if (false === $rows) {
-        return 0;
+        return false;
     }
 
     // Comment count caches and post-meta caches don't depend on these columns,
@@ -284,8 +303,8 @@ function ddwpc_init() {
     // Hide existing comments.
     add_filter('comments_array', '__return_empty_array', 20);
 
-    // Disable comments REST API endpoint.
-    add_filter('rest_endpoints', 'ddwpc_disable_rest_endpoints_filter');
+    // Keep the REST route available for editor Notes; reject public comment writes.
+    add_filter('rest_pre_insert_comment', 'ddwpc_block_public_rest_comment', 20, 2);
 
     // Remove comment-related blocks.
     add_filter('allowed_block_types_all', 'ddwpc_remove_comment_blocks');
@@ -332,16 +351,15 @@ function ddwpc_dequeue_comment_styles() {
     }
 }
 
-function ddwpc_disable_rest_endpoints_filter($endpoints) {
-    if (ddwpc_is_disable_comments_enabled()) {
-        if (isset($endpoints['/wp/v2/comments'])) {
-            unset($endpoints['/wp/v2/comments']);
-        }
-        if (isset($endpoints['/wp/v2/comments/(?P<id>[\d]+)'])) {
-            unset($endpoints['/wp/v2/comments/(?P<id>[\d]+)']);
-        }
+function ddwpc_block_public_rest_comment($prepared_comment, $request) {
+    if (!ddwpc_is_disable_comments_enabled() || is_wp_error($prepared_comment)) {
+        return $prepared_comment;
     }
-    return $endpoints;
+    $type = isset($prepared_comment['comment_type']) ? (string) $prepared_comment['comment_type'] : '';
+    if ($type === 'note') {
+        return $prepared_comment;
+    }
+    return new WP_Error('ddwpc_comments_disabled', __('Comments are closed.', 'delete-disable-comments'), array('status' => 403));
 }
 
 function ddwpc_remove_comment_blocks($allowed_blocks) {
