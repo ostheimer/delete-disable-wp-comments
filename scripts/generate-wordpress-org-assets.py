@@ -552,14 +552,14 @@ def create_retro_banner(icon: Image.Image, width: int, height: int) -> Image.Ima
     draw_bitmap_text(
         img,
         (title_x, int(height * 0.61)),
-        "SPAM CLEANUP / CSV BACKUP / DISABLE",
+        "SPAM CLEANUP / CSV EXPORT / DISABLE",
         line_block,
         "#7fe8ff",
         "#ff3fc8",
         tracking=max(2, line_block // 2),
     )
 
-    chips = [("SPAM", "#ff405a"), ("BACKUP", "#25d0ff"), ("DISABLE", "#ffcc33")]
+    chips = [("SPAM", "#ff405a"), ("EXPORT", "#25d0ff"), ("DISABLE", "#ffcc33")]
     chip_x = title_x
     chip_y = int(height * 0.760)
     for label, color in chips:

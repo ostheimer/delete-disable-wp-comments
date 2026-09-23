@@ -34,45 +34,7 @@ function ddwpc_delete_spam_comments() {
         ));
     }
 
-    // Get spam comments count from cache
-    $cache_key = 'ddwpc_spam_comments_count';
-    $spam_count = wp_cache_get($cache_key, 'delete-disable-comments');
-    if (false === $spam_count) {
-        $args = array(
-            'status' => 'spam',
-            'count' => true
-        );
-        $spam_count = get_comments($args);
-        wp_cache_set($cache_key, $spam_count, 'delete-disable-comments', HOUR_IN_SECONDS);
-    }
-
-    if ($spam_count > 0) {
-        // Get all spam comments
-        $spam_comments = get_comments(array(
-            'status' => 'spam',
-            'fields' => 'ids'
-        ));
-        
-        // Delete spam comments
-        foreach ($spam_comments as $comment_id) {
-            wp_delete_comment($comment_id, true);
-        }
-        
-        // Clear cache
-        wp_cache_delete($cache_key, 'delete-disable-comments');
-        
-        wp_send_json_success(array(
-            'message' => sprintf(
-                /* translators: %d: number of deleted comments */
-                esc_html__('Successfully deleted %d spam comments.', 'delete-disable-comments'),
-                $spam_count
-            )
-        ));
-    }
-    
-    wp_send_json_success(array(
-        'message' => esc_html__('No spam comments found.', 'delete-disable-comments')
-    ));
+    ddwpc_process_delete_batch(array('public'), true);
 }
 
 /**
@@ -93,49 +55,22 @@ function ddwpc_delete_all_comments() {
         ));
     }
 
-    $deleted = 0;
-    $last_id = 0;
-    try {
-        do {
-            $comments = ddwpc_get_comment_batch($last_id);
-            foreach ($comments as $comment) {
-                $last_id = (int) $comment->comment_ID;
-                // Use the core API to remove metadata, update counts and fire hooks.
-                if (wp_delete_comment($last_id, true)) {
-                    $deleted++;
-                }
-            }
-        } while (count($comments) === 500);
-
-        // A failed deletion or concurrent insertion must not look like full success.
-        $remaining = ddwpc_get_comment_batch(0, 1);
-    } catch (RuntimeException $error) {
-        $remaining = null;
-    }
-
-    wp_cache_delete('ddwpc_total_comments_count', 'delete-disable-comments');
-    wp_cache_delete('ddwpc_spam_comments_count', 'delete-disable-comments');
-
-    if (null === $remaining || !empty($remaining)) {
+    $allowed = array('public', 'reviews', 'notes', 'other');
+    $raw_scopes = isset($_POST['scopes']) ? wp_unslash($_POST['scopes']) : array('public'); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Each scope is sanitized with sanitize_key() below.
+    if (!is_array($raw_scopes)) {
         wp_send_json_error(array(
-            'message' => sprintf(
-                /* translators: %d: number of comments actually deleted */
-                esc_html__('Deleted %d comments, but could not verify that all comments were removed. Please try again.', 'delete-disable-comments'),
-                $deleted
-            ),
-            'deleted' => $deleted,
+            'message' => esc_html__('Choose at least one valid comment type.', 'delete-disable-comments'),
         ));
         return;
     }
-
-    wp_send_json_success(array(
-        'message' => sprintf(
-            /* translators: %d: number of comments actually deleted */
-            esc_html__('Successfully deleted %d comments. No comments remain.', 'delete-disable-comments'),
-            $deleted
-        ),
-        'deleted' => $deleted,
-    ));
+    $scopes = array_values(array_unique(array_map('sanitize_key', $raw_scopes)));
+    if (!$scopes || array_diff($scopes, $allowed)) {
+        wp_send_json_error(array(
+            'message' => esc_html__('Choose at least one valid comment type.', 'delete-disable-comments'),
+        ));
+        return;
+    }
+    ddwpc_process_delete_batch($scopes, false);
 }
 
 /**
@@ -152,9 +87,11 @@ function ddwpc_delete_all_comments() {
  */
 function ddwpc_get_comment_batch($after_id, $limit = 500) {
     global $wpdb;
-    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Fresh complete table traversal is required for backup/deletion verification.
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Fresh complete table traversal is required for export/deletion verification.
     $comments = $wpdb->get_results($wpdb->prepare(
-        "SELECT * FROM {$wpdb->comments} WHERE comment_ID > %d ORDER BY comment_ID ASC LIMIT %d",
+        "SELECT c.*, COALESCE(p.post_type, '') AS ddwpc_post_type
+         FROM {$wpdb->comments} AS c LEFT JOIN {$wpdb->posts} AS p ON p.ID = c.comment_post_ID
+         WHERE c.comment_ID > %d ORDER BY c.comment_ID ASC LIMIT %d",
         max(0, (int) $after_id),
         max(1, min(500, (int) $limit))
     ));
@@ -164,8 +101,99 @@ function ddwpc_get_comment_batch($after_id, $limit = 500) {
     return $comments;
 }
 
+/** Keep editor Notes, shop reviews and extension data out of the default cleanup. */
+function ddwpc_comment_scope($comment) {
+    $type = (string) $comment->comment_type;
+    $post_type = isset($comment->ddwpc_post_type) ? (string) $comment->ddwpc_post_type : '';
+    if ('note' === $type) {
+        return 'notes';
+    }
+    if ('review' === $type || 'product' === $post_type) {
+        return 'reviews';
+    }
+    if (in_array($type, array('', 'comment', 'pingback', 'trackback'), true)) {
+        return 'public';
+    }
+    return 'other';
+}
+
+/** Return totals by scope, plus the spam count for ordinary public comments. */
+function ddwpc_get_scope_counts() {
+    global $wpdb;
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Fresh grouped counts are needed before irreversible cleanup.
+    $rows = $wpdb->get_results(
+        "SELECT c.comment_type, COALESCE(p.post_type, '') AS ddwpc_post_type,
+                c.comment_approved, COUNT(*) AS ddwpc_total
+         FROM {$wpdb->comments} AS c LEFT JOIN {$wpdb->posts} AS p ON p.ID = c.comment_post_ID
+         GROUP BY c.comment_type, p.post_type, c.comment_approved"
+    );
+    if (null === $rows || $wpdb->last_error) {
+        throw new RuntimeException('Could not count comments.');
+    }
+    $counts = array('public' => 0, 'reviews' => 0, 'notes' => 0, 'other' => 0, 'public_spam' => 0);
+    foreach ($rows as $row) {
+        $scope = ddwpc_comment_scope($row);
+        $counts[$scope] += (int) $row->ddwpc_total;
+        if ('public' === $scope && 'spam' === (string) $row->comment_approved) {
+            $counts['public_spam'] += (int) $row->ddwpc_total;
+        }
+    }
+    return $counts;
+}
+
+/** Delete one bounded batch, returning a cursor so the browser can resume. */
+function ddwpc_process_delete_batch($scopes, $spam_only) {
+    // The AJAX entry points verify the nonce and administrator capability before calling this helper.
+    $cursor = isset($_POST['cursor']) ? sanitize_text_field(wp_unslash($_POST['cursor'])) : '0'; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified by the calling AJAX handler.
+    if (!is_scalar($cursor) || !ctype_digit((string) $cursor)) {
+        wp_send_json_error(array('message' => esc_html__('Invalid cleanup cursor.', 'delete-disable-comments')));
+        return;
+    }
+    $last_id = (int) $cursor;
+    $deleted = 0;
+    try {
+        $comments = ddwpc_get_comment_batch($last_id, 100);
+        foreach ($comments as $comment) {
+            $last_id = (int) $comment->comment_ID;
+            if (!in_array(ddwpc_comment_scope($comment), $scopes, true)
+                || ($spam_only && 'spam' !== (string) $comment->comment_approved)) {
+                continue;
+            }
+            if (!wp_delete_comment($last_id, true)) {
+                throw new RuntimeException('Could not delete comment.');
+            }
+            $deleted++;
+        }
+        $more = count($comments) === 100;
+        $remaining = null;
+        if (!$more) {
+            $counts = ddwpc_get_scope_counts();
+            $remaining = $spam_only ? $counts['public_spam'] : array_sum(array_intersect_key($counts, array_fill_keys($scopes, true)));
+            if ($remaining > 0) {
+                throw new RuntimeException('Matching comments remain.');
+            }
+        }
+    } catch (RuntimeException $error) {
+        wp_send_json_error(array(
+            'message' => esc_html__('Cleanup stopped before completion. Some comments may already be deleted; check the counts and try again.', 'delete-disable-comments'),
+            'deleted' => $deleted,
+            'cursor' => $last_id,
+        ));
+        return;
+    }
+    wp_send_json_success(array(
+        'message' => $more
+            ? esc_html__('Cleanup continues in the next batch.', 'delete-disable-comments')
+            : esc_html__('Selected comments were deleted.', 'delete-disable-comments'),
+        'deleted' => $deleted,
+        'cursor' => $last_id,
+        'more' => $more,
+        'remaining' => $remaining,
+    ));
+}
+
 /**
- * Build the authenticated backup download URL for administrators.
+ * Build the authenticated CSV export download URL for administrators.
  *
  * @return string
  */
@@ -178,9 +206,9 @@ function ddwpc_get_backup_download_url() {
 }
 
 /**
- * Create and stream a CSV backup of all comments.
+ * Create and stream a CSV export of all comments.
  *
- * The backup contains personal data from the comments table, so it is served
+ * The export contains personal data from the comments table, so it is served
  * through an authenticated admin-post request instead of writing a public file
  * under uploads.
  *
@@ -201,17 +229,17 @@ function ddwpc_backup_comments() {
     // headers, so database/write failures cannot produce a successful partial CSV.
     $output = fopen('php://temp/maxmemory:5242880', 'w+');
     if (false === $output) {
-        wp_die(esc_html__('Failed to create backup file.', 'delete-disable-comments'), '', array('response' => 500));
+        wp_die(esc_html__('Failed to create CSV export.', 'delete-disable-comments'), '', array('response' => 500));
     }
     try {
         $exported = ddwpc_write_comment_backup($output);
     } catch (RuntimeException $error) {
         // PHP closes the request-local temporary stream when wp_die() terminates.
-        wp_die(esc_html__('Failed to create backup file.', 'delete-disable-comments'), '', array('response' => 500));
+        wp_die(esc_html__('Failed to create CSV export.', 'delete-disable-comments'), '', array('response' => 500));
         return;
     }
 
-    $filename = 'ddwpc-comments-backup-' . gmdate('Y-m-d-H-i-s') . '-' . $exported . '-comments.csv';
+    $filename = 'ddwpc-comments-export-' . gmdate('Y-m-d-H-i-s') . '-' . $exported . '-comments.csv';
     rewind($output);
     nocache_headers();
     header('Content-Type: text/csv; charset=utf-8');
@@ -384,6 +412,8 @@ function ddwpc_toggle_comments() {
         // "Close all comments now" maintenance action so the AJAX request
         // returns immediately and does not lock wp_posts on large sites.
         ddwpc_apply_disable_comments_defaults(true);
+    } else {
+        ddwpc_apply_disable_comments_defaults(false);
     }
 
     $message = $disabled
@@ -391,7 +421,7 @@ function ddwpc_toggle_comments() {
             'Comments have been disabled site-wide. Use "Close all comments now" below if existing posts still allow comments.',
             'delete-disable-comments'
         )
-        : esc_html__('Comments have been enabled site-wide.', 'delete-disable-comments');
+        : esc_html__('The plugin is no longer blocking comments. Check Discussion defaults and any posts closed by the separate maintenance action.', 'delete-disable-comments');
 
     wp_send_json_success(array(
         'message' => $message,
@@ -427,6 +457,11 @@ function ddwpc_close_all_now() {
     }
 
     $closed = ddwpc_close_all_post_comments_in_db();
+
+    if (false === $closed) {
+        wp_send_json_error(array('message' => esc_html__('Could not close post comments. No success was reported.', 'delete-disable-comments')));
+        return;
+    }
 
     wp_send_json_success(array(
         'message' => sprintf(
@@ -476,6 +511,18 @@ function ddwpc_get_status() {
     ));
 }
 
+function ddwpc_get_counts() {
+    if (!check_ajax_referer('ddwpc_nonce', 'nonce', false) || !current_user_can('manage_options')) {
+        wp_send_json_error(array('message' => esc_html__('Insufficient permissions.', 'delete-disable-comments')));
+        return;
+    }
+    try {
+        wp_send_json_success(ddwpc_get_scope_counts());
+    } catch (RuntimeException $error) {
+        wp_send_json_error(array('message' => esc_html__('Could not read comment counts.', 'delete-disable-comments')));
+    }
+}
+
 /**
  * Register AJAX handlers for the plugin.
  */
@@ -484,6 +531,7 @@ function ddwpc_register_ajax_handlers() {
     add_action('wp_ajax_ddwpc_delete_all', 'ddwpc_delete_all_comments');
     add_action('wp_ajax_ddwpc_toggle_comments', 'ddwpc_toggle_comments');
     add_action('wp_ajax_ddwpc_get_status', 'ddwpc_get_status');
+    add_action('wp_ajax_ddwpc_get_counts', 'ddwpc_get_counts');
     add_action('wp_ajax_ddwpc_close_all_now', 'ddwpc_close_all_now');
     add_action('admin_post_ddwpc_backup_comments', 'ddwpc_backup_comments');
 }

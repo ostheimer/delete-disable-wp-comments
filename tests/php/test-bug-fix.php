@@ -43,6 +43,7 @@ final class DDWPC_Test_State {
     public static int   $sql_query_count       = 0;
     public static array $sql_queries           = [];
     public static int   $rows_to_update        = 25;
+    public static bool  $fail_post_update      = false;
     public static int   $open_posts_count      = 0;
 }
 
@@ -99,6 +100,8 @@ function esc_html_e($s, $domain = null) { echo $s; }
 function esc_html($s) { return $s; }
 function esc_url($s) { return $s; }
 function esc_attr($s) { return $s; }
+function checked($condition) { if ($condition) echo 'checked="checked"'; }
+function disabled($condition) { if ($condition) echo 'disabled="disabled"'; }
 function __($s, $domain = null) { return $s; }
 function _e($s, $domain = null) { echo $s; }
 function _n($single, $plural, $count, $domain = null) { return $count === 1 ? $single : $plural; }
@@ -122,6 +125,21 @@ final class DDWPC_Test_WPDB {
     public function get_results($sql) {
         if (!empty($GLOBALS['db_read_error'])) { $this->last_error = 'test error'; return null; }
         $this->last_error = '';
+        if (str_contains($sql, 'GROUP BY c.comment_type')) {
+            $grouped = [];
+            foreach ($GLOBALS['fixtures'] ?? [] as $comment) {
+                $type = (string) $comment->comment_type;
+                $post_type = (string) ($comment->ddwpc_post_type ?? 'post');
+                $status = (string) $comment->comment_approved;
+                $key = implode('|', [$type, $post_type, $status]);
+                if (!isset($grouped[$key])) {
+                    $grouped[$key] = (object) ['comment_type' => $type, 'ddwpc_post_type' => $post_type,
+                        'comment_approved' => $status, 'ddwpc_total' => 0];
+                }
+                $grouped[$key]->ddwpc_total++;
+            }
+            return array_values($grouped);
+        }
         preg_match('/comment_ID > (\d+).*LIMIT (\d+)/s', $sql, $m);
         return array_slice(array_values(array_filter($GLOBALS['fixtures'], fn($c) => $c->comment_ID > (int)$m[1])), 0, (int)$m[2]);
     }
@@ -129,6 +147,7 @@ final class DDWPC_Test_WPDB {
     public function query(string $sql) {
         DDWPC_Test_State::$sql_query_count++;
         DDWPC_Test_State::$sql_queries[] = $sql;
+        if (DDWPC_Test_State::$fail_post_update) return false;
         return DDWPC_Test_State::$rows_to_update;
     }
     public function get_var(string $sql) {
@@ -162,7 +181,12 @@ function wp_mkdir_p($d) { return true; }
 function wp_delete_file($f) { return true; }
 function trailingslashit($s) { return rtrim($s, '/') . '/'; }
 function sanitize_text_field($s) { return $s; }
+function sanitize_key($s) { return strtolower(preg_replace('/[^a-z0-9_-]/', '', (string) $s)); }
 function wp_unslash($s) { return $s; }
+function is_wp_error($value) { return $value instanceof WP_Error; }
+class WP_Error {
+    public function __construct(public string $code, public string $message, public array $data = []) {}
+}
 function nocache_headers() { /* no-op */ }
 
 // ---------------------------------------------------------------------------
@@ -227,6 +251,9 @@ $is_update = (str_contains($query, 'UPDATE') && str_contains($query, "comment_st
 assert_eq(true, $is_update, 'query is a single UPDATE that closes both statuses');
 $is_idempotent = (str_contains($query, "<>") || str_contains($query, '!='));
 assert_eq(true, $is_idempotent, "query has a WHERE clause that skips already-closed posts");
+DDWPC_Test_State::$fail_post_update = true;
+assert_eq(false, ddwpc_close_all_post_comments_in_db(), 'database failure is distinguishable from zero changed posts');
+DDWPC_Test_State::$fail_post_update = false;
 
 echo "\n--- ddwpc_apply_disable_comments_defaults() is idempotent ---\n";
 DDWPC_Test_State::$options['default_comment_status'] = 'closed';
@@ -286,6 +313,9 @@ assert_eq(1, count($count_queries),
 
 echo "\n--- ddwpc_toggle_comments() returns quickly without bulk SQL UPDATE ---\n";
 DDWPC_Test_State::$options['ddwpc_disable_comments'] = '0';
+DDWPC_Test_State::$options['default_comment_status'] = 'open';
+DDWPC_Test_State::$options['default_ping_status'] = 'open';
+unset(DDWPC_Test_State::$options['ddwpc_previous_defaults']);
 DDWPC_Test_State::$sql_query_count = 0;
 DDWPC_Test_State::$sql_queries     = [];
 $_POST['disabled'] = 'true';
@@ -319,6 +349,10 @@ unset($_POST['disabled']);
 assert_eq(true, $caught_success, 'toggle OFF responds with JSON success');
 assert_eq(0, DDWPC_Test_State::$sql_query_count, 'toggle OFF does not run bulk SQL UPDATE');
 assert_eq(false, ddwpc_is_disable_comments_enabled(), 'toggle OFF clears the disable option');
+assert_eq('open', DDWPC_Test_State::$options['default_comment_status'] ?? null,
+    'toggle OFF restores the previous comment default');
+assert_eq('open', DDWPC_Test_State::$options['default_ping_status'] ?? null,
+    'toggle OFF restores the previous ping default');
 
 // ---------------------------------------------------------------------------
 // Summary
@@ -344,9 +378,28 @@ function seed_comments($count) {
         $comment = (object) array_fill_keys(ddwpc_get_comment_backup_headers(), '');
         $comment->comment_ID = $id;
         $comment->comment_approved = ['1', '0', 'spam', 'trash', 'custom'][$id % 5];
+        $comment->ddwpc_post_type = 'post';
         $GLOBALS['fixtures'][$id] = $comment;
         $GLOBALS['commentmeta'][$id] = ['test' => 'value'];
     }
+}
+function run_cleanup(array $scopes = ['public'], bool $spam_only = false): array {
+    $_POST['scopes'] = $scopes;
+    $_POST['cursor'] = '0';
+    $total = 0;
+    do {
+        try {
+            if ($spam_only) ddwpc_delete_spam_comments();
+            else ddwpc_delete_all_comments();
+        } catch (RuntimeException $e) {
+            if ($e->getMessage() !== 'json_success') throw $e;
+        }
+        $data = $GLOBALS['json_data'];
+        $total += $data['deleted'];
+        $_POST['cursor'] = (string) $data['cursor'];
+    } while ($data['more']);
+    unset($_POST['scopes'], $_POST['cursor']);
+    return ['deleted' => $total, 'remaining' => $data['remaining']];
 }
 foreach ([0, 5, 1003] as $count) {
     seed_comments($count);
@@ -367,13 +420,44 @@ foreach ([0, 5, 1003] as $count) {
     } else {
         assert_eq(true, false, 'status-independent CSV writer exists');
     }
-    try { ddwpc_delete_all_comments(); } catch (RuntimeException $e) {
-        assert_eq('json_success', $e->getMessage(), "delete success ($count)");
-    }
+    $result = run_cleanup();
     assert_eq([], $GLOBALS['fixtures'], "all statuses removed ($count)");
     assert_eq([], $GLOBALS['commentmeta'], "metadata removed through WordPress API ($count)");
-    assert_eq($count, $GLOBALS['json_data']['deleted'] ?? null, "actual deletion count ($count)");
+    assert_eq($count, $result['deleted'], "actual deletion count ($count)");
 }
+
+seed_comments(5);
+$GLOBALS['fixtures'][2]->comment_type = 'note';
+$GLOBALS['fixtures'][3]->ddwpc_post_type = 'product';
+$result = run_cleanup();
+assert_eq(true, isset($GLOBALS['fixtures'][2]), 'default cleanup preserves editor Notes');
+assert_eq(true, isset($GLOBALS['fixtures'][3]), 'default cleanup preserves product reviews');
+assert_eq(3, $result['deleted'], 'default cleanup deletes only ordinary comments');
+assert_eq(0, $result['remaining'], 'no selected comments remain');
+
+seed_comments(230);
+$GLOBALS['fixtures'][8]->comment_type = 'note';
+$GLOBALS['fixtures'][9]->ddwpc_post_type = 'product';
+$GLOBALS['fixtures'][10]->comment_type = 'custom-type';
+$result = run_cleanup(['public', 'reviews']);
+assert_eq(228, $result['deleted'], 'batched selection deletes public comments and reviews');
+assert_eq([8, 10], array_keys($GLOBALS['fixtures']), 'Notes and other custom types remain');
+
+seed_comments(12);
+$GLOBALS['fixtures'][2]->ddwpc_post_type = 'product';
+$result = run_cleanup(['public'], true);
+assert_eq(2, $result['deleted'], 'spam cleanup deletes only public spam');
+assert_eq(true, isset($GLOBALS['fixtures'][2]), 'spam product review is preserved');
+assert_eq(0, $result['remaining'], 'no public spam remains');
+
+DDWPC_Test_State::$options['ddwpc_disable_comments'] = '1';
+$note = ['comment_type' => 'note'];
+assert_eq($note, ddwpc_block_public_rest_comment($note, null), 'editor Notes remain writable through REST');
+assert_eq(true, is_wp_error(ddwpc_block_public_rest_comment(['comment_type' => 'comment'], null)),
+    'public REST comment creation is blocked');
+DDWPC_Test_State::$options['ddwpc_disable_comments'] = '0';
+assert_eq(['comment_type' => 'comment'], ddwpc_block_public_rest_comment(['comment_type' => 'comment'], null),
+    'REST comments work again after the toggle is off');
 
 $formula_comment = (object) array_fill_keys(ddwpc_get_comment_backup_headers(), 'safe');
 $formula_comment->comment_ID = '1';
@@ -399,7 +483,7 @@ $GLOBALS['blocked_id'] = 3;
 try { ddwpc_delete_all_comments(); } catch (RuntimeException $e) {
     assert_eq('json_error', $e->getMessage(), 'failed deletion never reports full success');
 }
-assert_eq(4, $GLOBALS['json_data']['deleted'] ?? null, 'partial deletion count is accurate');
+assert_eq(2, $GLOBALS['json_data']['deleted'] ?? null, 'partial deletion count is accurate');
 unset($GLOBALS['blocked_id']);
 
 

@@ -10,72 +10,115 @@ jQuery(document).ready(function($) {
 
     // Function to show confirmation dialog
     function showConfirmDialog(message, callback) {
+        var $dialog = $('#confirm-dialog');
+        var returnFocus = document.activeElement;
+        function closeDialog(confirmed) {
+            $dialog.off('keydown').hide();
+            if (returnFocus && typeof returnFocus.focus === 'function') returnFocus.focus();
+            callback(confirmed);
+        }
         $('#confirm-message').text(message);
-        $('#confirm-dialog').fadeIn();
+        $dialog.show();
+        $('#confirm-no').trigger('focus');
 
         $('#confirm-yes').off('click').on('click', function() {
-            $('#confirm-dialog').fadeOut();
-            callback(true);
+            closeDialog(true);
         });
 
         $('#confirm-no').off('click').on('click', function() {
-            $('#confirm-dialog').fadeOut();
-            callback(false);
+            closeDialog(false);
+        });
+        $dialog.off('keydown').on('keydown', function(event) {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                closeDialog(false);
+            } else if (event.key === 'Tab') {
+                var $target = event.shiftKey ? $('#confirm-no') : $('#confirm-yes');
+                if (document.activeElement === $target[0]) {
+                    event.preventDefault();
+                    (event.shiftKey ? $('#confirm-yes') : $('#confirm-no')).trigger('focus');
+                }
+            }
         });
     }
 
-    // Handle Delete Spam Comments
+    function refreshCounts() {
+        $.post(ddwpcAjax.ajaxurl, { action: 'ddwpc_get_counts', nonce: ddwpcAjax.nonce })
+            .done(function(response) {
+                if (!response || !response.success) return;
+                $.each(['public', 'reviews', 'notes', 'other'], function(_, scope) {
+                    $('.ddwpc-scope-count[data-scope="' + scope + '"]').text(response.data[scope]);
+                });
+                $('.ddwpc-count strong').text(response.data.public_spam);
+            });
+    }
+
+    function runDeletion(action, scopes, $button, originalText) {
+        var cursor = 0;
+        var deleted = 0;
+        $button.text(ddwpcAjax.deleting).prop('disabled', true);
+        function nextBatch() {
+            $.post(ddwpcAjax.ajaxurl, {
+                action: action, nonce: ddwpcAjax.nonce, cursor: cursor, scopes: scopes
+            }).done(function(response) {
+                if (!response || !response.success) {
+                    deleted += Number(response && response.data && response.data.deleted || 0);
+                    $('#ddwpc-progress').text(deleted + ' ' + ddwpcAjax.deleted_so_far);
+                    showMessage((response && response.data && response.data.message) || ddwpcAjax.error_delete_all, 'error');
+                    $button.text(originalText).prop('disabled', false);
+                    refreshCounts();
+                    return;
+                }
+                deleted += Number(response.data.deleted || 0);
+                cursor = Number(response.data.cursor || cursor);
+                $('#ddwpc-progress').text(deleted + ' ' + ddwpcAjax.deleted_so_far);
+                if (response.data.more) {
+                    nextBatch();
+                    return;
+                }
+                $button.text(originalText).prop('disabled', false);
+                showMessage(response.data.message, 'success');
+                refreshCounts();
+            }).fail(function() {
+                $button.text(originalText).prop('disabled', false);
+                showMessage(ddwpcAjax.network_error_all, 'error');
+                refreshCounts();
+            });
+        }
+        nextBatch();
+    }
+
     $('#delete-spam-comments').on('click', function() {
         var $button = $(this);
-        showConfirmDialog(ddwpcAjax.confirm_delete_spam, function(confirmed) { // Use prefixed JS object
-            if (confirmed) {
-                $button.text(ddwpcAjax.deleting).prop('disabled', true); // Use prefixed JS object
-                $.post(ddwpcAjax.ajaxurl, { // Use prefixed JS object
-                    action: 'ddwpc_delete_spam', // Prefixed action
-                    nonce: ddwpcAjax.nonce // Use prefixed JS object
-                }, function(response) {
-                    $button.text(ddwpcAjax.delete_spam_button).prop('disabled', false); // Use prefixed JS object
-                    if (response.success) {
-                        showMessage(response.data.message, 'success');
-                    } else {
-                        showMessage(response.data.message || ddwpcAjax.error_delete_spam, 'error'); // Use prefixed JS object
-                    }
-                }).fail(function() {
-                    $button.text(ddwpcAjax.delete_spam_button).prop('disabled', false); // Use prefixed JS object
-                    showMessage(ddwpcAjax.network_error_spam, 'error'); // Use prefixed JS object
-                });
-            }
+        showConfirmDialog(ddwpcAjax.confirm_delete_spam, function(confirmed) {
+            if (confirmed) runDeletion('ddwpc_delete_spam', ['public'], $button, ddwpcAjax.delete_spam_button);
         });
     });
 
-    // Handle Delete All Comments
     $('#delete-all-comments').on('click', function() {
         var $button = $(this);
-        showConfirmDialog(ddwpcAjax.confirm_delete_all, function(confirmed) { // Use prefixed JS object
-            if (confirmed) {
-                $button.text(ddwpcAjax.deleting).prop('disabled', true); // Use prefixed JS object
-                $.post(ddwpcAjax.ajaxurl, { // Use prefixed JS object
-                    action: 'ddwpc_delete_all', // Prefixed action
-                    nonce: ddwpcAjax.nonce // Use prefixed JS object
-                }, function(response) {
-                    $button.text(ddwpcAjax.delete_all_button).prop('disabled', false); // Use prefixed JS object
-                    if (response.success) {
-                        showMessage(response.data.message, 'success');
-                    } else {
-                        showMessage(response.data.message || ddwpcAjax.error_delete_all, 'error'); // Use prefixed JS object
-                    }
-                }).fail(function() {
-                    $button.text(ddwpcAjax.delete_all_button).prop('disabled', false); // Use prefixed JS object
-                    showMessage(ddwpcAjax.network_error_all, 'error'); // Use prefixed JS object
-                });
-            }
+        var scopes = $('input[name="ddwpc_scope"]:checked').map(function() { return this.value; }).get();
+        if (!scopes.length) {
+            showMessage(ddwpcAjax.choose_scope, 'error');
+            return;
+        }
+        var count = 0;
+        $.each(scopes, function(_, scope) {
+            count += Number($('.ddwpc-scope-count[data-scope="' + scope + '"]').text()) || 0;
+        });
+        if (!count) {
+            showMessage(ddwpcAjax.no_matching_comments, 'error');
+            return;
+        }
+        showConfirmDialog(ddwpcAjax.confirm_delete_selected.replace('%d', count), function(confirmed) {
+            if (confirmed) runDeletion('ddwpc_delete_all', scopes, $button, ddwpcAjax.delete_all_button);
         });
     });
 
-    // Handle Download Backup. The link itself points to a protected admin-post download.
+    // The link points to a protected admin-post CSV export.
     $('#download-backup').on('click', function() {
         var $button = $(this);
-        $button.text(ddwpcAjax.creating_backup).attr('aria-disabled', 'true');
+        $button.text(ddwpcAjax.creating_export).attr('aria-disabled', 'true');
         setTimeout(function() {
             $button.text(ddwpcAjax.backup_button).removeAttr('aria-disabled');
         }, 2000);
@@ -120,18 +163,18 @@ jQuery(document).ready(function($) {
         });
     });
 
-    // Handle "Close all comments now" maintenance action
+    // Handle the separate permanent change to post comment statuses.
     $(document).on('click', '#ddwpc-close-all-now', function() {
         var $button = $(this);
         var $notice = $button.closest('.ddwpc-maintenance-notice');
         var $count  = $notice.find('.ddwpc-open-posts-count');
-
-        $button.text(ddwpcAjax.closing_now).prop('disabled', true);
-
-        $.post(ddwpcAjax.ajaxurl, {
+        showConfirmDialog(ddwpcAjax.confirm_close_posts, function(confirmed) {
+            if (!confirmed) return;
+            $button.text(ddwpcAjax.closing_now).prop('disabled', true);
+            $.post(ddwpcAjax.ajaxurl, {
             action: 'ddwpc_close_all_now',
             nonce: ddwpcAjax.nonce
-        }, function(response) {
+            }, function(response) {
             $button.text(ddwpcAjax.close_all_now_button).prop('disabled', false);
             if (response.success) {
                 showMessage(response.data.message, 'success');
@@ -144,9 +187,10 @@ jQuery(document).ready(function($) {
             } else {
                 showMessage((response.data && response.data.message) || ddwpcAjax.error_close_all_now, 'error');
             }
-        }).fail(function() {
+            }).fail(function() {
             $button.text(ddwpcAjax.close_all_now_button).prop('disabled', false);
             showMessage(ddwpcAjax.network_error_close_all_now, 'error');
+            });
         });
     });
 
