@@ -103,9 +103,17 @@ wp i18n make-pot wp-content/plugins/delete-disable-comments \
 | Bereich | DE/EN möglich? | Hinweis |
 |---------|----------------|---------|
 | `readme.txt` im SVN-`trunk/` | **Primär Englisch (Pflicht)** | WordPress.org erwartet englische Plugin-Beschreibung, FAQ, Changelog |
-| Deutsche Plugin-Seite auf wordpress.org | **Ja, über GlotPress** | Autor und Community können unter [translate.wordpress.org – delete-disable-comments](https://translate.wordpress.org/projects/wp-plugins/delete-disable-comments) die `readme`-Strings ins Deutsche übersetzen; eine lokale GlotPress-Vorlage liegt in `wordpress-org/readme-de_DE.txt` |
+| Deutsche Plugin-Seite auf wordpress.org | **Ja, über GlotPress** | Autor und Community können unter [translate.wordpress.org – delete-disable-comments](https://translate.wordpress.org/projects/wp-plugins/delete-disable-comments) die `readme`-Strings ins Deutsche übersetzen; `wordpress-org/readme-de_DE.txt` ist ein älterer redaktioneller Entwurf mit formeller Anrede und darf nicht ungeprüft für `de/default` importiert werden. |
 | Plugin-Name im Verzeichnis | Englisch (offizieller Name) | Lokalisierter Anzeigename nur über GlotPress, falls vorhanden |
 | Banner, Icon, Screenshots | Englisch (aktuell) | Englische UI in Screenshots reicht für globale Reichweite; **optionale DE-Screenshots** können ergänzt werden, sind aber nicht zwingend |
 | Plugin-ZIP (Release-Tag) | Enthält `.mo`-Dateien | Endnutzer mit deutscher WordPress-Installation sehen die übersetzte Admin-UI automatisch |
 
 **Kurzantwort:** Die Plugin-UI kann über `.po`/`.mo` in mehreren EU-Sprachen ausgeliefert werden. Die wordpress.org-**Listing**-Beschreibung bleibt primär Englisch; lokalisierte Varianten entstehen über translate.wordpress.org, nicht über eine zweite `readme.txt` im Plugin-Tag.
+
+### Deutsche GlotPress-Übersetzung für 1.1.0 (24.09.2026)
+
+Am 24.09. wurden 44 Readme- und 37 Admin-Vorschläge eingereicht und nach Prüfung der deutschen [Polyglots-Regeln](https://de.wordpress.org/team/handbook/polyglots-team/hilf-mit-bei-der-uebersetzung/wie-die-deutsche-community-pte-rechte-vergibt/) wieder zurückgezogen. Die Entwürfe verwendeten teils die Anrede „Sie“, während `de/default` die Anrede „du“ verlangt. Die ungeprüften PO-Dateien wurden aus dem Repository entfernt; keine dieser Einreichungen wurde freigegeben.
+
+Nach der Rücknahme zeigte das [Readme-Projekt](https://translate.wordpress.org/projects/wp-plugins/delete-disable-comments/stable-readme/de/default/) 44 unübersetzte, 41 wartende und 1 freigegebenen Eintrag. Das [Stable-Projekt](https://translate.wordpress.org/projects/wp-plugins/delete-disable-comments/stable/de/default/) zeigte 37 unübersetzte, 26 wartende und 8 freigegebene Einträge. „Wartend“ bedeutet noch **nicht**, dass der Text auf WordPress.org oder in einem Sprachpaket veröffentlicht ist. Vor einem neuen Vorschlag Glossar, Style Guide, Inhalt und technische Platzhalter menschlich prüfen; danach kann eine deutsche PTE/GTE die Texte freigeben. Den Live-Status vor der Arbeit neu prüfen.
+
+Die mitgelieferte lokale deutsche `.mo`-Datei ist von diesem GlotPress-Status unabhängig. Der [Test- und Messbericht](../documentation/2026-09-24-product-followup.md) enthält Details und die noch offenen redaktionellen Schritte.
