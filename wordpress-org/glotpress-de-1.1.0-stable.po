@@ -1,0 +1,189 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Delete & Disable Comments 1.1.0 stable\n"
+"PO-Revision-Date: 2026-09-24 14:30+0000\n"
+"Last-Translator: Andreas Ostheimer\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+msgid "Could not read comment counts."
+msgstr "Die Kommentarzahlen konnten nicht gelesen werden."
+
+msgid "Could not close post comments. No success was reported."
+msgstr ""
+"Beitragskommentare konnten nicht geschlossen werden. Es wurde kein Erfolg "
+"gemeldet."
+
+msgid ""
+"The plugin is no longer blocking comments. Check Discussion defaults and any"
+" posts closed by the separate maintenance action."
+msgstr ""
+"Das Plugin blockiert Kommentare nicht mehr. Prüfen Sie die "
+"Diskussionseinstellungen und Beiträge, die mit der separaten Wartungsaktion "
+"geschlossen wurden."
+
+msgid "Failed to create CSV export."
+msgstr "CSV-Export konnte nicht erstellt werden."
+
+msgid "Selected comments were deleted."
+msgstr "Die ausgewählten Kommentare wurden gelöscht."
+
+msgid "Cleanup continues in the next batch."
+msgstr "Die Bereinigung wird im nächsten Schritt fortgesetzt."
+
+msgid ""
+"Cleanup stopped before completion. Some comments may already be deleted; "
+"check the counts and try again."
+msgstr ""
+"Die Bereinigung wurde vorzeitig gestoppt. Einige Kommentare wurden "
+"möglicherweise bereits gelöscht. Prüfen Sie die Zahlen und versuchen Sie es "
+"erneut."
+
+msgid "Invalid cleanup cursor."
+msgstr "Ungültige Position für die Bereinigung."
+
+msgid "Choose at least one valid comment type."
+msgstr "Wählen Sie mindestens einen gültigen Kommentartyp aus."
+
+msgid "No comments match the selected types."
+msgstr "Keine Kommentare entsprechen den ausgewählten Typen."
+
+msgid "Choose at least one comment type."
+msgstr "Wählen Sie mindestens einen Kommentartyp aus."
+
+msgid "comments deleted so far."
+msgstr "Kommentare bisher gelöscht."
+
+msgid "Creating CSV export..."
+msgstr "CSV-Export wird erstellt ..."
+
+msgid ""
+"Permanently close comments and pings on existing posts? The toggle cannot "
+"undo this change."
+msgstr ""
+"Kommentare und Pings bestehender Beiträge dauerhaft schließen? Dieser "
+"Vorgang kann mit dem Schalter nicht rückgängig gemacht werden."
+
+#. translators: %d is the number of comments selected for deletion.
+msgid ""
+"Permanently delete %d selected comments? Exporting CSV does not create a "
+"restorable backup."
+msgstr ""
+"%d ausgewählte Kommentare dauerhaft löschen? Ein CSV-Export ist kein "
+"wiederherstellbares Backup."
+
+msgid "Permanently delete spam from public comments?"
+msgstr "Spam unter öffentlichen Kommentaren dauerhaft löschen?"
+
+msgid "WordPress plugin support"
+msgstr "Hilfe zu WordPress-Plugins"
+
+msgid "Need help with a complex cleanup or migration?"
+msgstr "Benötigen Sie Hilfe bei einer komplexen Bereinigung oder Migration?"
+
+msgid "Confirm permanent change"
+msgstr "Dauerhafte Änderung bestätigen"
+
+msgid ""
+"This permanently changes the comment and ping status of existing posts. "
+"Switching the toggle off will not reopen them."
+msgstr ""
+"Dadurch werden die Kommentar- und Ping-Status bestehender Beiträge dauerhaft"
+" geändert. Das Ausschalten des Schalters öffnet sie nicht erneut."
+
+msgid ""
+"This site was disabled before its previous Discussion defaults were "
+"recorded. Check Settings → Discussion after switching back on."
+msgstr ""
+"Diese Website wurde deaktiviert, bevor ihre früheren "
+"Diskussionseinstellungen gespeichert wurden. Prüfen Sie nach dem erneuten "
+"Aktivieren Einstellungen → Diskussion."
+
+msgid ""
+"Disabling also closes product reviews. Switching back restores saved site "
+"defaults when available, but does not reopen posts closed with the separate "
+"maintenance button."
+msgstr ""
+"Beim Deaktivieren werden auch Produktbewertungen geschlossen. Beim erneuten "
+"Aktivieren werden gespeicherte Website-Standardwerte wiederhergestellt, "
+"sofern vorhanden. Beiträge, die mit dem separaten Wartungsbutton geschlossen"
+" wurden, bleiben geschlossen."
+
+msgid ""
+"The CSV includes personal data and all comment types. It is not a restorable"
+" backup. Make a database backup before deletion."
+msgstr ""
+"Die CSV-Datei enthält personenbezogene Daten und alle Kommentartypen. Sie "
+"ist kein wiederherstellbares Backup. Erstellen Sie vor dem Löschen ein "
+"Datenbank-Backup."
+
+msgid "Export all comments as CSV"
+msgstr "Alle Kommentare als CSV exportieren"
+
+msgid "Other custom comment types"
+msgstr "Andere benutzerdefinierte Kommentartypen"
+
+msgid "Editor Notes"
+msgstr "Editor-Notizen"
+
+msgid "Product reviews"
+msgstr "Produktbewertungen"
+
+msgid "Public comments and pingbacks"
+msgstr "Öffentliche Kommentare und Pingbacks"
+
+msgid "Comment types to delete"
+msgstr "Zu löschende Kommentartypen"
+
+msgid ""
+"Choose what to remove. Editor Notes, product reviews and extension data are "
+"protected by default."
+msgstr ""
+"Wählen Sie aus, was gelöscht werden soll. Editor-Notizen, Produktbewertungen"
+" und Daten von Erweiterungen bleiben standardmäßig erhalten."
+
+msgid "Delete Selected Comments"
+msgstr "Ausgewählte Kommentare löschen"
+
+msgid "matching spam comments"
+msgstr "passende Spam-Kommentare"
+
+msgid ""
+"Remove spam from ordinary public comments. Product reviews, editor Notes and"
+" custom types stay untouched."
+msgstr ""
+"Entfernen Sie Spam aus gewöhnlichen öffentlichen Kommentaren. "
+"Produktbewertungen, Editor-Notizen und benutzerdefinierte Typen bleiben "
+"erhalten."
+
+msgid ""
+"Could not read comment counts. Cleanup is unavailable until the database can"
+" be read."
+msgstr ""
+"Die Kommentarzahlen konnten nicht gelesen werden. Die Bereinigung ist erst "
+"wieder verfügbar, wenn die Datenbank gelesen werden kann."
+
+#. Author URI of the plugin
+msgid "https://www.ostheimer.at/"
+msgstr "https://www.ostheimer.at/"
+
+#. Description of the plugin
+msgid ""
+"Review comment counts, clean up selected types, export CSV, and disable "
+"public comments without losing editor Notes."
+msgstr ""
+"Kommentarzahlen prüfen, ausgewählte Typen bereinigen, CSV exportieren und "
+"öffentliche Kommentare deaktivieren, ohne Editor-Notizen zu verlieren."
+
+#. Plugin URI of the plugin
+msgid ""
+"https://www.ostheimer.at/leistungen/wordpress-plugins/delete-disable-"
+"comments"
+msgstr ""
+"https://www.ostheimer.at/leistungen/wordpress-plugins/delete-disable-"
+"comments"

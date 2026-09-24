@@ -1,0 +1,391 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Delete & Disable Comments 1.1.0 stable readme\n"
+"PO-Revision-Date: 2026-09-24 14:30+0000\n"
+"Last-Translator: Andreas Ostheimer\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#. Short description.
+msgid ""
+"Review comment counts, clean up selected types in resumable batches, export "
+"CSV, or disable public comments from one admin screen."
+msgstr ""
+"Kommentarzahlen prüfen, ausgewählte Typen in fortsetzbaren Schritten "
+"bereinigen, CSV exportieren oder öffentliche Kommentare in einer Admin-"
+"Ansicht deaktivieren."
+
+#. Found in faq paragraph.
+msgid ""
+"When disable mode is active, some existing posts may still have "
+"<code>comment_status</code> or <code>ping_status</code> set to open. The "
+"button permanently closes those fields in one SQL update. Switching the "
+"toggle off does not reopen them."
+msgstr ""
+"Wenn der Deaktivierungsmodus aktiv ist, können bestehende Beiträge bei "
+"<code>comment_status</code> oder <code>ping_status</code> weiterhin auf "
+"„open“ stehen. Der Button schließt diese Felder dauerhaft mit einer SQL-"
+"Aktualisierung. Das Ausschalten des Schalters öffnet sie nicht erneut."
+
+#. Found in faq paragraph.
+msgid ""
+"No. The toggle prevents and hides public comment functionality, but existing"
+" records stay in the database until you explicitly delete them. Editor Notes"
+" stay available in the block editor. Product reviews are closed by the site-"
+"wide toggle."
+msgstr ""
+"Nein. Der Schalter verhindert und verbirgt öffentliche Kommentarfunktionen. "
+"Bestehende Einträge bleiben jedoch in der Datenbank, bis Sie sie "
+"ausdrücklich löschen. Editor-Notizen bleiben im Block-Editor verfügbar. "
+"Produktbewertungen werden durch den websiteweiten Schalter geschlossen."
+
+#. Found in faq paragraph.
+msgid ""
+"No. The CSV is for inspection or manual import workflows. Use your database "
+"backup to restore deleted comments and their metadata."
+msgstr ""
+"Nein. Die CSV-Datei dient der Prüfung oder einem manuellen Import. Verwenden"
+" Sie Ihr Datenbank-Backup, um gelöschte Kommentare samt Metadaten "
+"wiederherzustellen."
+
+#. Found in faq paragraph.
+msgid ""
+"No. <strong>Export all comments as CSV</strong> streams the comment table to"
+" an authenticated administrator. It omits comment metadata and cannot be "
+"restored by this plugin. Make a full database backup before permanent "
+"deletion."
+msgstr ""
+"Nein. <strong>Alle Kommentare als CSV exportieren</strong> überträgt die "
+"Kommentartabelle als geschützten Download an einen angemeldeten "
+"Administrator. Kommentar-Metadaten fehlen, und dieses Plugin kann die Datei "
+"nicht wiederherstellen. Erstellen Sie vor dem dauerhaften Löschen ein "
+"vollständiges Datenbank-Backup."
+
+#. Found in faq header.
+msgid "Where are CSV exports stored?"
+msgstr "Wo werden CSV-Exporte gespeichert?"
+
+#. Found in faq header.
+msgid "Does disabling comments delete existing comments or editor Notes?"
+msgstr ""
+"Löscht das Deaktivieren von Kommentaren bestehende Kommentare oder Editor-"
+"Notizen?"
+
+#. Found in faq header.
+msgid "Is the CSV export a backup?"
+msgstr "Ist der CSV-Export ein Backup?"
+
+#. Found in installation list item.
+msgid ""
+"Open <strong>Tools → Delete &amp; Disable Comments</strong> to review "
+"counts, export CSV, delete selected comments, or disable comments site-wide."
+msgstr ""
+"Öffnen Sie <strong>Werkzeuge → Kommentare löschen &amp; "
+"deaktivieren</strong>, um Zahlen zu prüfen, CSV zu exportieren, ausgewählte "
+"Kommentare zu löschen oder Kommentare websiteweit zu deaktivieren."
+
+#. Found in description paragraph.
+msgid ""
+"The current admin interface is translated into German. Other included locale"
+" files may use English for newer messages until their translations are "
+"updated. WordPress loads the matching <code>.mo</code> file based on the "
+"site language. Text domain: <code>delete-disable-comments</code>."
+msgstr ""
+"Die aktuelle Admin-Oberfläche ist ins Deutsche übersetzt. Andere "
+"mitgelieferte Sprachdateien können bei neueren Meldungen noch englische "
+"Texte enthalten. WordPress lädt die passende <code>.mo</code>-Datei anhand "
+"der Website-Sprache. Textdomain: <code>delete-disable-comments</code>."
+
+#. Found in description paragraph.
+msgid ""
+"For a step-by-step guide or help with complex cleanups and migration work, "
+"see <a href=\"https://www.ostheimer.at/leistungen/wordpress-plugins/delete-"
+"disable-comments\">Ostheimer's Delete &amp; Disable Comments guide</a>."
+msgstr ""
+"Eine Schritt-für-Schritt-Anleitung und Hilfe bei komplexen Bereinigungen "
+"oder Migrationen finden Sie im <a "
+"href=\"https://www.ostheimer.at/leistungen/wordpress-plugins/delete-disable-"
+"comments\">Leitfaden von Ostheimer zu Delete &amp; Disable Comments</a>."
+
+#. Found in description paragraph.
+msgid ""
+"The default selection covers ordinary comments, pingbacks and trackbacks on "
+"non-product content, regardless of status. Product reviews, editor Notes and"
+" other custom types require explicit selection. The spam button only deletes"
+" ordinary public spam. The CSV export includes all comment types and "
+"personal data; keep it private. For a recoverable copy, make a full database"
+" backup with your host before deleting. Deletion is permanent."
+msgstr ""
+"Die Standardauswahl umfasst gewöhnliche Kommentare, Pingbacks und Trackbacks"
+" außerhalb von Produktseiten, unabhängig vom Status. Produktbewertungen, "
+"Editor-Notizen und andere benutzerdefinierte Typen müssen ausdrücklich "
+"ausgewählt werden. Der Spam-Button löscht nur gewöhnlichen öffentlichen "
+"Spam. Der CSV-Export enthält alle Kommentartypen und personenbezogene Daten;"
+" bewahren Sie ihn geschützt auf. Erstellen Sie vor dem Löschen beim Hoster "
+"ein vollständiges Datenbank-Backup, damit Sie Daten wiederherstellen können."
+" Die Löschung ist dauerhaft."
+
+#. Found in description paragraph.
+msgid ""
+"It does <strong>not</strong> delete existing comments. It also does not run "
+"a scheduled cleanup. If existing posts still have open comment or ping "
+"status, the admin screen shows a maintenance notice with a <strong>Close all"
+" comments now</strong> button. This separate, confirmed action permanently "
+"changes those fields and avoids per-post <code>save_post</code> hooks. "
+"Switching the toggle off does not reopen those posts. On sites disabled by "
+"an older version, the earlier Discussion defaults were not recorded and "
+"cannot be restored automatically."
+msgstr ""
+"Der Schalter löscht <strong>keine</strong> bestehenden Kommentare und "
+"startet keine geplante Bereinigung. Wenn bestehende Beiträge noch offene "
+"Kommentar- oder Ping-Statuswerte haben, zeigt die Admin-Ansicht einen "
+"Wartungshinweis mit dem Button <strong>Alle Kommentare jetzt "
+"schließen</strong>. Diese separate, bestätigte Aktion ändert die Felder "
+"dauerhaft und vermeidet <code>save_post</code>-Hooks pro Beitrag. Das "
+"Ausschalten des Schalters öffnet die Beiträge nicht erneut. Auf Websites, "
+"die bereits mit einer älteren Plugin-Version deaktiviert wurden, sind die "
+"früheren Diskussionseinstellungen nicht gespeichert und können nicht "
+"automatisch wiederhergestellt werden."
+
+#. Found in description paragraph.
+msgid ""
+"The <strong>Disable Comments</strong> toggle changes the site's comment "
+"behavior. When enabled, it sets WordPress defaults for new content to "
+"closed, prevents new public comment and ping submissions, hides front-end "
+"comment output, removes comment-related UI, unregisters comment-related "
+"blocks, and removes the recent comments widget. Product reviews are also "
+"closed. The comment REST route remains available for internal editor Notes."
+msgstr ""
+"Der Schalter <strong>Kommentare deaktivieren</strong> ändert das "
+"Kommentarverhalten der Website. Ist er aktiv, setzt das Plugin WordPress-"
+"Standardwerte für neue Inhalte auf geschlossen, verhindert neue öffentliche "
+"Kommentare und Pings, blendet die Kommentar-Ausgabe im Frontend aus und "
+"entfernt zugehörige Bedienelemente, Blöcke und das Widget für neueste "
+"Kommentare. Auch Produktbewertungen werden geschlossen. Die Kommentar-REST-"
+"Route bleibt für interne Editor-Notizen verfügbar."
+
+#. Found in description list item.
+msgid ""
+"Export a CSV copy of comment data before permanent deletion, and make a "
+"database backup with your host."
+msgstr ""
+"Exportieren Sie vor dem dauerhaften Löschen eine CSV-Kopie der "
+"Kommentardaten und erstellen Sie beim Hoster ein Datenbank-Backup."
+
+#. Found in description list item.
+msgid ""
+"Restore previously recorded Discussion defaults when switching the toggle "
+"off. Existing posts closed by the separate maintenance action stay closed."
+msgstr ""
+"Beim Ausschalten des Schalters werden zuvor gespeicherte Standardwerte für "
+"Diskussionen wiederhergestellt. Beiträge, die mit der separaten "
+"Wartungsaktion geschlossen wurden, bleiben geschlossen."
+
+#. Found in description list item.
+msgid ""
+"Disable public comments site-wide with a toggle while keeping editor Notes "
+"available through REST."
+msgstr ""
+"Öffentliche Kommentare mit einem Schalter websiteweit deaktivieren und "
+"Editor-Notizen über REST verfügbar halten."
+
+#. Found in description list item.
+msgid ""
+"Export all comment rows to CSV for inspection or a manual import workflow. "
+"The CSV is <strong>not a restorable database backup</strong> and omits "
+"comment metadata."
+msgstr ""
+"Alle Kommentarzeilen als CSV zur Prüfung oder für einen manuellen Import "
+"exportieren. Die CSV-Datei ist <strong>kein wiederherstellbares Datenbank-"
+"Backup</strong> und enthält keine Kommentar-Metadaten."
+
+#. Found in description list item.
+msgid ""
+"Keep WordPress editor Notes, product reviews and other custom comment types "
+"by default."
+msgstr ""
+"WordPress-Editor-Notizen, Produktbewertungen und andere benutzerdefinierte "
+"Kommentartypen standardmäßig erhalten."
+
+#. Found in description list item.
+msgid "Clean ordinary spam or selected comments in small, resumable requests."
+msgstr ""
+"Gewöhnlichen Spam oder ausgewählte Kommentare in kleinen, fortsetzbaren "
+"Schritten bereinigen."
+
+#. Found in description list item.
+msgid "See counts before deleting and select the comment types to remove."
+msgstr ""
+"Vor dem Löschen die Anzahl prüfen und die zu entfernenden Kommentartypen "
+"auswählen."
+
+#. Found in description header.
+msgid "Before deleting"
+msgstr "Vor dem Löschen"
+
+#. Screenshot description.
+msgid "Disable toggle and permanent close-posts maintenance notice"
+msgstr ""
+"Aktiver Deaktivierungsschalter und Wartungshinweis zum dauerhaften Schließen"
+" bestehender Beiträge"
+
+#. Screenshot description.
+msgid "Selected comment deletion confirmation with affected count"
+msgstr ""
+"Bestätigung zum Löschen ausgewählter Kommentare mit betroffener Anzahl"
+
+#. Screenshot description.
+msgid "Spam deletion confirmation dialog"
+msgstr "Bestätigung zum Löschen von Spam"
+
+#. Screenshot description.
+msgid ""
+"Main panel with cleanup counts, type selection, CSV export and disable "
+"toggle"
+msgstr ""
+"Hauptansicht mit Kommentarzahlen, Typauswahl, CSV-Export und "
+"Deaktivierungsschalter"
+
+#. Found in faq paragraph.
+msgid ""
+"Comment fields that look like spreadsheet formulas are prefixed with an "
+"apostrophe in the CSV. This keeps untrusted comment text visible while "
+"preventing common spreadsheet applications from evaluating it as a formula. "
+"Remove that protective prefix only in a trusted import workflow."
+msgstr ""
+"Kommentarfelder, die wie Tabellenformeln aussehen, erhalten in der CSV-Datei"
+" ein vorangestelltes Apostroph. So bleibt nicht vertrauenswürdiger "
+"Kommentartext sichtbar, ohne dass gängige Tabellenkalkulationen ihn als "
+"Formel ausführen. Entfernen Sie dieses Schutzzeichen nur bei einem "
+"vertrauenswürdigen Import."
+
+#. Found in faq header.
+msgid "Why can some exported values start with an apostrophe?"
+msgstr "Warum beginnen manche exportierten Werte mit einem Apostroph?"
+
+#. Found in description list item.
+msgid ""
+"Open CSV exports in spreadsheet applications without executing formula-like "
+"comment values."
+msgstr ""
+"CSV-Exporte in Tabellenkalkulationen öffnen, ohne formelartige "
+"Kommentarwerte auszuführen."
+
+#. Found in faq paragraph.
+msgid ""
+"CSV files are streamed through a protected administrator download. The "
+"plugin no longer leaves them in the public uploads directory."
+msgstr ""
+"CSV-Dateien werden als geschützter Administrator-Download übertragen. Das "
+"Plugin legt sie nicht mehr im öffentlichen Uploads-Verzeichnis ab."
+
+#. Found in faq header.
+msgid "Can the plugin restore deleted comments from CSV?"
+msgstr ""
+"Kann das Plugin gelöschte Kommentare aus einer CSV-Datei wiederherstellen?"
+
+#. Found in changelog list item.
+msgid "Show cleanup counts and add contextual help for complex migrations."
+msgstr ""
+"Kommentarzahlen anzeigen und Hinweise für komplexe Migrationen ergänzen."
+
+#. Found in changelog list item.
+msgid ""
+"Rename the CSV download as an export and clarify that it is not a restorable"
+" backup."
+msgstr ""
+"Den CSV-Download als Export benennen und klarstellen, dass er kein "
+"wiederherstellbares Backup ist."
+
+#. Found in changelog list item.
+msgid ""
+"Restore saved Discussion defaults when re-enabling comments; clarify "
+"permanent post-status changes and legacy settings."
+msgstr ""
+"Gespeicherte Diskussionseinstellungen beim erneuten Aktivieren von "
+"Kommentaren wiederherstellen; dauerhafte Beitragsstatus-Änderungen und "
+"ältere Einstellungen erklären."
+
+#. Found in changelog list item.
+msgid ""
+"Keep editor Notes available through REST while public comments are disabled."
+msgstr ""
+"Editor-Notizen über REST verfügbar halten, während öffentliche Kommentare "
+"deaktiviert sind."
+
+#. Found in changelog list item.
+msgid ""
+"Delete selected types in resumable batches with exact progress and failure "
+"reporting."
+msgstr ""
+"Ausgewählte Typen in fortsetzbaren Schritten löschen und Fortschritt sowie "
+"Fehler genau melden."
+
+#. Found in changelog list item.
+msgid ""
+"Protect editor Notes, product reviews and custom comment types from default "
+"cleanup."
+msgstr ""
+"Editor-Notizen, Produktbewertungen und benutzerdefinierte Kommentartypen vor"
+" der standardmäßigen Bereinigung schützen."
+
+#. Found in changelog list item.
+msgid ""
+"Verify compatibility with WordPress 7.1 and add Plugin Check to continuous "
+"integration."
+msgstr ""
+"Kompatibilität mit WordPress 7.1 prüfen und Plugin Check in die "
+"kontinuierliche Integration aufnehmen."
+
+#. Found in changelog list item.
+msgid ""
+"Neutralize formula-like values in CSV backups before they reach spreadsheet "
+"applications."
+msgstr ""
+"Formelartige Werte in CSV-Backups entschärfen, bevor sie "
+"Tabellenkalkulationen erreichen."
+
+#. Found in changelog list item.
+msgid ""
+"Preserve the site-wide disable setting across plugin deactivation and "
+"reactivation."
+msgstr ""
+"Die websiteweite Deaktivierung von Kommentaren über Deaktivierung und "
+"erneute Aktivierung des Plugins hinweg erhalten."
+
+#. Found in changelog list item.
+msgid ""
+"Verify complete deletion and report the number of comments actually removed."
+msgstr ""
+"Vollständiges Löschen überprüfen und die Anzahl der tatsächlich entfernten "
+"Kommentare melden."
+
+#. Found in changelog list item.
+msgid ""
+"Export and delete comments with every status, including spam, trash, and "
+"custom statuses."
+msgstr ""
+"Kommentare mit jedem Status exportieren und löschen, einschließlich Spam, "
+"Papierkorb und benutzerdefinierten Statuswerten."
+
+#. Found in changelog list item.
+msgid ""
+"Removed stale backup object caching so downloads reflect the current "
+"comments table."
+msgstr ""
+"Veraltetes Objekt-Caching für Backups entfernt, damit Downloads die aktuelle"
+" Kommentartabelle widerspiegeln."
+
+#. Found in changelog list item.
+msgid ""
+"Changed CSV backups to stream through an authenticated administrator "
+"download instead of writing public files under <code>wp-"
+"content/uploads/</code>."
+msgstr ""
+"CSV-Backups als geschützten Administrator-Download übertragen, statt "
+"öffentliche Dateien unter <code>wp-content/uploads/</code> zu speichern."

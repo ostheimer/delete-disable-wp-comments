@@ -109,3 +109,11 @@ wp i18n make-pot wp-content/plugins/delete-disable-comments \
 | Plugin-ZIP (Release-Tag) | Enthält `.mo`-Dateien | Endnutzer mit deutscher WordPress-Installation sehen die übersetzte Admin-UI automatisch |
 
 **Kurzantwort:** Die Plugin-UI kann über `.po`/`.mo` in mehreren EU-Sprachen ausgeliefert werden. Die wordpress.org-**Listing**-Beschreibung bleibt primär Englisch; lokalisierte Varianten entstehen über translate.wordpress.org, nicht über eine zweite `readme.txt` im Plugin-Tag.
+
+### Deutsche GlotPress-Vorschläge für 1.1.0 (24.09.2026)
+
+Die Dateien `glotpress-de-1.1.0.po` (Readme) und `glotpress-de-1.1.0-stable.po` (Admin-Strings) enthalten **inkrementelle** Vorschläge für zuvor fehlende deutsche Einträge. Sie sind keine vollständigen Kataloge und werden nicht mit dem Plugin ausgeliefert. Beide wurden über den Import im angemeldeten WordPress.org-Konto `helpstring` eingereicht.
+
+Nach dem Import standen im [Readme-Projekt](https://translate.wordpress.org/projects/wp-plugins/delete-disable-comments/stable-readme/de/default/) 0 unübersetzte, 85 wartende und 1 freigegebener Eintrag. Im [Stable-Projekt](https://translate.wordpress.org/projects/wp-plugins/delete-disable-comments/stable/de/default/) waren es 0 unübersetzte, 63 wartende und 8 freigegebene Einträge. „Wartend“ bedeutet noch **nicht**, dass der Text auf WordPress.org oder in einem Sprachpaket veröffentlicht ist. Eine deutsche PTE/GTE muss die Vorschläge prüfen und freigeben; vor einem erneuten Import den Live-Status neu prüfen.
+
+GlotPress zeigt für „Kommentare bisher gelöscht.“ eine Warnung zur anfänglichen Großschreibung. Im Admin wird davor eine Zahl ausgegeben (z. B. „5 Kommentare bisher gelöscht.“); das großgeschriebene deutsche Substantiv ist hier grammatisch richtig.
