@@ -1,12 +1,56 @@
-<!-- BEGIN: agent-pr-quality-v1 -->
-## KI-Änderungen und PR-Qualität
+# Delete & Disable Comments
 
-Diese drei Regeln gelten für KI-erstellte oder wesentlich KI-bearbeitete Änderungen. Bei Widersprüchen zu älteren Vorgaben zu PR-Größe, Testnachweisen oder API-Prüfung gilt dieser Abschnitt; sonstige Projekt-, Sicherheits- und Freigabegrenzen bleiben bestehen.
+WordPress-Plugin (Slug `delete-disable-comments`, Funktionspräfix `ddwpc_`): zeigt Kommentarzahlen,
+löscht ausgewählte Kommentartypen in fortsetzbaren Schritten, exportiert CSV und deaktiviert
+öffentliche Kommentare, ohne Editor-Notizen zu verlieren. Veröffentlicht auf
+https://wordpress.org/plugins/delete-disable-comments/ (Autor-Konto `helpstring`).
 
-1. **Kleine, zusammenhängende PRs.** Ein PR behandelt ein klar benanntes Problem oder Ergebnis. Unabhängige Features, Refactorings und Formatierungen trennen. Zusammengehörige Implementierung, Tests und nötige Dokumentation bleiben gemeinsam; keine künstlichen Mini-PRs oder starren Zeilenlimits. Größere untrennbare Änderungen im PR begründen und prüfbar gliedern.
-2. **Verhaltensänderungen brauchen einen wirksamen Test.** Bei Bugfixes zuerst einen reproduzierenden Regressionstest schreiben und seinen Fehlschlag am unveränderten Stand bestätigen; danach muss derselbe Test mit dem Fix bestehen. Für neue Funktionen einen passenden Akzeptanztest analog vor/nach der Implementierung prüfen. Bei bereits geschriebenem Code die Gegenprobe isoliert gegen den Ausgangsstand oder mit gezielt zurückgenommener Implementierung ausführen, ohne fremde Arbeit anzutasten. Der rote Nachweis muss am fehlenden/falschen Verhalten liegen, nicht an einer kaputten Testumgebung. Test, Befehl, Ausgangs-/Änderungsstand und Ergebnisse im PR dokumentieren. Ist eine automatisierte Gegenprobe sachlich nicht sinnvoll oder sicher möglich, konkrete Begründung und einen gleichwertigen reproduzierbaren Prüfnachweis festhalten; nie einen Rot-Grün-Nachweis erfinden. Bestehende Tests nicht abschwächen, nur um Grün zu erhalten.
-3. **Funktionen, APIs und Pakete gezielt prüfen.** Im Review neue oder geänderte Aufrufe, Imports und Abhängigkeiten auf Existenz und Kompatibilität mit der tatsächlich eingesetzten Version prüfen: Repository-Definition/Export, Manifest und Lockfile sowie bei externen APIs die offizielle Dokumentation oder Paketquelle abgleichen. Signaturen und Rückgabewerte mitprüfen. Neue Pakete auch auf korrekten Namen und Herkunft prüfen. Typecheck, Build und passende Integrationstests ergänzen diesen Abgleich; grüne Tests mit gemockten APIs allein sind kein Existenznachweis. Quellen/Prüfbefehle und Ergebnis im PR festhalten.
+## Aufbau
 
-**Doku-Ausnahme:** Reine, nicht ausführbare Dokumentations- oder Kommentaränderungen ohne Einfluss auf Verhalten, Build, Konfiguration, Schema oder Abhängigkeiten benötigen keinen künstlich fehlschlagenden Test. Stattdessen zutreffende Text-, Link-, Beispiel- und Konsistenzprüfungen dokumentieren. Ausführbare Codebeispiele, generierte Konfiguration oder als Programmeingabe genutzte Dokumente sind nicht automatisch ausgenommen. Gemischte PRs prüfen den verhaltensändernden Teil regulär. Die Ausnahme im PR ausdrücklich begründen.
-<!-- END: agent-pr-quality-v1 -->
+- Der Plugin-Quellcode liegt in `wp-content/plugins/delete-disable-comments/` (Haupt-Datei,
+  `admin/`, `includes/`, `languages/`, `readme.txt`). Nur dieser Ordner kommt ins Release-ZIP
+  (`scripts/build-release.sh` packt `git ls-files` dieses Ordners).
+- `wp-content/plugins/classic-editor/` und `wp-content/plugins/plugin-check/` sind mitversionierte
+  Fremd-Plugins (rund 2.200 Dateien, mit eigener Lizenz) und nicht Teil des Release-ZIP.
+- `wordpress-org/` enthält Banner, Icon, Screenshots (SVN-Ordner `/assets`), die deutsche
+  `readme-de_DE.txt` und die SVN-Anleitung (`wordpress-org/README.md`).
+- UI-Quellstrings sind englisch, mitgeliefert werden kompilierte `.mo`-Dateien (u. a. `de_AT`,
+  `de_DE`). Die Projektdoku ist deutsch. `docker-compose.yml` steht in der `.gitignore`.
 
+## Befehle
+
+- `npm test` führt `php tests/php/test-bug-fix.php` aus (eigenständiges PHP-Skript, keine
+  WordPress-Installation).
+- `npm run verify:release` prüft, dass Version in `package.json`, Plugin-Header und
+  `Stable tag` in `readme.txt` übereinstimmen, baut `dist/delete-disable-comments.zip` zweimal
+  und verlangt identische SHA-256-Summen. Die Konstante `DDWPC_VERSION` wird nicht geprüft und muss
+  von Hand mitgezogen werden.
+
+## CI und Release
+
+- `ci.yml` läuft bei jedem Pull Request und jedem Push auf `main` ohne Pfadfilter, also auch
+  bei reinen Markdown-Änderungen: PHP-Lint, `npm test`, ShellCheck, `verify:release`,
+  WordPress Plugin Check (`WordPress/plugin-check-action`), Upload des ZIP als Artefakt.
+- `release.yml` startet nur bei einem Tag `v*` (nicht bei Push auf `main`): Tests, Verifikation
+  gegen die Tag-Version, dann `gh release create` mit ZIP und SHA-256-Datei. Ein Merge auf
+  `main` veröffentlicht nichts.
+- Nach wordpress.org gelangt nichts automatisch. Dort wird von Hand per SVN veröffentlicht
+  (Ablauf: `wordpress-org/README.md`: `trunk/` synchronisieren und committen, dann `tags/<version>`;
+  `Stable tag` in `trunk/readme.txt` muss zum Tag passen). Die SVN-Zugangsdaten liegen nur lokal in
+  `.local/wordpress-org-svn.credentials` (gitignored).
+
+## Fallen
+
+- Löschen ist endgültig. Der CSV-Export enthält keine Kommentar-Metadaten und ist kein
+  wiederherstellbares Backup; vor einer Löschung braucht es ein Datenbank-Backup über den Hoster.
+- Standardmäßig bleiben Editor-Notizen, Produktbewertungen und benutzerdefinierte Kommentartypen
+  von der Löschung ausgenommen.
+- Das Schließen bestehender Beiträge läuft als ein hook-freies SQL-`UPDATE` (nur über „Alle
+  Kommentare jetzt schließen“ oder bei Aktivierung), nie bei jedem Request. Ein `wp_update_post()`
+  aus `init` hat zuvor Fatal Errors mit WPML, Yoast und Polylang verursacht (Issue 1).
+- Kein Multisite-Support (bewusst).
+
+## Weiterführend
+
+- `ROADMAP.md` (Stand und offene Punkte), `README.md` (Changelog, Build, Verzeichnis),
+  `documentation/archive/wordpress-org-review-feedback.md` (Review-Feedback von wordpress.org).
