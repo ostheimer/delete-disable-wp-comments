@@ -12,7 +12,9 @@ wordpress-org/
     ├── banner-1544x500.png
     ├── icon-128x128.png
     ├── icon-256x256.png
-    ├── screenshot-1.png … screenshot-4.png
+    ├── screenshot-1.png … screenshot-5.png
+    └── blueprints/
+        └── blueprint.json   # Live Preview (WordPress Playground)
 ```
 
 Der Plugin-Quellcode für SVN liegt in `wp-content/plugins/delete-disable-comments/` (inkl. `readme.txt`).
@@ -52,14 +54,29 @@ Für Releases können SVN-Benutzername und -Passwort **nur lokal** in `.local/wo
 3. **Assets** (Banner, Icon, Screenshots) – Ordner `/assets` auf SVN-Root-Ebene, **nicht** im Plugin-Ordner:
 
    ```bash
-   cp ../wordpress-org/assets/* assets/
-   svn add assets/*
+   cp -R ../wordpress-org/assets/. assets/
+   svn add --force assets
    svn commit -m "Update plugin directory assets"
    ```
 
-4. **Stable Tag** in `trunk/readme.txt` muss mit dem veröffentlichten Tag übereinstimmen (`Stable tag: 1.1.0`).
+4. **Stable Tag** in `trunk/readme.txt` muss mit dem veröffentlichten Tag übereinstimmen (`Stable tag: 1.1.1`).
 
 5. Nach dem Commit erscheinen Banner und Screenshots auf der Plugin-Seite nach Cache-Aktualisierung (oft innerhalb weniger Minuten, gelegentlich länger).
+
+## Live Preview (WordPress Playground)
+
+`assets/blueprints/blueprint.json` steuert den Button „Live Preview“ auf der Plugin-Seite. Der Blueprint meldet den Besucher an, installiert das Plugin aus dem Verzeichnis und legt Demo-Daten an: 240 Leserkommentare (davon 40 unfreigegeben), 160 Spam, 12 Pingbacks und 3 Editor-Notizen. Die Startseite ist **Werkzeuge → Delete & Disable Comments**.
+
+- Der Blueprint liegt im SVN unter `/assets/blueprints/blueprint.json` (wird mit Schritt 3 übertragen).
+- Solange die Vorschau nicht öffentlich ist, sehen nur Committer den Button „Test Preview“. Für alle Besucher sichtbar wird sie, wenn ein Committer die Vorschau im „Advanced View“ der Plugin-Seite auf „public“ setzt.
+- `npm test` prüft den Blueprint statisch (`tests/php/test-wporg-listing.php`).
+- Lokaler Echttest mit der offiziellen Playground-CLI:
+
+  ```bash
+  npx @wp-playground/cli@latest server --port=9400 --blueprint=wordpress-org/assets/blueprints/blueprint.json
+  ```
+
+  Danach `http://127.0.0.1:9400/wp-admin/tools.php?page=delete-disable-comments` öffnen.
 
 ## Hinweise
 

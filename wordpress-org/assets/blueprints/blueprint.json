@@ -1,0 +1,36 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "meta": {
+    "title": "Delete & Disable Comments demo",
+    "description": "Demo site with sample comments, spam, pingbacks and editor Notes.",
+    "author": "helpstring",
+    "categories": [
+      "Comments"
+    ]
+  },
+  "landingPage": "/wp-admin/tools.php?page=delete-disable-comments",
+  "preferredVersions": {
+    "php": "8.3",
+    "wp": "latest"
+  },
+  "steps": [
+    {
+      "step": "login",
+      "username": "admin"
+    },
+    {
+      "step": "installPlugin",
+      "pluginData": {
+        "resource": "wordpress.org/plugins",
+        "slug": "delete-disable-comments"
+      },
+      "options": {
+        "activate": true
+      }
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php\nrequire_once '/wordpress/wp-load.php';\n\n$post_id = wp_insert_post(array(\n\t'post_title'     => 'Ten years of blog comments',\n\t'post_content'   => 'Sample post for the Delete & Disable Comments preview. All comments on this demo site are generated.',\n\t'post_status'    => 'publish',\n\t'comment_status' => 'open',\n\t'ping_status'    => 'open',\n));\n$readers = array('Anna', 'Ben', 'Clara', 'David', 'Eva', 'Felix', 'Greta', 'Hugo');\n\nfor ($i = 1; $i <= 240; $i++) {\n\twp_insert_comment(array(\n\t\t'comment_post_ID'      => $post_id,\n\t\t'comment_author'       => $readers[$i % count($readers)],\n\t\t'comment_author_email' => 'reader' . $i . '@example.com',\n\t\t'comment_content'      => 'Sample reader comment number ' . $i . '.',\n\t\t'comment_approved'     => 0 === $i % 6 ? '0' : '1',\n\t));\n}\nfor ($i = 1; $i <= 160; $i++) {\n\twp_insert_comment(array(\n\t\t'comment_post_ID'      => $post_id,\n\t\t'comment_author'       => 'Cheap followers ' . $i,\n\t\t'comment_author_email' => 'spam' . $i . '@example.invalid',\n\t\t'comment_author_url'   => 'https://spam.example.invalid/' . $i,\n\t\t'comment_content'      => 'Buy cheap followers now! Visit my site, offer ' . $i . '.',\n\t\t'comment_approved'     => 'spam',\n\t));\n}\nfor ($i = 1; $i <= 12; $i++) {\n\twp_insert_comment(array(\n\t\t'comment_post_ID'  => $post_id,\n\t\t'comment_author'   => 'Example Blog ' . $i,\n\t\t'comment_content'  => 'Pingback from an example blog post.',\n\t\t'comment_type'     => 'pingback',\n\t\t'comment_approved' => '1',\n\t));\n}\nfor ($i = 1; $i <= 3; $i++) {\n\twp_insert_comment(array(\n\t\t'comment_post_ID'  => $post_id,\n\t\t'user_id'          => 1,\n\t\t'comment_author'   => 'admin',\n\t\t'comment_content'  => 'Editor note ' . $i . ': these stay protected unless you select them.',\n\t\t'comment_type'     => 'note',\n\t\t'comment_approved' => '1',\n\t));\n}\n"
+    }
+  ]
+}
