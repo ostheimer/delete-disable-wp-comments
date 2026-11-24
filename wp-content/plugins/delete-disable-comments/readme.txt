@@ -20,8 +20,8 @@ Delete all comments, bulk delete spam, or disable comments on your whole WordPre
 * **Protects what you want to keep.** WooCommerce product reviews, block editor Notes and comment types added by other plugins stay untouched unless you select them.
 * **Exact counts first.** See how many comments of each type and how much spam your site has before anything is deleted.
 * **Free CSV export.** Download all comments as a spreadsheet before you delete. Formula-like values are neutralized, so the file opens safely in Excel, Numbers or LibreOffice.
-* **Disable comments site-wide with one switch.** Comment forms, existing comments, comment menus, widgets, feeds and blocks disappear. New public comments and pings are refused, including through the REST API.
-* **Safe with WPML, Polylang and Yoast SEO.** Closing comments on existing posts does not trigger post updates.
+* **Disable comments site-wide with one switch.** Comment forms and existing comments disappear from your pages, along with the Comments menu, the Recent Comments widget and comment feeds. New public comments and pings are refused, including through the REST API.
+* **No mass post updates.** Closing comments on existing posts is a single database update and does not trigger the `save_post` hooks used by WPML, Polylang or Yoast SEO.
 * **100% free.** No Pro version, no ads, no account, no tracking.
 
 = Proven on real sites =
@@ -43,11 +43,11 @@ Use the **Live Preview** button on this page to open a temporary demo site in yo
 
 Deletion is permanent. The CSV export is a readable copy of the comment rows, **not a restorable backup**: it omits comment metadata and contains personal data such as names and email addresses, so keep it private. For a full safety net, make a database backup with your host first.
 
-The default selection covers ordinary comments, pingbacks and trackbacks on non-product content, regardless of status. Product reviews, editor Notes and other custom comment types are only deleted when you select them. **Delete Spam Comments** only removes ordinary spam.
+The default selection covers ordinary comments, pingbacks and trackbacks on non-product content, regardless of status. Product reviews, editor Notes and other custom comment types are only deleted when you select them. **Delete Spam Comments** only removes spam among ordinary comments, pingbacks and trackbacks.
 
 = What the disable switch does =
 
-When comments are disabled, new content defaults to closed comments and pings, the comment form and existing comments are hidden on the front end, comment menus, widgets, feeds and blocks are removed, and product reviews are closed. Existing comments stay in the database until you delete them. Block editor Notes keep working.
+When comments are disabled, new content defaults to closed comments and pings, the comment form and existing comments are hidden on the front end, the Comments menu, the Recent Comments widget and comment feeds are removed, and product reviews are closed. Existing comments stay in the database until you delete them. Block editor Notes keep working.
 
 Some existing posts may still be marked as open. The screen then offers **Close all comments now**, which permanently closes them in one database update. Switching comments back on restores your previous Discussion defaults, but posts closed this way stay closed. Sites disabled with a version before 1.1.0 did not record those defaults.
 
@@ -73,7 +73,7 @@ Open **Tools → Delete & Disable Comments**. Keep **Public comments and pingbac
 
 = How do I delete only spam comments? =
 
-Click **Delete Spam Comments** and confirm. Only ordinary comments marked as spam are removed. Approved and pending comments, product reviews and editor Notes stay.
+Click **Delete Spam Comments** and confirm. Only comments, pingbacks and trackbacks marked as spam are removed. Approved and pending comments, product reviews and editor Notes stay.
 
 = How do I disable comments on my whole site? =
 
@@ -81,7 +81,7 @@ Switch on the **Disable Comments** toggle. Comment forms and existing comments d
 
 = Can it handle tens of thousands of comments on shared hosting? =
 
-Yes. Each request deletes a batch of 100 comments, so memory use and request time stay small. If you close the browser tab during a cleanup, start it again; it continues with the comments that are left.
+Yes. Each request processes a batch of 100 comments, so memory use and request time stay small. If you close the browser tab during a cleanup, start it again; it continues with the comments that are left.
 
 = Will it delete WooCommerce product reviews? =
 
@@ -89,7 +89,7 @@ Only if you select **Product reviews**. The default cleanup and the spam button 
 
 = Is the CSV export a backup? =
 
-No. **Export all comments as CSV** streams the comment table to an authenticated administrator. It omits comment metadata and cannot be restored by this plugin. Make a full database backup before permanent deletion.
+No. **Export all comments as CSV** creates a CSV file of the comment table and sends it to an authenticated administrator. It omits comment metadata and cannot be restored by this plugin. Make a full database backup before permanent deletion.
 
 = Can the plugin restore deleted comments from CSV? =
 
@@ -129,7 +129,7 @@ No. Cleanup actions run only when an administrator clicks the relevant button.
 
 = Where are CSV exports stored? =
 
-CSV files are streamed through a protected administrator download. The plugin does not leave them in the public uploads directory.
+CSV files are sent as a protected administrator download. The plugin does not leave them in the public uploads directory.
 
 == Screenshots ==
 
