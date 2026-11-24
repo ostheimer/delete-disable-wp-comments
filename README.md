@@ -26,11 +26,17 @@ Deletion is permanent. The CSV export omits comment metadata and cannot be resto
 ## Screenshots
 
 1. Comment counts, type selection, CSV export and disable toggle
-2. Confirmation before deleting public spam
-3. Confirmation before deleting selected types
-4. Separate maintenance action for existing posts
+2. Bulk deletion in batches with a live counter
+3. Confirmation before deleting public spam
+4. Confirmation before deleting selected types
+5. Separate maintenance action for existing posts
 
 ## Changelog
+
+### 1.1.1
+
+* Verzeichnisname, Kurzbeschreibung, Beschreibung, FAQ und Screenshots für WordPress.org überarbeitet; Live Preview mit Demo-Kommentaren.
+* Keine Funktionsänderung.
 
 ### 1.1.0
 

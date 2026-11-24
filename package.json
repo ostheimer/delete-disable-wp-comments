@@ -1,10 +1,10 @@
 {
   "name": "delete-disable-wp-comments",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A WordPress plugin for efficient comment management",
   "private": true,
   "scripts": {
-    "test": "php tests/php/test-bug-fix.php",
+    "test": "php tests/php/test-bug-fix.php && php tests/php/test-wporg-listing.php",
     "build": "bash scripts/build-release.sh",
     "verify:release": "bash scripts/verify-release.sh"
   },

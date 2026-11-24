@@ -1,63 +1,91 @@
-=== Delete & Disable Comments ===
+=== Delete & Disable Comments – Bulk Delete Spam & All Comments ===
 Contributors: helpstring
-Tags: comments, spam, disable comments, delete comments, cleanup
+Tags: delete comments, disable comments, delete all comments, remove comments, delete spam comments
 Requires at least: 5.0
 Tested up to: 7.1
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Review comment counts, clean up selected types in resumable batches, export CSV, or disable public comments from one admin screen.
+Bulk delete spam or all comments in safe, resumable batches. Export to CSV first or disable comments site-wide. Free, no upsells.
 
 == Description ==
 
-**Delete & Disable Comments** gives WordPress administrators a focused screen for comment cleanup and comment shutdown tasks. Open it under **Tools → Delete & Disable Comments**.
+Delete all comments, bulk delete spam, or disable comments on your whole WordPress site – safely, even when there are tens of thousands of them. Everything happens on one screen under **Tools → Delete & Disable Comments**.
 
-Many older sites collect spam comments, unused discussion threads, or imported comment data that no longer belongs on the site. This plugin keeps those maintenance actions in one place without asking you to edit the database manually.
+= Why site owners choose it =
 
-= Why use it? =
+* **Works on large sites and cheap hosting.** Comments are deleted in small batches with a live counter, so a big cleanup does not time out or run out of memory.
+* **Protects what you want to keep.** WooCommerce product reviews, block editor Notes and comment types added by other plugins stay untouched unless you select them.
+* **Exact counts first.** See how many comments of each type and how much spam your site has before anything is deleted.
+* **Free CSV export.** Download all comments as a spreadsheet before you delete. Formula-like values are neutralized, so the file opens safely in Excel, Numbers or LibreOffice.
+* **Disable comments site-wide with one switch.** Comment forms, existing comments, comment menus, widgets, feeds and blocks disappear. New public comments and pings are refused, including through the REST API.
+* **Safe with WPML, Polylang and Yoast SEO.** Closing comments on existing posts does not trigger post updates.
+* **100% free.** No Pro version, no ads, no account, no tracking.
 
-* See counts before deleting and select the comment types to remove.
-* Clean ordinary spam or selected comments in small, resumable requests.
-* Keep WordPress editor Notes, product reviews and other custom comment types by default.
-* Export all comment rows to CSV for inspection or a manual import workflow. The CSV is **not a restorable database backup** and omits comment metadata.
-* Open CSV exports in spreadsheet applications without executing formula-like comment values.
-* Disable public comments site-wide with a toggle while keeping editor Notes available through REST.
-* Restore previously recorded Discussion defaults when switching the toggle off. Existing posts closed by the separate maintenance action stay closed.
-* Use a standard WordPress admin screen available only to administrators.
+= Proven on real sites =
 
-= Common use cases =
+One user removed 32,509 unwanted comments from a client site with a PHP memory limit of only 128 MB, after the standard WordPress comment screens had failed with server errors.
 
-* Remove accumulated spam comments from a site.
-* Prepare a site that no longer accepts discussion.
-* Clean comments before a redesign, migration, or client handover.
-* Export a CSV copy of comment data before permanent deletion, and make a database backup with your host.
-* Close open comment status on existing posts without triggering `save_post` hooks.
+= Typical uses =
 
-= What Disable Comments does =
+* Clean up years of accumulated spam.
+* Remove all comments before a redesign, migration or client handover.
+* Turn a blog into a website without discussion.
+* Delete old comments, pingbacks and trackbacks while keeping product reviews.
 
-The **Disable Comments** toggle changes the site's comment behavior. When enabled, it sets WordPress defaults for new content to closed, prevents new public comment and ping submissions, hides front-end comment output, removes comment-related UI, unregisters comment-related blocks, and removes the recent comments widget. Product reviews are also closed. The comment REST route remains available for internal editor Notes.
+= Try it before you install =
 
-It does **not** delete existing comments. It also does not run a scheduled cleanup. If existing posts still have open comment or ping status, the admin screen shows a maintenance notice with a **Close all comments now** button. This separate, confirmed action permanently changes those fields and avoids per-post `save_post` hooks. Switching the toggle off does not reopen those posts. On sites disabled by an older version, the earlier Discussion defaults were not recorded and cannot be restored automatically.
+Use the **Live Preview** button on this page to open a temporary demo site in your browser. It comes with sample comments, spam, pingbacks and editor Notes, so you can try every button safely. Nothing is installed on your own site.
 
-= Before deleting =
+= Before you delete =
 
-The default selection covers ordinary comments, pingbacks and trackbacks on non-product content, regardless of status. Product reviews, editor Notes and other custom types require explicit selection. The spam button only deletes ordinary public spam. The CSV export includes all comment types and personal data; keep it private. For a recoverable copy, make a full database backup with your host before deleting. Deletion is permanent.
+Deletion is permanent. The CSV export is a readable copy of the comment rows, **not a restorable backup**: it omits comment metadata and contains personal data such as names and email addresses, so keep it private. For a full safety net, make a database backup with your host first.
 
-For a step-by-step guide or help with complex cleanups and migration work, see [Ostheimer's Delete & Disable Comments guide](https://www.ostheimer.at/leistungen/wordpress-plugins/delete-disable-comments).
+The default selection covers ordinary comments, pingbacks and trackbacks on non-product content, regardless of status. Product reviews, editor Notes and other custom comment types are only deleted when you select them. **Delete Spam Comments** only removes ordinary spam.
+
+= What the disable switch does =
+
+When comments are disabled, new content defaults to closed comments and pings, the comment form and existing comments are hidden on the front end, comment menus, widgets, feeds and blocks are removed, and product reviews are closed. Existing comments stay in the database until you delete them. Block editor Notes keep working.
+
+Some existing posts may still be marked as open. The screen then offers **Close all comments now**, which permanently closes them in one database update. Switching comments back on restores your previous Discussion defaults, but posts closed this way stay closed. Sites disabled with a version before 1.1.0 did not record those defaults.
+
+= Need help with a complex cleanup? =
+
+For a step-by-step guide or professional help with large cleanups and migrations, see [Ostheimer's Delete & Disable Comments guide](https://www.ostheimer.at/leistungen/wordpress-plugins/delete-disable-comments).
 
 = Translations =
 
-The current admin interface is translated into German. Other included locale files may use English for newer messages until their translations are updated. WordPress loads the matching `.mo` file based on the site language. Text domain: `delete-disable-comments`.
+The admin interface is available in English and German. WordPress loads the matching language file automatically based on the site language. Text domain: `delete-disable-comments`.
 
 == Installation ==
 
-1. Upload the plugin folder to `/wp-content/plugins/delete-disable-comments`, or install the ZIP via **Plugins → Add New → Upload Plugin**.
-2. Activate the plugin through the **Plugins** screen in WordPress.
-3. Open **Tools → Delete & Disable Comments** to review counts, export CSV, delete selected comments, or disable comments site-wide.
+1. In WordPress, go to **Plugins → Add New**, search for **Delete & Disable Comments**, then install and activate it. Alternatively, upload the ZIP via **Plugins → Add New → Upload Plugin**.
+2. Open **Tools → Delete & Disable Comments**.
+3. Review the counts, export a CSV if you want a copy, then delete spam, delete selected comments, or disable comments site-wide.
 
 == Frequently Asked Questions ==
+
+= How do I delete all comments in WordPress? =
+
+Open **Tools → Delete & Disable Comments**. Keep **Public comments and pingbacks** selected, add other types if you want them removed as well, click **Delete Selected Comments** and confirm. The plugin deletes in batches and shows a running count until the selected comments are gone.
+
+= How do I delete only spam comments? =
+
+Click **Delete Spam Comments** and confirm. Only ordinary comments marked as spam are removed. Approved and pending comments, product reviews and editor Notes stay.
+
+= How do I disable comments on my whole site? =
+
+Switch on the **Disable Comments** toggle. Comment forms and existing comments disappear from the front end, and new comments and pings are refused. If the screen then shows **Close all comments now**, you can also close the comment status on existing posts.
+
+= Can it handle tens of thousands of comments on shared hosting? =
+
+Yes. Each request deletes a batch of 100 comments, so memory use and request time stay small. If you close the browser tab during a cleanup, start it again; it continues with the comments that are left.
+
+= Will it delete WooCommerce product reviews? =
+
+Only if you select **Product reviews**. The default cleanup and the spam button keep them. Disabling comments site-wide does close product reviews for new submissions.
 
 = Is the CSV export a backup? =
 
@@ -73,7 +101,11 @@ Comment fields that look like spreadsheet formulas are prefixed with an apostrop
 
 = Does disabling comments delete existing comments or editor Notes? =
 
-No. The toggle prevents and hides public comment functionality, but existing records stay in the database until you explicitly delete them. Editor Notes stay available in the block editor. Product reviews are closed by the site-wide toggle.
+No. The toggle prevents and hides public comment functionality, but existing records stay in the database until you explicitly delete them. Editor Notes stay available in the block editor through the comment REST route. Product reviews are closed by the site-wide toggle.
+
+= Should I switch comments back on before deactivating the plugin? =
+
+Yes, if you want comments again. Switching the toggle off restores your earlier Discussion defaults. If you deactivate the plugin while comments are disabled, the hiding and blocking stop, but new content keeps the closed Discussion defaults until you change them under **Settings → Discussion**. Your toggle setting is kept for a later reactivation.
 
 = What does “Close all comments now” do? =
 
@@ -97,16 +129,21 @@ No. Cleanup actions run only when an administrator clicks the relevant button.
 
 = Where are CSV exports stored? =
 
-CSV files are streamed through a protected administrator download. The plugin no longer leaves them in the public uploads directory.
+CSV files are streamed through a protected administrator download. The plugin does not leave them in the public uploads directory.
 
 == Screenshots ==
 
-1. Main panel with cleanup counts, type selection, CSV export and disable toggle
-2. Spam deletion confirmation dialog
-3. Selected comment deletion confirmation with affected count
-4. Disable toggle and permanent close-posts maintenance notice
+1. One screen to delete spam, delete selected or all comments, export them to CSV and disable comments site-wide
+2. Bulk delete thousands of comments in safe batches with a live counter
+3. Confirmation before deleting spam comments
+4. Confirmation with the exact number of comments that will be deleted
+5. Disable comments site-wide, with a one-click option to close comments on existing posts
 
 == Changelog ==
+
+= 1.1.1 =
+* Clearer plugin name, description, FAQ and screenshots for the WordPress.org plugin directory.
+* No functional changes.
 
 = 1.1.0 =
 * Protect editor Notes, product reviews and custom comment types from default cleanup.
@@ -159,6 +196,9 @@ CSV files are streamed through a protected administrator download. The plugin no
 * Initial release with spam deletion, delete-all with backup, and site-wide comment disable.
 
 == Upgrade Notice ==
+
+= 1.1.1 =
+Listing and naming update only. No functional changes.
 
 = 1.1.0 =
 Cleanup now protects Notes and reviews by default. Review the selected types before deleting. CSV exports are not restorable backups.

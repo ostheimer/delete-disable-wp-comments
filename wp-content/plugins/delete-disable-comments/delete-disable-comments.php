@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: Delete & Disable Comments
+ * Plugin Name: Delete & Disable Comments – Bulk Delete Spam & All Comments
  * Plugin URI: https://www.ostheimer.at/leistungen/wordpress-plugins/delete-disable-comments
  * Description: Review comment counts, clean up selected types, export CSV, and disable public comments without losing editor Notes.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author: Andreas Ostheimer
  * Author URI: https://www.ostheimer.at/
  * License: GPL v2 or later
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Removed direct loading of wp-load.php via require_once to comply with review.
 
 // Define plugin constants
-define('DDWPC_VERSION', '1.1.0');
+define('DDWPC_VERSION', '1.1.1');
 define('DDWPC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('DDWPC_PLUGIN_URL', plugin_dir_url(__FILE__));
 
